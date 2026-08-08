@@ -19,14 +19,14 @@ export function buildStatsShareText(
   const topSender = [...analysis.personaBreakdown.messageCount].sort((a, b) => b.value - a.value)[0];
   const busiestDayDate = formatDate(new Date(`${analysis.busiestDay.date}T12:00:00`).getTime(), language);
 
-  const lines = [`🎉 ${dictionary.app.title}`, ''];
+  const lines = [dictionary.stats.shareIntro, ''];
   lines.push(`💬 ${formatTemplate(dictionary.stats.messagesCountCaption, { count: totalMessages })}`);
   if (topSender) {
     lines.push(`🏆 ${topSender.sender}: ${formatTemplate(dictionary.stats.messagesCountCaption, { count: topSender.value })}`);
   }
   lines.push(formatTemplate(dictionary.wrapped.busiestDayText, { date: busiestDayDate, count: analysis.busiestDay.count }));
   lines.push('');
-  lines.push(dictionary.wrapped.tryItYourself);
+  lines.push(dictionary.stats.shareOutro);
   lines.push(appUrl);
 
   return lines.join('\n');

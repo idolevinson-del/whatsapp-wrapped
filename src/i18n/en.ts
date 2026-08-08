@@ -106,6 +106,8 @@ export const en: Dictionary = {
     subtitle: 'Everything we found, broken down by person.',
     backButton: 'Upload another file',
     shareButton: 'Share to WhatsApp',
+    shareIntro: '👀 Come see the stats behind our WhatsApp chat',
+    shareOutro: 'See all the stats 👇',
     overviewTitle: 'Overview',
     totalMessages: 'Total messages',
     dateRangeTitle: 'Chat span',

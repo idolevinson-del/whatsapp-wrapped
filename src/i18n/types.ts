@@ -104,6 +104,10 @@ export interface Dictionary {
     subtitle: string;
     backButton: string;
     shareButton: string;
+    /** Opening line of the WhatsApp share message. Gender-neutral by design. */
+    shareIntro: string;
+    /** Closing call-to-action line of the WhatsApp share message, before the link. */
+    shareOutro: string;
     overviewTitle: string;
     totalMessages: string;
     dateRangeTitle: string;
