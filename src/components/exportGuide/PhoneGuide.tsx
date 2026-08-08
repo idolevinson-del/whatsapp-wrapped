@@ -60,7 +60,7 @@ export function PhoneGuide({ steps, captions, contactName, contactSub, messages 
         onMouseEnter={() => timerRef.current && clearInterval(timerRef.current)}
         onMouseLeave={restartAuto}
       >
-        <div className="absolute start-1/2 top-0 z-30 h-5 w-[90px] -translate-x-1/2 rounded-b-2xl bg-black" />
+        <div className="absolute left-1/2 top-0 z-30 h-5 w-[90px] -translate-x-1/2 rounded-b-2xl bg-black" />
 
         <div className="absolute inset-x-2.5 top-6 z-20 flex gap-1">
           {steps.map((_, i) => (

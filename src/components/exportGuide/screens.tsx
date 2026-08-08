@@ -183,7 +183,7 @@ function DialogPanel({
 }) {
   return (
     <div
-      className="absolute start-1/2 top-1/2 w-[204px] -translate-x-1/2 -translate-y-1/2 rounded-xl border p-4 text-center"
+      className="absolute left-1/2 top-1/2 w-[204px] -translate-x-1/2 -translate-y-1/2 rounded-xl border p-4 text-center"
       style={{ background: '#233138', borderColor: 'rgba(255,255,255,0.08)' }}
     >
       <p className="mb-3.5 text-[12px] font-semibold" style={{ color: WA.text }}>
