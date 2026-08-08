@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { deleteHistoryEntry, getHistory, saveHistoryEntry, touchHistoryEntry } from './chatHistory';
+import { clearHistory, deleteHistoryEntry, getHistory, saveHistoryEntry, touchHistoryEntry } from './chatHistory';
 import type { ChatHistoryEntry } from './chatHistory';
 import type { AnalysisResult } from '../analysis';
 
@@ -21,5 +21,10 @@ export function useChatHistory() {
     setEntries(getHistory());
   }, []);
 
-  return { entries, save, open, remove };
+  const clear = useCallback(() => {
+    clearHistory();
+    setEntries(getHistory());
+  }, []);
+
+  return { entries, save, open, remove, clear };
 }

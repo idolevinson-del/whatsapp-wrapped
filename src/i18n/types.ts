@@ -65,6 +65,10 @@ export interface Dictionary {
     confirmDeleteMessage: string;
     confirmDeleteConfirm: string;
     confirmDeleteCancel: string;
+    /** Button next to the history title that clears every saved chat. */
+    clearAllButton: string;
+    confirmClearAllTitle: string;
+    confirmClearAllMessage: string;
   };
   onboarding: {
     bannerTitle: string;

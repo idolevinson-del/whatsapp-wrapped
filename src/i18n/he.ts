@@ -59,6 +59,9 @@ export const he: Dictionary = {
     confirmDeleteMessage: 'הוא יוסר מהיסטוריית הצ׳אטים שלכם במכשיר הזה. לא ניתן לבטל פעולה זו.',
     confirmDeleteConfirm: 'מחיקה',
     confirmDeleteCancel: 'ביטול',
+    clearAllButton: 'מחקו הכול',
+    confirmClearAllTitle: 'למחוק את כל הצ׳אטים?',
+    confirmClearAllMessage: 'כל הצ׳אטים השמורים יימחקו מהמכשיר הזה. לא ניתן לבטל פעולה זו.',
   },
   onboarding: {
     bannerTitle: 'חדשים כאן?',

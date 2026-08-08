@@ -63,6 +63,9 @@ export const en: Dictionary = {
     confirmDeleteMessage: 'This will remove it from your chat history on this device. This can’t be undone.',
     confirmDeleteConfirm: 'Delete',
     confirmDeleteCancel: 'Cancel',
+    clearAllButton: 'Delete all',
+    confirmClearAllTitle: 'Delete all chats?',
+    confirmClearAllMessage: 'This will remove every saved chat from this device. This can’t be undone.',
   },
   onboarding: {
     bannerTitle: 'New here?',

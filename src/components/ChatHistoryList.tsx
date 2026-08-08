@@ -8,17 +8,28 @@ interface ChatHistoryListProps {
   entries: ChatHistoryEntry[];
   onOpen: (entry: ChatHistoryEntry) => void;
   onDelete: (id: string) => void;
+  onClearAll: () => void;
 }
 
-export function ChatHistoryList({ entries, onOpen, onDelete }: ChatHistoryListProps) {
+export function ChatHistoryList({ entries, onOpen, onDelete, onClearAll }: ChatHistoryListProps) {
   const { dictionary, language } = useLanguage();
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
+  const [confirmingClearAll, setConfirmingClearAll] = useState(false);
 
   if (entries.length === 0) return null;
 
   return (
     <div className="mt-10 w-full text-start">
-      <h2 className="text-sm font-semibold uppercase tracking-widest text-white/80">{dictionary.history.title}</h2>
+      <div className="flex items-center justify-between gap-3">
+        <h2 className="text-sm font-semibold uppercase tracking-widest text-white/80">{dictionary.history.title}</h2>
+        <button
+          type="button"
+          onClick={() => setConfirmingClearAll(true)}
+          className="cursor-pointer text-xs font-medium text-white/50 underline-offset-2 hover:text-red-400 hover:underline"
+        >
+          {dictionary.history.clearAllButton}
+        </button>
+      </div>
 
       <ul className="mt-3 space-y-2">
         {entries.map((entry) => {
@@ -72,6 +83,20 @@ export function ChatHistoryList({ entries, onOpen, onDelete }: ChatHistoryListPr
             setPendingDeleteId(null);
           }}
           onCancel={() => setPendingDeleteId(null)}
+        />
+      )}
+
+      {confirmingClearAll && (
+        <ConfirmDialog
+          title={dictionary.history.confirmClearAllTitle}
+          message={dictionary.history.confirmClearAllMessage}
+          confirmLabel={dictionary.history.clearAllButton}
+          cancelLabel={dictionary.history.confirmDeleteCancel}
+          onConfirm={() => {
+            onClearAll();
+            setConfirmingClearAll(false);
+          }}
+          onCancel={() => setConfirmingClearAll(false)}
         />
       )}
     </div>

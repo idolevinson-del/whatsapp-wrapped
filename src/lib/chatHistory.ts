@@ -98,3 +98,7 @@ export function touchHistoryEntry(id: string): void {
 export function deleteHistoryEntry(id: string): void {
   writeHistory(getHistory().filter((entry) => entry.id !== id));
 }
+
+export function clearHistory(): void {
+  writeHistory([]);
+}

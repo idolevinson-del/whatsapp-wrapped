@@ -30,6 +30,7 @@ interface UploadPageProps {
   history: ChatHistoryEntry[];
   onOpenHistoryEntry: (entry: ChatHistoryEntry) => void;
   onDeleteHistoryEntry: (id: string) => void;
+  onClearHistory: () => void;
 }
 
 export function UploadPage({
@@ -42,6 +43,7 @@ export function UploadPage({
   history,
   onOpenHistoryEntry,
   onDeleteHistoryEntry,
+  onClearHistory,
 }: UploadPageProps) {
   const { dictionary } = useLanguage();
   const [isDragging, setIsDragging] = useState(false);
@@ -193,7 +195,12 @@ export function UploadPage({
 
           <p className="mt-6 text-xs text-neutral-500">{dictionary.upload.analyticsNote}</p>
 
-          <ChatHistoryList entries={history} onOpen={onOpenHistoryEntry} onDelete={onDeleteHistoryEntry} />
+          <ChatHistoryList
+            entries={history}
+            onOpen={onOpenHistoryEntry}
+            onDelete={onDeleteHistoryEntry}
+            onClearAll={onClearHistory}
+          />
         </div>
       </div>
     </div>

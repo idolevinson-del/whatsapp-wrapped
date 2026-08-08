@@ -42,7 +42,13 @@ function App() {
   });
 
   const { status, stage, error, result, analyzeFile, reset } = useChatAnalysis();
-  const { entries: history, save: saveHistoryEntry, open: openHistoryEntry, remove: removeHistoryEntry } = useChatHistory();
+  const {
+    entries: history,
+    save: saveHistoryEntry,
+    open: openHistoryEntry,
+    remove: removeHistoryEntry,
+    clear: clearHistory,
+  } = useChatHistory();
   const [showGuide, setShowGuide] = useState(false);
   // First-ever visit (no history, never dismissed onboarding): open straight
   // into the live example instead of a blank upload page, so trust is built
@@ -116,6 +122,7 @@ function App() {
       history={history}
       onOpenHistoryEntry={handleOpenHistoryEntry}
       onDeleteHistoryEntry={removeHistoryEntry}
+      onClearHistory={clearHistory}
     />
   );
 }
