@@ -1,0 +1,103 @@
+import type { Dictionary } from './types';
+
+export const en: Dictionary = {
+  code: 'en',
+  language: {
+    switchTo: 'עברית',
+  },
+  app: {
+    title: 'WhatsApp Wrapped',
+    tagline: 'Your year in chats, wrapped.',
+  },
+  upload: {
+    description:
+      'Upload your exported WhatsApp chat (.zip or .txt) to see your stats. Everything happens in your browser — nothing is uploaded anywhere.',
+    zipNote: 'You can upload the .zip file WhatsApp shares directly — no need to unzip it first.',
+    dropzoneTitle: 'Drag & drop your chat export here',
+    dropzoneSubtitle: 'or click to choose a .zip or .txt file',
+    stageParsing: 'Reading your chat…',
+    stageAnalyzing: 'Crunching the numbers…',
+    errorNotTxt:
+      '"{fileName}" isn\'t a supported file. Please upload the .zip or .txt file WhatsApp exported.',
+    errorZipNoChat:
+      "This .zip file doesn't contain a chat export. Please make sure you selected the .zip file WhatsApp shared.",
+    errorNoMessages:
+      'No messages could be parsed from this file. Please make sure it is a WhatsApp chat export (.txt).',
+    errorUnknown: 'Something went wrong while analyzing this file.',
+    guideLink: 'Need help finding your export file?',
+    analyticsNote:
+      'We may count anonymous visits to this site. Your chat — its content, names, and messages — never leaves your device.',
+  },
+  exportGuide: {
+    title: 'How to export your WhatsApp chat',
+    intro: 'Follow these steps to get the .txt file you need.',
+    androidTab: 'Android',
+    iphoneTab: 'iPhone',
+    androidSteps: [
+      'Open the chat you want to export in WhatsApp.',
+      'Tap the three-dot menu in the top right, then "More".',
+      'Tap "Export chat".',
+      'Choose "Without media" for a faster export.',
+      'When asked where to save, choose your Downloads folder.',
+      'Come back here and upload the .txt file from your Downloads.',
+    ],
+    iphoneSteps: [
+      'Open the chat you want to export in WhatsApp.',
+      'Tap the contact or group name at the top of the chat.',
+      'Scroll down and tap "Export Chat".',
+      'Choose "Without Media" for a faster export.',
+      'Tap "Save to Files" and save it to your Downloads folder.',
+      'Come back here and upload the .txt file from your Downloads.',
+    ],
+    withoutMediaTitle: 'Tip: choose "Without Media"',
+    withoutMediaNote:
+      'Exporting without media is much faster — this app only needs the text, so photos and videos aren’t used.',
+    privacyNote: 'Your file never leaves your device — everything happens in your browser.',
+    backButton: 'Back to upload',
+  },
+  history: {
+    title: 'Your chats',
+    openButton: 'View',
+    deleteButton: 'Delete',
+    messageCountLabel: '{count} messages',
+    lastViewedLabel: 'Last viewed {date}',
+    confirmDeleteTitle: 'Delete this chat?',
+    confirmDeleteMessage: 'This will remove it from your chat history on this device. This can’t be undone.',
+    confirmDeleteConfirm: 'Delete',
+    confirmDeleteCancel: 'Cancel',
+  },
+  onboarding: {
+    bannerTitle: 'New here?',
+    bannerSubtitle: 'See an example Wrapped before you upload your own chat.',
+    viewExample: 'See an example',
+    dismiss: 'Skip',
+    viewExampleLink: 'See an example Wrapped',
+    exampleBadge: 'Example',
+    exampleCta: 'Upload your own chat',
+  },
+  wrapped: {
+    outroTitle: "That's a wrap!",
+    outroSubtitle: 'Thanks for taking a look back at your chat.',
+    restart: 'Upload another file',
+    shareButton: 'Share',
+    shareUrlCopied: 'Copied!',
+    shareError: "Couldn't share — please try again.",
+    tryItYourself: 'Enjoyed this? Try it with your own chat!',
+    busiestDayText: '{date} was the most explosive day — {count} messages in 24 hours!',
+    headlineWith: "Let's dig into your chat with {name}",
+    headlineGroup: "Let's dig into your chat with {name}",
+  },
+  personas: {
+    chatterbox: '{sender} is the Chatterbox — sent {value} messages in total.',
+    nightOwl: '{sender} is the Midnight Texter — {value}% of their messages were sent between midnight and 5am.',
+    earlyBird: '{sender} is the Morning Person — {value}% of their messages were sent between 5am and 9am.',
+    fastestReplier: '{sender} is the Fastest Replier — averaging just {value} minutes to reply.',
+    philosopher: '{sender} is The Philosopher — averaging {value} words per message.',
+    conversationStarter: '{sender} is the Conversation Starter — starting {value}% of conversations.',
+    streaker: '{sender} is the Streaker — {value} days in a row chatting without a break.',
+    emojiEnthusiast: '{sender} is the Emoji Enthusiast — sent {value} emojis.',
+    comedian: '{sender} is the Comedian — made others laugh {value} times.',
+    ghost: '{sender} is the Ghost — sent the fewest messages of the group, just {value} in total.',
+    mostMentioned: "{sender} is the Main Character — mentioned by name {value} times by others.",
+  },
+};
