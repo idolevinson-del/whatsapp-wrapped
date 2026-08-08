@@ -211,6 +211,17 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
               entries={withColors(personaBreakdown.mentionedCount)}
             />
           )}
+
+          <div className="pt-2 pb-4 text-center">
+            <p className="text-sm text-white/70">{dictionary.stats.likedItHeading}</p>
+            <button
+              type="button"
+              onClick={onBack}
+              className="mt-3 cursor-pointer rounded-full bg-gradient-to-r from-amber-400 via-rose-400 to-purple-400 px-6 py-3 text-sm font-semibold text-neutral-950 hover:opacity-90"
+            >
+              {dictionary.stats.tryItYourselfButton}
+            </button>
+          </div>
         </div>
       </div>
     </div>

@@ -108,6 +108,8 @@ export const en: Dictionary = {
     shareButton: 'Share to WhatsApp',
     shareIntro: '👀 Come see the stats behind our WhatsApp chat',
     shareOutro: 'See all the stats 👇',
+    likedItHeading: 'Liked it?',
+    tryItYourselfButton: 'Try it yourself',
     overviewTitle: 'Overview',
     totalMessages: 'Total messages',
     dateRangeTitle: 'Chat span',

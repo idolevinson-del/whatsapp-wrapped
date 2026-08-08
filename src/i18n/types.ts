@@ -108,6 +108,9 @@ export interface Dictionary {
     shareIntro: string;
     /** Closing call-to-action line of the WhatsApp share message, before the link. */
     shareOutro: string;
+    /** Heading above the bottom "try it yourself" CTA button. */
+    likedItHeading: string;
+    tryItYourselfButton: string;
     overviewTitle: string;
     totalMessages: string;
     dateRangeTitle: string;

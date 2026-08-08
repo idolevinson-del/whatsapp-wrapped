@@ -103,6 +103,8 @@ export const he: Dictionary = {
     shareButton: 'שיתוף לוואטסאפ',
     shareIntro: '👀 בואו נראה את הנתונים של ההתכתבות שלנו בוואטסאפ',
     shareOutro: 'לצפייה בכל הנתונים 👇',
+    likedItHeading: 'אהבת?',
+    tryItYourselfButton: 'נסו בעצמכם',
     overviewTitle: 'סקירה כללית',
     totalMessages: 'סך הכול הודעות',
     dateRangeTitle: 'טווח הצ׳אט',
