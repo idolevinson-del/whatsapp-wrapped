@@ -32,6 +32,26 @@ export interface OutroCardData {
 
 export type StoryCardData = HeadlineCardData | PersonaCardData | BusiestDayCardData | OutroCardData;
 
+/**
+ * Display order for persona cards, from most to least "interesting" —
+ * strong headline stats first, time-of-day personas (less compelling)
+ * pushed to the end. Any persona id not listed falls back to the order it
+ * was computed in (see Array.indexOf returning -1 for unknown ids).
+ */
+const PERSONA_ORDER = [
+  'chatterbox',
+  'streaker',
+  'fastestReplier',
+  'conversationStarter',
+  'philosopher',
+  'emojiEnthusiast',
+  'comedian',
+  'mostMentioned',
+  'ghost',
+  'nightOwl',
+  'earlyBird',
+];
+
 export function buildStoryCards(
   analysis: AnalysisResult,
   dictionary: Dictionary,
@@ -39,11 +59,9 @@ export function buildStoryCards(
 ): StoryCardData[] {
   const { personas, busiestDay } = analysis;
 
-  const orderedPersonas = [...personas].sort((a, b) => {
-    if (a.id === 'chatterbox') return -1;
-    if (b.id === 'chatterbox') return 1;
-    return 0;
-  });
+  const orderedPersonas = [...personas].sort(
+    (a, b) => PERSONA_ORDER.indexOf(a.id) - PERSONA_ORDER.indexOf(b.id)
+  );
 
   const cards: StoryCardData[] = [];
 
