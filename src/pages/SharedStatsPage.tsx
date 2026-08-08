@@ -9,6 +9,7 @@ import { buildStatsShareText } from '../lib/shareText';
 import { generateShareImageBlob, shareOrDownloadImage } from '../lib/shareImage';
 import { trackEvent } from '../analytics';
 import type { StatsSharePayload } from '../lib/statsShareLink';
+import { buildSuperlatives } from './statsViewModel';
 import type { StatsViewModel } from './statsViewModel';
 
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
@@ -113,6 +114,16 @@ export function SharedStatsPage({ payload }: { payload: StatsSharePayload }) {
     onShare: handleShareToWhatsApp,
     shareImageLabel: dictionary.stats.shareImageButton,
     onShareImage: handleShareImage,
+    superlativesTitle: dictionary.stats.superlativesTitle,
+    superlatives: buildSuperlatives(
+      {
+        messageCount: withColors(payload.pb.mc),
+        avgReplyMinutes: withColors(payload.pb.arm),
+        laughsTriggered: withColors(payload.pb.lt),
+        wordsPerMessage: withColors(payload.pb.wpm),
+      },
+      dictionary
+    ),
     overviewTitle: dictionary.stats.overviewTitle,
     overviewTiles: [
       { icon: '💬', value: String(payload.total), label: dictionary.stats.totalMessages, gradient: HEADLINE_GRADIENT },

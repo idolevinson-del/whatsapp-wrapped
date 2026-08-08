@@ -111,6 +111,8 @@ export const en: Dictionary = {
     shareImageButton: 'Share as image',
     topSenderLabel: 'Most messages sent',
     shareImageCta: 'Try it with your own chat 👇',
+    superlativesTitle: 'Superlatives',
+    fewestMessagesLabel: 'Fewest messages',
     likedItHeading: 'Liked it?',
     tryItYourselfButton: 'Try it yourself',
     overviewTitle: 'Overview',
