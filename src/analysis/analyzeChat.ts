@@ -1,6 +1,6 @@
 import type { ParsedMessage } from '../parser/types';
 import { CONVERSATION_GAP_HOURS } from '../config/analysisConfig';
-import { computeCoreStats } from './coreStats';
+import { computeCoreStats, computeTopWord } from './coreStats';
 import { computeConversationGapStats } from './conversationGaps';
 import { computePersonas } from './personas';
 import type { AnalysisResult } from './types';
@@ -36,6 +36,7 @@ export function analyzeChat(
   const conversationGapStats = computeConversationGapStats(messages, gapHours);
   const { personas, breakdown: personaBreakdown } = computePersonas(messages, coreStats, conversationGapStats);
   const busiestDay = computeBusiestDay(messages);
+  const topWord = computeTopWord(messages);
 
-  return { coreStats, conversationGapStats, personas, personaBreakdown, busiestDay };
+  return { coreStats, conversationGapStats, personas, personaBreakdown, busiestDay, topWord };
 }

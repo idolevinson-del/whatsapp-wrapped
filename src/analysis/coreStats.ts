@@ -1,7 +1,7 @@
 import type { ParsedMessage } from '../parser/types';
 import { TOP_EMOJI_COUNT, TOP_WORD_COUNT } from '../config/analysisConfig';
 import { countBy, extractEmojis, extractSignificantWords, extractWords, topEntries } from './textUtils';
-import type { CoreStats, SenderCoreStats } from './types';
+import type { CountEntry, CoreStats, SenderCoreStats } from './types';
 
 const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const MONTH_NAMES = [
@@ -109,4 +109,20 @@ export function computeCoreStats(messages: ParsedMessage[]): CoreStats {
     firstMessage: sorted[0],
     lastMessage: sorted[sorted.length - 1],
   };
+}
+
+/**
+ * The single most-used word across the whole chat (all senders combined),
+ * same stopword/length filtering as the per-sender "top words". Null if
+ * nothing meaningful was said (e.g. an all-media or all-stopword chat).
+ */
+export function computeTopWord(messages: ParsedMessage[]): CountEntry | null {
+  const wordFreq = countBy(
+    messages
+      .filter((m) => !m.isMedia)
+      .flatMap((m) => extractSignificantWords(m.text)),
+    (word) => word
+  );
+  const [top] = topEntries(wordFreq, 1);
+  return top ?? null;
 }

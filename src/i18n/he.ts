@@ -107,6 +107,8 @@ export const he: Dictionary = {
     busiestDayTitle: 'היום הכי פעיל',
     longestSilenceTitle: 'השתיקה הכי ארוכה',
     messagesCountCaption: '{count} הודעות',
+    topWordTitle: 'המילה הכי נפוצה',
+    topWordCaption: 'נאמרה {count} פעמים',
     topEmojisTitle: 'האימוג׳ים הכי נפוצים',
     messageCount: 'הודעות שנשלחו',
     emojiCount: 'אימוג׳ים שנשלחו',

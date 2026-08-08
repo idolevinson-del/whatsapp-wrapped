@@ -74,4 +74,6 @@ export interface AnalysisResult {
   personas: PersonaResult[];
   personaBreakdown: PersonaBreakdown;
   busiestDay: { date: string; count: number };
+  /** Most-used word across the whole chat, stopwords/greetings/fillers excluded. */
+  topWord: CountEntry | null;
 }

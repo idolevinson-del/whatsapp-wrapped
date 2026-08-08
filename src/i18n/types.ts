@@ -112,6 +112,9 @@ export interface Dictionary {
     longestSilenceTitle: string;
     /** Template with {count}, used as a stat-tile caption. */
     messagesCountCaption: string;
+    topWordTitle: string;
+    /** Template with {count}, used as the top-word tile's caption. */
+    topWordCaption: string;
     topEmojisTitle: string;
     messageCount: string;
     emojiCount: string;

@@ -20,7 +20,7 @@ interface StatsPageProps {
 
 export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPageProps) {
   const { dictionary, language } = useLanguage();
-  const { personaBreakdown, coreStats, conversationGapStats, busiestDay } = analysis;
+  const { personaBreakdown, coreStats, conversationGapStats, busiestDay, topWord } = analysis;
   const senders = coreStats.perSender.map((s) => s.sender);
   const colors = buildSenderColorMap(senders);
   const isGroup = personaBreakdown.mentionedCount.length > 0;
@@ -113,6 +113,16 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
                     end: formatDate(silence.after.timestamp.getTime(), language),
                   })}
                   gradient={PERSONA_GRADIENTS.nightOwl}
+                />
+              )}
+              {topWord && (
+                <StatTile
+                  icon="🔤"
+                  value={topWord.value}
+                  label={dictionary.stats.topWordTitle}
+                  caption={formatTemplate(dictionary.stats.topWordCaption, { count: topWord.count })}
+                  gradient={PERSONA_GRADIENTS.philosopher}
+                  wide
                 />
               )}
             </div>

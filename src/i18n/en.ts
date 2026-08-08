@@ -112,6 +112,8 @@ export const en: Dictionary = {
     busiestDayTitle: 'Busiest day',
     longestSilenceTitle: 'Longest silence',
     messagesCountCaption: '{count} messages',
+    topWordTitle: 'Most used word',
+    topWordCaption: 'said {count} times',
     topEmojisTitle: 'Top emojis',
     messageCount: 'Messages sent',
     emojiCount: 'Emojis sent',

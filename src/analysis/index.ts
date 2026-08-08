@@ -1,5 +1,5 @@
 export { analyzeChat } from './analyzeChat';
-export { computeCoreStats } from './coreStats';
+export { computeCoreStats, computeTopWord } from './coreStats';
 export { computeConversationGapStats } from './conversationGaps';
 export { computePersonas } from './personas';
 export type {
