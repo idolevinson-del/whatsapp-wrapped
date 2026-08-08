@@ -1,0 +1,201 @@
+import { useRef, useState } from 'react';
+import { formatTemplate, useLanguage } from '../i18n';
+import type { Dictionary } from '../i18n';
+import { LanguageToggle } from '../components/LanguageToggle';
+import { ChatHistoryList } from '../components/ChatHistoryList';
+import type { ChatHistoryEntry } from '../lib/chatHistory';
+import { hasSeenOnboarding, markOnboardingSeen } from '../lib/onboarding';
+import type { AppError, ProgressStage } from '../worker';
+
+function errorMessage(error: AppError, dictionary: Dictionary): string {
+  switch (error.code) {
+    case 'not-txt':
+      return formatTemplate(dictionary.upload.errorNotTxt, { fileName: error.fileName ?? '' });
+    case 'zip-no-chat':
+      return dictionary.upload.errorZipNoChat;
+    case 'no-messages':
+      return dictionary.upload.errorNoMessages;
+    case 'unknown':
+      return dictionary.upload.errorUnknown;
+  }
+}
+
+interface UploadPageProps {
+  onFileSelected: (file: File) => void;
+  error: AppError | null;
+  isProcessing: boolean;
+  stage: ProgressStage | null;
+  onShowGuide: () => void;
+  onShowExample: () => void;
+  history: ChatHistoryEntry[];
+  onOpenHistoryEntry: (entry: ChatHistoryEntry) => void;
+  onDeleteHistoryEntry: (id: string) => void;
+}
+
+export function UploadPage({
+  onFileSelected,
+  error,
+  isProcessing,
+  stage,
+  onShowGuide,
+  onShowExample,
+  history,
+  onOpenHistoryEntry,
+  onDeleteHistoryEntry,
+}: UploadPageProps) {
+  const { dictionary } = useLanguage();
+  const [isDragging, setIsDragging] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(() => !hasSeenOnboarding());
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  function dismissOnboarding() {
+    markOnboardingSeen();
+    setShowOnboarding(false);
+  }
+
+  function handleShowExample() {
+    markOnboardingSeen();
+    setShowOnboarding(false);
+    onShowExample();
+  }
+
+  function handleFiles(files: FileList | null) {
+    const file = files?.[0];
+    if (file) onFileSelected(file);
+  }
+
+  const stageLabel =
+    stage === 'parsing'
+      ? dictionary.upload.stageParsing
+      : stage === 'analyzing'
+        ? dictionary.upload.stageAnalyzing
+        : null;
+
+  return (
+    <div className="relative min-h-screen overflow-hidden bg-neutral-950 text-white">
+      <div
+        className="pointer-events-none absolute -top-32 -left-32 h-96 w-96 animate-pulse rounded-full bg-gradient-to-br from-amber-500 via-rose-500 to-purple-600 opacity-30 blur-3xl"
+        style={{ animationDuration: '6s' }}
+      />
+      <div
+        className="pointer-events-none absolute top-1/3 -right-32 h-96 w-96 animate-pulse rounded-full bg-gradient-to-br from-cyan-500 via-blue-500 to-indigo-600 opacity-30 blur-3xl"
+        style={{ animationDuration: '8s' }}
+      />
+      <div
+        className="pointer-events-none absolute bottom-0 left-1/4 h-96 w-96 animate-pulse rounded-full bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-600 opacity-20 blur-3xl"
+        style={{ animationDuration: '10s' }}
+      />
+
+      <div className="absolute end-4 top-4 z-10">
+        <LanguageToggle />
+      </div>
+
+      <div className="relative z-0 flex min-h-screen items-center justify-center p-6">
+        <div className="w-full max-w-xl text-center">
+          {showOnboarding && (
+            <div className="mb-6 rounded-2xl border border-white/20 bg-white/5 p-4 text-start">
+              <p className="text-lg font-bold">{dictionary.onboarding.bannerTitle}</p>
+              <p className="mt-1 text-sm text-white/70">{dictionary.onboarding.bannerSubtitle}</p>
+              <div className="mt-3 flex gap-2">
+                <button
+                  type="button"
+                  onClick={handleShowExample}
+                  className="cursor-pointer rounded-full bg-gradient-to-r from-amber-400 via-rose-400 to-purple-400 px-4 py-2 text-sm font-semibold text-neutral-950"
+                >
+                  {dictionary.onboarding.viewExample}
+                </button>
+                <button
+                  type="button"
+                  onClick={dismissOnboarding}
+                  className="cursor-pointer rounded-full border border-white/40 px-4 py-2 text-sm font-semibold hover:bg-white/10"
+                >
+                  {dictionary.onboarding.dismiss}
+                </button>
+              </div>
+            </div>
+          )}
+
+          <span className="inline-block animate-bounce text-5xl">💬</span>
+          <h1 className="mt-4 bg-gradient-to-r from-amber-400 via-rose-400 to-purple-400 bg-clip-text text-5xl font-extrabold text-transparent sm:text-6xl">
+            {dictionary.app.title}
+          </h1>
+          <p className="mt-3 text-lg font-semibold text-white/80">{dictionary.app.tagline}</p>
+          <p className="mt-4 text-neutral-400">{dictionary.upload.description}</p>
+          <p className="mt-1 text-sm text-neutral-500">{dictionary.upload.zipNote}</p>
+          <div className="mt-2 flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
+            <button
+              type="button"
+              onClick={onShowGuide}
+              className="cursor-pointer text-sm font-medium text-amber-400 underline-offset-2 hover:underline"
+            >
+              {dictionary.upload.guideLink}
+            </button>
+            <button
+              type="button"
+              onClick={onShowExample}
+              className="cursor-pointer text-sm font-medium text-amber-400 underline-offset-2 hover:underline"
+            >
+              {dictionary.onboarding.viewExampleLink}
+            </button>
+          </div>
+
+          <div
+            onClick={() => inputRef.current?.click()}
+            onDragOver={(e) => {
+              e.preventDefault();
+              setIsDragging(true);
+            }}
+            onDragLeave={() => setIsDragging(false)}
+            onDrop={(e) => {
+              e.preventDefault();
+              setIsDragging(false);
+              handleFiles(e.dataTransfer.files);
+            }}
+            className={`mt-8 cursor-pointer rounded-2xl bg-gradient-to-br p-[2px] transition-all ${
+              isDragging
+                ? 'from-amber-400 via-rose-400 to-purple-500 scale-[1.02]'
+                : 'from-white/20 via-white/10 to-white/20'
+            }`}
+          >
+            <div
+              className={`rounded-2xl p-12 transition-colors ${isDragging ? 'bg-neutral-900/60' : 'bg-neutral-950/60'}`}
+            >
+              {isProcessing ? (
+                <div>
+                  <p className="text-lg font-semibold">{stageLabel}</p>
+                  <div className="mx-auto mt-4 h-1.5 w-48 overflow-hidden rounded-full bg-neutral-800">
+                    <div className="h-full w-1/3 animate-pulse rounded-full bg-gradient-to-r from-amber-400 via-rose-400 to-purple-400" />
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <span className="text-4xl">📂</span>
+                  <p className="mt-3 text-lg font-semibold">{dictionary.upload.dropzoneTitle}</p>
+                  <p className="mt-1 text-sm text-neutral-400">{dictionary.upload.dropzoneSubtitle}</p>
+                </>
+              )}
+            </div>
+          </div>
+
+          <input
+            ref={inputRef}
+            type="file"
+            accept=".txt,.zip"
+            className="hidden"
+            onChange={(e) => handleFiles(e.target.files)}
+          />
+
+          {error && (
+            <p className="mt-4 rounded-md border border-red-500 bg-red-950 p-3 text-sm font-medium text-red-300">
+              {errorMessage(error, dictionary)}
+            </p>
+          )}
+
+          <p className="mt-6 text-xs text-neutral-500">{dictionary.upload.analyticsNote}</p>
+
+          <ChatHistoryList entries={history} onOpen={onOpenHistoryEntry} onDelete={onDeleteHistoryEntry} />
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -1,0 +1,93 @@
+import { useState } from 'react';
+import { useLanguage } from '../i18n';
+import { LanguageToggle } from '../components/LanguageToggle';
+
+interface ExportGuidePageProps {
+  onBack: () => void;
+}
+
+export function ExportGuidePage({ onBack }: ExportGuidePageProps) {
+  const { dictionary } = useLanguage();
+  const [platform, setPlatform] = useState<'android' | 'iphone'>('android');
+
+  const steps = platform === 'android' ? dictionary.exportGuide.androidSteps : dictionary.exportGuide.iphoneSteps;
+
+  return (
+    <div className="relative min-h-screen overflow-hidden bg-neutral-950 text-white">
+      <div
+        className="pointer-events-none absolute -top-32 -left-32 h-96 w-96 animate-pulse rounded-full bg-gradient-to-br from-amber-500 via-rose-500 to-purple-600 opacity-30 blur-3xl"
+        style={{ animationDuration: '6s' }}
+      />
+      <div
+        className="pointer-events-none absolute top-1/3 -right-32 h-96 w-96 animate-pulse rounded-full bg-gradient-to-br from-cyan-500 via-blue-500 to-indigo-600 opacity-30 blur-3xl"
+        style={{ animationDuration: '8s' }}
+      />
+
+      <div className="absolute end-4 top-4 z-10">
+        <LanguageToggle />
+      </div>
+
+      <div className="relative z-0 flex min-h-screen items-center justify-center p-6">
+        <div className="w-full max-w-xl">
+          <button
+            type="button"
+            onClick={onBack}
+            className="cursor-pointer rounded-full border border-white/40 px-4 py-2 text-sm font-medium hover:bg-white/10"
+          >
+            ← {dictionary.exportGuide.backButton}
+          </button>
+
+          <h1 className="mt-6 bg-gradient-to-r from-amber-400 via-rose-400 to-purple-400 bg-clip-text text-3xl font-extrabold text-transparent sm:text-4xl">
+            {dictionary.exportGuide.title}
+          </h1>
+          <p className="mt-2 text-neutral-400">{dictionary.exportGuide.intro}</p>
+
+          <div className="mt-6 flex gap-2">
+            <button
+              type="button"
+              onClick={() => setPlatform('android')}
+              className={`cursor-pointer rounded-full border px-4 py-2 text-sm font-semibold transition-colors ${
+                platform === 'android'
+                  ? 'border-transparent bg-gradient-to-r from-amber-500 via-rose-500 to-purple-600'
+                  : 'border-white/40 hover:bg-white/10'
+              }`}
+            >
+              {dictionary.exportGuide.androidTab}
+            </button>
+            <button
+              type="button"
+              onClick={() => setPlatform('iphone')}
+              className={`cursor-pointer rounded-full border px-4 py-2 text-sm font-semibold transition-colors ${
+                platform === 'iphone'
+                  ? 'border-transparent bg-gradient-to-r from-amber-500 via-rose-500 to-purple-600'
+                  : 'border-white/40 hover:bg-white/10'
+              }`}
+            >
+              {dictionary.exportGuide.iphoneTab}
+            </button>
+          </div>
+
+          <ol className="mt-6 space-y-3">
+            {steps.map((step, i) => (
+              <li key={i} className="flex gap-3 rounded-2xl bg-white/5 p-4">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-amber-500 via-rose-500 to-purple-600 text-sm font-bold">
+                  {i + 1}
+                </span>
+                <p className="text-start text-sm text-white/90">{step}</p>
+              </li>
+            ))}
+          </ol>
+
+          <div className="mt-6 rounded-2xl border border-amber-400/40 bg-amber-500/10 p-4 text-start">
+            <p className="text-sm font-semibold text-amber-300">{dictionary.exportGuide.withoutMediaTitle}</p>
+            <p className="mt-1 text-sm text-white/80">{dictionary.exportGuide.withoutMediaNote}</p>
+          </div>
+
+          <div className="mt-4 rounded-2xl border border-emerald-400/40 bg-emerald-500/10 p-4 text-start">
+            <p className="text-sm font-semibold text-emerald-300">🔒 {dictionary.exportGuide.privacyNote}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
