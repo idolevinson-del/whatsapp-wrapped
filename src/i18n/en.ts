@@ -24,7 +24,7 @@ export const en: Dictionary = {
     errorNoMessages:
       'No messages could be parsed from this file. Please make sure it is a WhatsApp chat export (.txt).',
     errorUnknown: 'Something went wrong while analyzing this file.',
-    guideLink: 'Need help finding your export file?',
+    guideLink: 'Want to upload your own chat? Here\'s how',
     analyticsNote:
       'We may count anonymous visits to this site. Your chat — its content, names, and messages — never leaves your device.',
   },
