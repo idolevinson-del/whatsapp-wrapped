@@ -10,11 +10,10 @@ export const en: Dictionary = {
     tagline: 'Your year in chats, wrapped.',
   },
   upload: {
-    description:
-      'Upload your exported WhatsApp chat (.zip or .txt) to see your stats. Everything happens in your browser — nothing is uploaded anywhere.',
-    zipNote: 'You can upload the .zip file WhatsApp shares directly — no need to unzip it first.',
-    dropzoneTitle: 'Drag & drop your chat export here',
-    dropzoneSubtitle: 'or click to choose a .zip or .txt file',
+    description: 'Upload your chat, get the stats. Everything stays with you.',
+    zipNote: 'The .zip file works too — no need to unzip it.',
+    dropzoneTitle: 'Drop your chat here',
+    dropzoneSubtitle: 'or tap to choose a file',
     stageParsing: 'Reading your chat…',
     stageAnalyzing: 'Crunching the numbers…',
     errorNotTxt:
@@ -24,9 +23,8 @@ export const en: Dictionary = {
     errorNoMessages:
       'No messages could be parsed from this file. Please make sure it is a WhatsApp chat export (.txt).',
     errorUnknown: 'Something went wrong while analyzing this file.',
-    guideLink: 'Want to upload your own chat? Here\'s how',
-    analyticsNote:
-      'We may count anonymous visits to this site. Your chat — its content, names, and messages — never leaves your device.',
+    guideLink: 'How do I export a chat?',
+    analyticsNote: 'We only count anonymous visits. Your chat never leaves your device.',
   },
   exportGuide: {
     title: 'How to export your WhatsApp chat',
@@ -68,10 +66,10 @@ export const en: Dictionary = {
   },
   onboarding: {
     bannerTitle: 'New here?',
-    bannerSubtitle: 'See an example Wrapped before you upload your own chat.',
+    bannerSubtitle: 'Want to see an example first?',
     viewExample: 'See an example',
     dismiss: 'Skip',
-    viewExampleLink: 'See an example Wrapped',
+    viewExampleLink: 'See an example',
     exampleBadge: 'Example',
     exampleCta: 'Upload your own chat',
   },
