@@ -1,0 +1,30 @@
+import { StoryCard } from '../StoryCard';
+import { useLanguage } from '../../i18n';
+import { OUTRO_GRADIENT } from './cardStyles';
+
+interface OutroCardProps {
+  onReset: () => void;
+  /** Overrides the default "Upload another file" label (e.g. for the example Wrapped). */
+  restartLabel?: string;
+}
+
+export function OutroCard({ onReset, restartLabel }: OutroCardProps) {
+  const { dictionary } = useLanguage();
+
+  return (
+    <StoryCard gradient={OUTRO_GRADIENT}>
+      <p className="text-4xl font-extrabold sm:text-5xl">{dictionary.wrapped.outroTitle}</p>
+      <p className="mt-4 max-w-md text-lg text-white/90">{dictionary.wrapped.outroSubtitle}</p>
+      <button
+        type="button"
+        onClick={(event) => {
+          event.stopPropagation();
+          onReset();
+        }}
+        className="mt-8 cursor-pointer rounded-full border border-white/40 px-6 py-3 text-sm font-semibold hover:bg-white/10"
+      >
+        {restartLabel ?? dictionary.wrapped.restart}
+      </button>
+    </StoryCard>
+  );
+}
