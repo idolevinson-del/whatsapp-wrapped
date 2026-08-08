@@ -15,3 +15,26 @@ html[dir="rtl"] {
 html[dir="ltr"] {
   direction: ltr;
 }
+
+/* Pulsing "tap here" ring used by the illustrated export-guide phone mockup. */
+@keyframes pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 rgba(253, 230, 138, 0.55);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(253, 230, 138, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(253, 230, 138, 0);
+  }
+}
+
+/* Progress-segment fill for the same guide's auto-advancing step bar. */
+@keyframes fillbar {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}

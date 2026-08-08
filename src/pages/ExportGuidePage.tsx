@@ -1,16 +1,18 @@
 import { useState } from 'react';
 import { useLanguage } from '../i18n';
 import { LanguageToggle } from '../components/LanguageToggle';
+import { PhoneGuide } from '../components/exportGuide/PhoneGuide';
+import { EXPORT_GUIDE_CONTENT } from '../components/exportGuide/content';
 
 interface ExportGuidePageProps {
   onBack: () => void;
 }
 
 export function ExportGuidePage({ onBack }: ExportGuidePageProps) {
-  const { dictionary } = useLanguage();
+  const { dictionary, language } = useLanguage();
   const [platform, setPlatform] = useState<'android' | 'iphone'>('android');
 
-  const steps = platform === 'android' ? dictionary.exportGuide.androidSteps : dictionary.exportGuide.iphoneSteps;
+  const guide = EXPORT_GUIDE_CONTENT[language][platform];
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-neutral-950 text-white">
@@ -67,16 +69,16 @@ export function ExportGuidePage({ onBack }: ExportGuidePageProps) {
             </button>
           </div>
 
-          <ol className="mt-6 space-y-3">
-            {steps.map((step, i) => (
-              <li key={i} className="flex gap-3 rounded-2xl bg-white/5 p-4">
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-amber-500 via-rose-500 to-purple-600 text-sm font-bold">
-                  {i + 1}
-                </span>
-                <p className="text-start text-sm text-white/90">{step}</p>
-              </li>
-            ))}
-          </ol>
+          <div className="mt-6 flex justify-center">
+            <PhoneGuide
+              key={`${language}-${platform}`}
+              steps={guide.steps}
+              captions={guide.captions}
+              contactName={guide.contactName}
+              contactSub={guide.contactSub}
+              messages={guide.messages}
+            />
+          </div>
 
           <div className="mt-6 rounded-2xl border border-amber-400/40 bg-amber-500/10 p-4 text-start">
             <p className="text-sm font-semibold text-amber-300">{dictionary.exportGuide.withoutMediaTitle}</p>
