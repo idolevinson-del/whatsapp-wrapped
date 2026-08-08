@@ -31,14 +31,25 @@ export function StatsView({ model }: { model: StatsViewModel }) {
         </h1>
         <p className="mt-2 text-neutral-400">{model.headline ?? model.subtitle}</p>
 
-        <button
-          type="button"
-          onClick={model.onShare}
-          className="mt-4 flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-[#25D366] px-5 py-3 text-sm font-semibold text-neutral-950 shadow-lg shadow-black/20 transition-colors hover:bg-[#1fb959]"
-        >
-          <span className="text-lg">🔗</span>
-          {model.shareLabel}
-        </button>
+        <div className="mt-4 flex gap-2.5">
+          <button
+            type="button"
+            onClick={model.onShare}
+            className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-full bg-[#25D366] px-5 py-3 text-sm font-semibold text-neutral-950 shadow-lg shadow-black/20 transition-colors hover:bg-[#1fb959]"
+          >
+            <span className="text-lg">🔗</span>
+            {model.shareLabel}
+          </button>
+          <button
+            type="button"
+            onClick={model.onShareImage}
+            aria-label={model.shareImageLabel}
+            title={model.shareImageLabel}
+            className="flex shrink-0 cursor-pointer items-center justify-center gap-2 rounded-full border border-white/25 bg-white/5 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-black/20 transition-colors hover:bg-white/10"
+          >
+            <span className="text-lg">📸</span>
+          </button>
+        </div>
 
         <div className="mt-6 space-y-4">
           {/* Overview — chat-wide facts, not per-sender. A KPI grid, not a chart. */}

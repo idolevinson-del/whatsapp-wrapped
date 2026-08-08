@@ -6,6 +6,7 @@ import { formatDate } from '../lib/formatDate';
 import { parseChatName } from '../lib/parseChatName';
 import { buildStatsShareText } from '../lib/shareText';
 import { buildStatsSharePayload, buildStatsShareUrl } from '../lib/statsShareLink';
+import { generateShareImageBlob, shareOrDownloadImage } from '../lib/shareImage';
 import { trackEvent } from '../analytics';
 import type { AnalysisResult } from '../analysis';
 import type { StatsViewModel } from './statsViewModel';
@@ -46,6 +47,36 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer');
   }
 
+  async function handleShareImage() {
+    trackEvent('image_shared');
+    const topSender = [...personaBreakdown.messageCount].sort((a, b) => b.value - a.value)[0];
+    const topStreak = [...personaBreakdown.streakDays].sort((a, b) => b.value - a.value)[0];
+    const blob = await generateShareImageBlob({
+      appTitle: dictionary.app.title,
+      totalMessages,
+      totalMessagesLabel: dictionary.stats.totalMessages,
+      spanDays,
+      spanLabel: formatTemplate(dictionary.stats.dateRangeValue, {
+        start: formatDate(coreStats.firstMessage.timestamp.getTime(), language),
+        end: formatDate(coreStats.lastMessage.timestamp.getTime(), language),
+      }),
+      topSenderName: topSender?.sender,
+      topSenderCount: topSender?.value,
+      topSenderLabel: dictionary.stats.topSenderLabel,
+      topStreakName: topStreak?.sender,
+      topStreakDays: topStreak?.value,
+      topStreakLabel: dictionary.stats.streakDays,
+      busiestDayDate,
+      busiestDayCount: busiestDay.count,
+      busiestDayLabel: dictionary.stats.busiestDayTitle,
+      busiestDayCountLabel: formatTemplate(dictionary.stats.messagesCountCaption, { count: busiestDay.count }),
+      ctaText: dictionary.stats.shareImageCta,
+      urlText: window.location.host,
+      dir: language === 'he' ? 'rtl' : 'ltr',
+    });
+    await shareOrDownloadImage(blob, 'whatsapp-wrapped.png', dictionary.app.title, dictionary.stats.shareIntro);
+  }
+
   let headline: string | null = null;
   if (fileName) {
     const { name, isGroup: nameIsGroup } = parseChatName(fileName, senders);
@@ -67,6 +98,8 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
     onBack,
     shareLabel: dictionary.stats.shareButton,
     onShare: handleShareToWhatsApp,
+    shareImageLabel: dictionary.stats.shareImageButton,
+    onShareImage: handleShareImage,
     overviewTitle: dictionary.stats.overviewTitle,
     overviewTiles: [
       {

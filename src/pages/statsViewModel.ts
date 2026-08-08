@@ -35,6 +35,8 @@ export interface StatsViewModel {
   onBack: () => void;
   shareLabel: string;
   onShare: () => void;
+  shareImageLabel: string;
+  onShareImage: () => void;
   overviewTitle: string;
   overviewTiles: StatsOverviewTile[];
   /** Rendered in order — includes both chart sections and the top-emojis block. */

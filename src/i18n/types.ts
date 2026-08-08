@@ -107,6 +107,13 @@ export interface Dictionary {
     /** The whole WhatsApp share message, minus the link. Short and catchy by
      * design — no stat breakdown. Gender-neutral. */
     shareIntro: string;
+    /** Icon-only button next to shareButton; used as its aria-label/title. */
+    shareImageButton: string;
+    /** Label under the top-sender highlight on the shareable image card. Kept
+     * as a noun phrase (no verb) so it stays gender-neutral in Hebrew. */
+    topSenderLabel: string;
+    /** Bottom call-to-action printed on the shareable image card. */
+    shareImageCta: string;
     /** Heading above the bottom "try it yourself" CTA button. */
     likedItHeading: string;
     tryItYourselfButton: string;

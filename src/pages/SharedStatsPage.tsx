@@ -6,6 +6,7 @@ import { buildSenderColorMap } from '../lib/senderColors';
 import { formatDate } from '../lib/formatDate';
 import { buildStatsShareUrl } from '../lib/statsShareLink';
 import { buildStatsShareText } from '../lib/shareText';
+import { generateShareImageBlob, shareOrDownloadImage } from '../lib/shareImage';
 import { trackEvent } from '../analytics';
 import type { StatsSharePayload } from '../lib/statsShareLink';
 import type { StatsViewModel } from './statsViewModel';
@@ -50,6 +51,52 @@ export function SharedStatsPage({ payload }: { payload: StatsSharePayload }) {
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer');
   }
 
+  async function handleShareImage() {
+    trackEvent('image_shared');
+    let topSenderName: string | undefined;
+    let topSenderCount: number | undefined;
+    payload.s.forEach((sender, i) => {
+      const value = payload.pb.mc[i] ?? 0;
+      if (topSenderCount === undefined || value > topSenderCount) {
+        topSenderName = sender;
+        topSenderCount = value;
+      }
+    });
+    let topStreakName: string | undefined;
+    let topStreakDays: number | undefined;
+    payload.s.forEach((sender, i) => {
+      const value = payload.pb.sd[i] ?? 0;
+      if (topStreakDays === undefined || value > topStreakDays) {
+        topStreakName = sender;
+        topStreakDays = value;
+      }
+    });
+    const blob = await generateShareImageBlob({
+      appTitle: dictionary.app.title,
+      totalMessages: payload.total,
+      totalMessagesLabel: dictionary.stats.totalMessages,
+      spanDays,
+      spanLabel: formatTemplate(dictionary.stats.dateRangeValue, {
+        start: formatDate(payload.spanStart, language),
+        end: formatDate(payload.spanEnd, language),
+      }),
+      topSenderName,
+      topSenderCount,
+      topSenderLabel: dictionary.stats.topSenderLabel,
+      topStreakName,
+      topStreakDays,
+      topStreakLabel: dictionary.stats.streakDays,
+      busiestDayDate,
+      busiestDayCount: payload.busiestCount,
+      busiestDayLabel: dictionary.stats.busiestDayTitle,
+      busiestDayCountLabel: formatTemplate(dictionary.stats.messagesCountCaption, { count: payload.busiestCount }),
+      ctaText: dictionary.stats.shareImageCta,
+      urlText: window.location.host,
+      dir: language === 'he' ? 'rtl' : 'ltr',
+    });
+    await shareOrDownloadImage(blob, 'whatsapp-wrapped.png', dictionary.app.title, dictionary.stats.shareIntro);
+  }
+
   const headline = payload.n
     ? formatTemplate(payload.isGroup ? dictionary.wrapped.headlineGroup : dictionary.wrapped.headlineWith, {
         name: payload.n,
@@ -64,6 +111,8 @@ export function SharedStatsPage({ payload }: { payload: StatsSharePayload }) {
     onBack: goHome,
     shareLabel: dictionary.stats.shareButton,
     onShare: handleShareToWhatsApp,
+    shareImageLabel: dictionary.stats.shareImageButton,
+    onShareImage: handleShareImage,
     overviewTitle: dictionary.stats.overviewTitle,
     overviewTiles: [
       { icon: '💬', value: String(payload.total), label: dictionary.stats.totalMessages, gradient: HEADLINE_GRADIENT },
