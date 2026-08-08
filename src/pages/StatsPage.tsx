@@ -42,7 +42,7 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
   function handleShareToWhatsApp() {
     trackEvent('results_shared');
     const shareUrl = buildStatsShareUrl(buildStatsSharePayload(analysis, fileName, language));
-    const text = buildStatsShareText(analysis, dictionary, language, shareUrl);
+    const text = buildStatsShareText(dictionary, shareUrl);
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer');
   }
 

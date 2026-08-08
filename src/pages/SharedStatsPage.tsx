@@ -5,6 +5,7 @@ import { HEADLINE_GRADIENT, OUTRO_GRADIENT, BUSIEST_DAY_GRADIENT, PERSONA_GRADIE
 import { buildSenderColorMap } from '../lib/senderColors';
 import { formatDate } from '../lib/formatDate';
 import { buildStatsShareUrl } from '../lib/statsShareLink';
+import { buildStatsShareText } from '../lib/shareText';
 import { trackEvent } from '../analytics';
 import type { StatsSharePayload } from '../lib/statsShareLink';
 import type { StatsViewModel } from './statsViewModel';
@@ -45,8 +46,8 @@ export function SharedStatsPage({ payload }: { payload: StatsSharePayload }) {
     trackEvent('results_shared');
     // Re-share the same link — we only ever have the payload we received.
     const shareUrl = buildStatsShareUrl(payload);
-    const lines = [dictionary.stats.shareIntro, '', shareUrl];
-    window.open(`https://wa.me/?text=${encodeURIComponent(lines.join('\n'))}`, '_blank', 'noopener,noreferrer');
+    const text = buildStatsShareText(dictionary, shareUrl);
+    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer');
   }
 
   const headline = payload.n
