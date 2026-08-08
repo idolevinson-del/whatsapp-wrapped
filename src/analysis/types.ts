@@ -44,9 +44,34 @@ export interface PersonaResult {
   value: number | string;
 }
 
+export interface SenderValue {
+  sender: string;
+  value: number;
+}
+
+/**
+ * Full per-sender values behind each persona category (not just the winner
+ * picked for `PersonaResult`) — powers the "all stats" breakdown page.
+ * `mentionedCount` is empty for 1-on-1 chats (name mentions only make sense
+ * in groups).
+ */
+export interface PersonaBreakdown {
+  messageCount: SenderValue[];
+  wordsPerMessage: SenderValue[];
+  emojiCount: SenderValue[];
+  conversationStarterCount: SenderValue[];
+  streakDays: SenderValue[];
+  avgReplyMinutes: SenderValue[];
+  nightOwlPercent: SenderValue[];
+  earlyBirdPercent: SenderValue[];
+  laughsTriggered: SenderValue[];
+  mentionedCount: SenderValue[];
+}
+
 export interface AnalysisResult {
   coreStats: CoreStats;
   conversationGapStats: ConversationGapStats;
   personas: PersonaResult[];
+  personaBreakdown: PersonaBreakdown;
   busiestDay: { date: string; count: number };
 }

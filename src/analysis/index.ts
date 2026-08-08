@@ -8,5 +8,7 @@ export type {
   SenderCoreStats,
   ConversationGapStats,
   PersonaResult,
+  PersonaBreakdown,
+  SenderValue,
   CountEntry,
 } from './types';

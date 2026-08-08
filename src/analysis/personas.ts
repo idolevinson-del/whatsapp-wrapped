@@ -1,7 +1,7 @@
 import type { ParsedMessage } from '../parser/types';
 import { EARLY_BIRD_HOURS, NIGHT_OWL_HOURS } from '../config/analysisConfig';
 import { containsLaugh, extractEmojis, extractWords } from './textUtils';
-import type { CoreStats, ConversationGapStats, PersonaResult } from './types';
+import type { CoreStats, ConversationGapStats, PersonaBreakdown, PersonaResult } from './types';
 
 function inHourRange(hour: number, [start, end]: [number, number]): boolean {
   return hour >= start && hour < end;
@@ -24,18 +24,25 @@ function pickLowest(
 /** Minimum number of senders for a chat to be treated as a group. */
 const GROUP_MIN_SENDERS = 3;
 
+export interface ComputePersonasResult {
+  personas: PersonaResult[];
+  /** Full per-sender values behind every persona category, for the "all stats" page. */
+  breakdown: PersonaBreakdown;
+}
+
 /**
  * Computes up to 10 persona badges, each awarded to a single sender (the one
  * with the highest value for that persona, or lowest for the Ghost). A
  * persona is omitted if no sender has meaningful data for it (e.g. Fastest
  * Replier with no replies at all), and the Ghost only appears for groups of
- * {@link GROUP_MIN_SENDERS} or more.
+ * {@link GROUP_MIN_SENDERS} or more. Also returns the full per-sender
+ * breakdown behind each category, not just the winner.
  */
 export function computePersonas(
   messages: ParsedMessage[],
   coreStats: CoreStats,
   gapStats: ConversationGapStats
-): PersonaResult[] {
+): ComputePersonasResult {
   const senders = coreStats.perSender.map((s) => s.sender);
   const personas: PersonaResult[] = [];
 
@@ -48,7 +55,8 @@ export function computePersonas(
     });
 
   // 1. Night Owl
-  const nightOwl = pickHighest(byHourRange(NIGHT_OWL_HOURS).filter((s) => s.value > 0));
+  const nightOwlValues = byHourRange(NIGHT_OWL_HOURS);
+  const nightOwl = pickHighest(nightOwlValues.filter((s) => s.value > 0));
   if (nightOwl) {
     personas.push({
       id: 'nightOwl',
@@ -59,7 +67,8 @@ export function computePersonas(
   }
 
   // 2. Early Bird
-  const earlyBird = pickHighest(byHourRange(EARLY_BIRD_HOURS).filter((s) => s.value > 0));
+  const earlyBirdValues = byHourRange(EARLY_BIRD_HOURS);
+  const earlyBird = pickHighest(earlyBirdValues.filter((s) => s.value > 0));
   if (earlyBird) {
     personas.push({
       id: 'earlyBird',
@@ -70,16 +79,15 @@ export function computePersonas(
   }
 
   // 3. Fastest Replier
-  const replyTimes = Object.entries(gapStats.avgReplyTimeMinutes)
-    .filter(([, minutes]) => minutes > 0)
-    .map(([sender, minutes]) => ({ sender, minutes }));
+  const replyTimeValues = senders.map((sender) => ({ sender, value: gapStats.avgReplyTimeMinutes[sender] ?? 0 }));
+  const replyTimes = replyTimeValues.filter((s) => s.value > 0);
   if (replyTimes.length > 0) {
-    const fastest = replyTimes.reduce((best, curr) => (curr.minutes < best.minutes ? curr : best));
+    const fastest = replyTimes.reduce((best, curr) => (curr.value < best.value ? curr : best));
     personas.push({
       id: 'fastestReplier',
       sender: fastest.sender,
       insightTemplate: 'persona.fastestReplier',
-      value: Math.round(fastest.minutes * 10) / 10,
+      value: Math.round(fastest.value * 10) / 10,
     });
   }
 
@@ -101,10 +109,8 @@ export function computePersonas(
   }
 
   // 5. Conversation Starter
-  const starters = Object.entries(gapStats.conversationStarterPercent).map(([sender, percent]) => ({
-    sender,
-    value: percent,
-  }));
+  const starterCounts = senders.map((sender) => ({ sender, value: gapStats.conversationStarterCounts[sender] ?? 0 }));
+  const starters = senders.map((sender) => ({ sender, value: gapStats.conversationStarterPercent[sender] ?? 0 }));
   const starter = pickHighest(starters.filter((s) => s.value > 0));
   if (starter) {
     personas.push({
@@ -180,24 +186,27 @@ export function computePersonas(
   }
 
   // 10. Most Mentioned — groups only (name mentions only make sense with 3+ people)
-  if (senders.length >= GROUP_MIN_SENDERS) {
-    const mentionCounts = senders.map((sender) => {
-      const nameParts = sender
-        .trim()
-        .split(/\s+/)
-        .map((part) => part.toLowerCase())
-        .filter((part) => part.length > 1);
-      const count =
-        nameParts.length > 0
-          ? messages
-              .filter((m) => m.sender !== sender && !m.isMedia)
-              .reduce(
-                (sum, m) => sum + extractWords(m.text).filter((w) => nameParts.includes(w.toLowerCase())).length,
-                0
-              )
-          : 0;
-      return { sender, value: count };
-    });
+  const isGroup = senders.length >= GROUP_MIN_SENDERS;
+  const mentionCounts = isGroup
+    ? senders.map((sender) => {
+        const nameParts = sender
+          .trim()
+          .split(/\s+/)
+          .map((part) => part.toLowerCase())
+          .filter((part) => part.length > 1);
+        const count =
+          nameParts.length > 0
+            ? messages
+                .filter((m) => m.sender !== sender && !m.isMedia)
+                .reduce(
+                  (sum, m) => sum + extractWords(m.text).filter((w) => nameParts.includes(w.toLowerCase())).length,
+                  0
+                )
+            : 0;
+        return { sender, value: count };
+      })
+    : [];
+  if (isGroup) {
     const mostMentioned = pickHighest(mentionCounts.filter((s) => s.value > 0));
     if (mostMentioned) {
       personas.push({
@@ -210,7 +219,7 @@ export function computePersonas(
   }
 
   // 11. Ghost (groups only: sent the fewest messages)
-  if (senders.length >= GROUP_MIN_SENDERS) {
+  if (isGroup) {
     const ghost = pickLowest(messageCounts);
     if (ghost) {
       personas.push({
@@ -222,5 +231,18 @@ export function computePersonas(
     }
   }
 
-  return personas;
+  const breakdown: PersonaBreakdown = {
+    messageCount: messageCounts,
+    wordsPerMessage: avgLengths.map((s) => ({ sender: s.sender, value: Math.round(s.value * 10) / 10 })),
+    emojiCount: emojiCounts,
+    conversationStarterCount: starterCounts,
+    streakDays: streaks,
+    avgReplyMinutes: replyTimeValues.map((s) => ({ sender: s.sender, value: Math.round(s.value * 10) / 10 })),
+    nightOwlPercent: nightOwlValues.map((s) => ({ sender: s.sender, value: Math.round(s.value) })),
+    earlyBirdPercent: earlyBirdValues.map((s) => ({ sender: s.sender, value: Math.round(s.value) })),
+    laughsTriggered: laughTriggers,
+    mentionedCount: mentionCounts,
+  };
+
+  return { personas, breakdown };
 }

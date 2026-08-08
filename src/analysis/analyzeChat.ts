@@ -34,8 +34,8 @@ export function analyzeChat(
 
   const coreStats = computeCoreStats(messages);
   const conversationGapStats = computeConversationGapStats(messages, gapHours);
-  const personas = computePersonas(messages, coreStats, conversationGapStats);
+  const { personas, breakdown: personaBreakdown } = computePersonas(messages, coreStats, conversationGapStats);
   const busiestDay = computeBusiestDay(messages);
 
-  return { coreStats, conversationGapStats, personas, busiestDay };
+  return { coreStats, conversationGapStats, personas, personaBreakdown, busiestDay };
 }

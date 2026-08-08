@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useLanguage } from '../i18n';
 import { LanguageToggle } from '../components/LanguageToggle';
 import { ShareButton } from '../components/ShareButton';
@@ -6,6 +7,7 @@ import { HeadlineCard } from '../components/cards/HeadlineCard';
 import { PersonaCard } from '../components/cards/PersonaCard';
 import { BusiestDayCard } from '../components/cards/BusiestDayCard';
 import { OutroCard } from '../components/cards/OutroCard';
+import { StatsPage } from './StatsPage';
 import { buildStoryCards } from './buildStoryCards';
 import type { StoryCardData } from './buildStoryCards';
 import type { AnalysisResult } from '../analysis';
@@ -20,7 +22,12 @@ interface WrappedPageProps {
 
 export function WrappedPage({ analysis, onReset, fileName, isExample }: WrappedPageProps) {
   const { dictionary } = useLanguage();
+  const [showStats, setShowStats] = useState(false);
   const cards = buildStoryCards(analysis, dictionary, fileName);
+
+  if (showStats) {
+    return <StatsPage analysis={analysis} onBack={() => setShowStats(false)} />;
+  }
 
   return (
     <div className="relative">
@@ -51,6 +58,7 @@ export function WrappedPage({ analysis, onReset, fileName, isExample }: WrappedP
                   key={i}
                   onReset={onReset}
                   restartLabel={isExample ? dictionary.onboarding.exampleCta : undefined}
+                  onShowStats={() => setShowStats(true)}
                 />
               );
           }

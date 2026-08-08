@@ -93,7 +93,27 @@ export interface Dictionary {
     headlineWith: string;
     /** Template with {name} — shown on the first card for a group chat. */
     headlineGroup: string;
+    /** Link on the outro card to the full stats breakdown page. */
+    viewAllStats: string;
   };
   /** Insight templates for persona badges. Each is a template with {sender} and {value}. */
   personas: Record<PersonaId, string>;
+  /** The "all stats" breakdown page reachable from the outro card. */
+  stats: {
+    title: string;
+    subtitle: string;
+    backButton: string;
+    messageCount: string;
+    emojiCount: string;
+    laughsTriggered: string;
+    conversationStarterCount: string;
+    mentionedCount: string;
+    wordsPerMessage: string;
+    avgReplyMinutes: string;
+    streakDays: string;
+    nightOwlPercent: string;
+    earlyBirdPercent: string;
+    minutesSuffix: string;
+    daysSuffix: string;
+  };
 }

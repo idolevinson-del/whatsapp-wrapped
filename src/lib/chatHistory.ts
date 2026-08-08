@@ -1,4 +1,4 @@
-import type { AnalysisResult } from '../analysis';
+import type { AnalysisResult, PersonaBreakdown } from '../analysis';
 import type { ParsedMessage } from '../parser/types';
 
 const STORAGE_KEY = 'whatsapp-wrapped:history';
@@ -13,6 +13,20 @@ export interface ChatHistoryEntry {
   savedAt: number;
   lastViewedAt: number;
 }
+
+/** Falls back to empty for entries saved before `personaBreakdown` existed. */
+const EMPTY_PERSONA_BREAKDOWN: PersonaBreakdown = {
+  messageCount: [],
+  wordsPerMessage: [],
+  emojiCount: [],
+  conversationStarterCount: [],
+  streakDays: [],
+  avgReplyMinutes: [],
+  nightOwlPercent: [],
+  earlyBirdPercent: [],
+  laughsTriggered: [],
+  mentionedCount: [],
+};
 
 function reviveMessage(message: ParsedMessage): ParsedMessage {
   return { ...message, timestamp: new Date(message.timestamp) };
@@ -37,6 +51,7 @@ function reviveAnalysis(analysis: AnalysisResult): AnalysisResult {
           }
         : null,
     },
+    personaBreakdown: analysis.personaBreakdown ?? EMPTY_PERSONA_BREAKDOWN,
   };
 }
 

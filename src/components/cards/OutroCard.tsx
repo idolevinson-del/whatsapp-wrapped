@@ -6,9 +6,11 @@ interface OutroCardProps {
   onReset: () => void;
   /** Overrides the default "Upload another file" label (e.g. for the example Wrapped). */
   restartLabel?: string;
+  /** Omitted in the shared-link view, where only the compact share payload is available. */
+  onShowStats?: () => void;
 }
 
-export function OutroCard({ onReset, restartLabel }: OutroCardProps) {
+export function OutroCard({ onReset, restartLabel, onShowStats }: OutroCardProps) {
   const { dictionary } = useLanguage();
 
   return (
@@ -25,6 +27,18 @@ export function OutroCard({ onReset, restartLabel }: OutroCardProps) {
       >
         {restartLabel ?? dictionary.wrapped.restart}
       </button>
+      {onShowStats && (
+        <button
+          type="button"
+          onClick={(event) => {
+            event.stopPropagation();
+            onShowStats();
+          }}
+          className="mt-3 cursor-pointer text-sm font-medium text-white/80 underline-offset-2 hover:underline"
+        >
+          {dictionary.wrapped.viewAllStats}
+        </button>
+      )}
     </StoryCard>
   );
 }
