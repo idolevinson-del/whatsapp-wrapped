@@ -11,6 +11,7 @@ import { ExportGuidePage } from './pages/ExportGuidePage';
 import { initAnalytics, trackEvent, trackPageView } from './analytics';
 import { useChatHistory } from './lib/useChatHistory';
 import { buildExampleAnalysis } from './lib/exampleAnalysis';
+import { hasSeenOnboarding, markOnboardingSeen } from './lib/onboarding';
 import { decodeSharePayload } from './lib/shareLink';
 import { rebuildCardsFromPayload } from './pages/buildStoryCards';
 import { he } from './i18n/he';
@@ -31,13 +32,23 @@ function App() {
   const { status, stage, error, result, analyzeFile, reset } = useChatAnalysis();
   const { entries: history, save: saveHistoryEntry, open: openHistoryEntry, remove: removeHistoryEntry } = useChatHistory();
   const [showGuide, setShowGuide] = useState(false);
-  const [showExample, setShowExample] = useState(false);
+  // First-ever visit (no history, never dismissed onboarding): open straight
+  // into the live example instead of a blank upload page, so trust is built
+  // before we ask for real data. Marked seen immediately so a reload or
+  // leaving the example doesn't loop back into it.
+  const [showExample, setShowExample] = useState(() => !hasSeenOnboarding());
   const [historyEntry, setHistoryEntry] = useState<ChatHistoryEntry | null>(null);
   const exampleAnalysis = useMemo(() => buildExampleAnalysis(), []);
 
   useEffect(() => {
     initAnalytics();
     trackPageView();
+  }, []);
+
+  useEffect(() => {
+    if (showExample) markOnboardingSeen();
+    // Only ever runs for the auto-shown first-visit example (see initializer above).
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
