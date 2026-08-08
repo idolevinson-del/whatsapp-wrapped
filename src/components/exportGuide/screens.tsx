@@ -21,16 +21,8 @@ interface ContactContext {
   messages: { text: string; time: string; out?: boolean }[];
 }
 
-/** Pulsing ring + bouncing tap-hint around whatever is being pointed at. */
-function Highlight({
-  children,
-  hintClassName = '-top-5 end-[-4px]',
-  className = 'inline-flex',
-}: {
-  children: ReactNode;
-  hintClassName?: string;
-  className?: string;
-}) {
+/** Pulsing ring around whatever is being pointed at. */
+function Highlight({ children, className = 'inline-flex' }: { children: ReactNode; className?: string }) {
   return (
     <span className={`relative ${className}`}>
       {children}
@@ -38,7 +30,6 @@ function Highlight({
         className="pointer-events-none absolute -inset-1.5 rounded-lg border-2 animate-[pulse-ring_1.6s_ease-out_infinite]"
         style={{ borderColor: WA.ring }}
       />
-      <span className={`pointer-events-none absolute animate-bounce text-sm ${hintClassName}`}>👆</span>
     </span>
   );
 }
@@ -78,16 +69,14 @@ function WaHeader({ name, sub, highlight }: { name: string; sub: string; highlig
     <div className="flex items-center gap-2 px-2.5 py-1.5" style={{ background: WA.header, color: WA.text }}>
       <span className="text-lg">‹</span>
       {highlight === 'name' ? (
-        <Highlight className="flex min-w-0 flex-1" hintClassName="-top-5 start-8">
-          {identity}
-        </Highlight>
+        <Highlight className="flex min-w-0 flex-1">{identity}</Highlight>
       ) : (
         <span className="min-w-0 flex-1">{identity}</span>
       )}
       <span className="shrink-0 text-[15px] opacity-90">📹</span>
       <span className="shrink-0 text-[15px] opacity-90">📞</span>
       {highlight === 'menu' ? (
-        <Highlight hintClassName="-top-5 -end-1">
+        <Highlight>
           <span className="px-0.5 text-[15px] font-black tracking-tighter" style={{ color: WA.ring }}>
             ⋮
           </span>
@@ -171,7 +160,7 @@ function MenuPanel({ items, highlightIndex }: { items: string[]; highlightIndex:
           }}
         >
           {i === highlightIndex ? (
-            <Highlight hintClassName="top-1.5 start-[-22px]">
+            <Highlight>
               <span>{item}</span>
             </Highlight>
           ) : (
@@ -203,7 +192,7 @@ function DialogPanel({
       {options.map((opt, i) => (
         <div key={opt} className="mt-2 first:mt-0">
           {i === highlightIndex ? (
-            <Highlight className="block w-full" hintClassName="-top-5 start-1/2 -translate-x-1/2">
+            <Highlight className="block w-full">
               <span
                 className="block w-full rounded-lg py-2 text-[11px] font-bold tracking-wide"
                 style={{ color: '#06281f', background: WA.ring }}
@@ -241,7 +230,7 @@ function SharePanel({
         {apps.map((app, i) => (
           <div key={app.label} className="flex flex-col items-center gap-1.5">
             {i === highlightIndex ? (
-              <Highlight className="flex flex-col items-center" hintClassName="-top-3.5 start-1/2 -translate-x-1/2">
+              <Highlight className="flex flex-col items-center">
                 <span
                   className="flex h-[42px] w-[42px] items-center justify-center rounded-xl text-[18px]"
                   style={{ background: WA.ring, color: '#06281f' }}
@@ -277,7 +266,7 @@ function AppUploadScreen({ title, subtitle }: { title: string; subtitle: string 
   return (
     <div className="flex h-full flex-col items-center justify-center gap-2 bg-neutral-950 p-5 text-center">
       <span className="mb-1 text-2xl">💬</span>
-      <Highlight className="block w-full" hintClassName="-top-4 start-1/2 -translate-x-1/2">
+      <Highlight className="block w-full">
         <div className="w-full rounded-2xl border-2 border-dashed border-white/15 bg-white/5 px-3 py-5">
           <p className="text-[12px] font-bold text-white">{title}</p>
           <p className="mt-1 text-[10px] text-white/60">{subtitle}</p>
@@ -313,9 +302,6 @@ function FilePickerScreen({
             </p>
             <p className="mt-0.5 truncate text-[9.5px] text-white/40">{f.sub}</p>
           </div>
-          {i === highlightIndex && (
-            <span className="pointer-events-none absolute end-[-6px] top-1.5 animate-bounce text-[13px]">👆</span>
-          )}
         </div>
       ))}
     </div>
