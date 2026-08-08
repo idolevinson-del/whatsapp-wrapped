@@ -52,28 +52,6 @@ export function StatsView({ model }: { model: StatsViewModel }) {
         </div>
 
         <div className="mt-6 space-y-4">
-          {model.superlatives.length > 0 && (
-            <div>
-              <h3 className="text-sm font-semibold uppercase tracking-widest text-white/70">
-                {model.superlativesTitle}
-              </h3>
-              <div className="mt-3 grid grid-cols-2 gap-3">
-                {model.superlatives.map((badge, i) => (
-                  <div key={i} className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                    <span className="text-2xl">{badge.icon}</span>
-                    <p className="mt-2 text-[11px] font-semibold uppercase tracking-wide text-white/60">
-                      {badge.eyebrow}
-                    </p>
-                    <p className="mt-1 truncate text-lg font-bold" style={{ color: badge.color }}>
-                      {badge.sender}
-                    </p>
-                    <p className="mt-0.5 text-sm text-white/70">{badge.value}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
           {/* Overview — chat-wide facts, not per-sender. A KPI grid, not a chart. */}
           <div>
             <h3 className="text-sm font-semibold uppercase tracking-widest text-white/70">{model.overviewTitle}</h3>

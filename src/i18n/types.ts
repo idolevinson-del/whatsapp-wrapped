@@ -118,11 +118,6 @@ export interface Dictionary {
     topSenderLabel: string;
     /** Bottom call-to-action printed on the shareable image card. */
     shareImageCta: string;
-    /** Heading above the fun "extremes" badge grid (fewest messages, slowest
-     * replies, ...). */
-    superlativesTitle: string;
-    /** Eyebrow label for the "fewest messages" badge. */
-    fewestMessagesLabel: string;
     /** Heading above the bottom "try it yourself" CTA button. */
     likedItHeading: string;
     tryItYourselfButton: string;

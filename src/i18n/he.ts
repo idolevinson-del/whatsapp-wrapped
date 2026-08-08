@@ -107,8 +107,6 @@ export const he: Dictionary = {
     shareImageButton: 'שיתוף כתמונה',
     topSenderLabel: 'הכי הרבה הודעות',
     shareImageCta: 'נסו גם עם הצ׳אט שלכם 👇',
-    superlativesTitle: 'התארים של הצ׳אט',
-    fewestMessagesLabel: 'הכי מעט הודעות',
     likedItHeading: 'אהבת?',
     tryItYourselfButton: 'נסו בעצמכם',
     overviewTitle: 'סקירה כללית',
