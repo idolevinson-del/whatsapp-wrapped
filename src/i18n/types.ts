@@ -108,8 +108,10 @@ export interface Dictionary {
     dateRangeTitle: string;
     /** Template with {start} and {end} (formatted dates). */
     dateRangeValue: string;
-    /** Template with {hours}, {before}, {after}. */
-    longestSilenceText: string;
+    busiestDayTitle: string;
+    longestSilenceTitle: string;
+    /** Template with {count}, used as a stat-tile caption. */
+    messagesCountCaption: string;
     topEmojisTitle: string;
     messageCount: string;
     emojiCount: string;

@@ -1,10 +1,14 @@
 import { formatTemplate, useLanguage } from '../i18n';
 import { LanguageToggle } from '../components/LanguageToggle';
 import { StatSection } from '../components/charts/StatSection';
+import { StatTile } from '../components/charts/StatTile';
+import { HEADLINE_GRADIENT, OUTRO_GRADIENT, BUSIEST_DAY_GRADIENT, PERSONA_GRADIENTS } from '../components/cards/cardStyles';
 import { buildSenderColorMap } from '../lib/senderColors';
 import { formatDate } from '../lib/formatDate';
 import { parseChatName } from '../lib/parseChatName';
 import type { AnalysisResult, SenderValue } from '../analysis';
+
+const MS_PER_DAY = 1000 * 60 * 60 * 24;
 
 interface StatsPageProps {
   analysis: AnalysisResult;
@@ -28,6 +32,10 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
   const totalMessages = coreStats.perSender.reduce((sum, s) => sum + s.messageCount, 0);
   const busiestDayDate = formatDate(new Date(`${busiestDay.date}T12:00:00`).getTime(), language);
   const silence = conversationGapStats.longestSilenceRange;
+  const spanDays = Math.max(
+    1,
+    Math.round((coreStats.lastMessage.timestamp.getTime() - coreStats.firstMessage.timestamp.getTime()) / MS_PER_DAY) + 1
+  );
 
   let headline: string | null = null;
   if (fileName) {
@@ -66,36 +74,46 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
         <p className="mt-2 text-neutral-400">{headline ?? dictionary.stats.subtitle}</p>
 
         <div className="mt-6 space-y-4">
-          {/* Overview — chat-wide facts, not per-sender. */}
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+          {/* Overview — chat-wide facts, not per-sender. A KPI grid, not a chart. */}
+          <div>
             <h3 className="text-sm font-semibold uppercase tracking-widest text-white/70">
               {dictionary.stats.overviewTitle}
             </h3>
-            <div className="mt-3 space-y-2 text-sm text-white/90">
-              <div className="flex items-center justify-between gap-2">
-                <span className="text-white/60">{dictionary.stats.totalMessages}</span>
-                <span className="font-mono">{totalMessages}</span>
-              </div>
-              <div className="flex items-center justify-between gap-2">
-                <span className="text-white/60">{dictionary.stats.dateRangeTitle}</span>
-                <span className="font-mono">
-                  {formatTemplate(dictionary.stats.dateRangeValue, {
-                    start: formatDate(coreStats.firstMessage.timestamp.getTime(), language),
-                    end: formatDate(coreStats.lastMessage.timestamp.getTime(), language),
-                  })}
-                </span>
-              </div>
-              <p className="pt-1 text-white/80">
-                {formatTemplate(dictionary.wrapped.busiestDayText, { date: busiestDayDate, count: busiestDay.count })}
-              </p>
+            <div className="mt-3 grid grid-cols-2 gap-3">
+              <StatTile
+                icon="💬"
+                value={String(totalMessages)}
+                label={dictionary.stats.totalMessages}
+                gradient={HEADLINE_GRADIENT}
+              />
+              <StatTile
+                icon="📅"
+                value={`${spanDays} ${dictionary.stats.daysSuffix}`}
+                label={dictionary.stats.dateRangeTitle}
+                caption={formatTemplate(dictionary.stats.dateRangeValue, {
+                  start: formatDate(coreStats.firstMessage.timestamp.getTime(), language),
+                  end: formatDate(coreStats.lastMessage.timestamp.getTime(), language),
+                })}
+                gradient={OUTRO_GRADIENT}
+              />
+              <StatTile
+                icon="💥"
+                value={busiestDayDate}
+                label={dictionary.stats.busiestDayTitle}
+                caption={formatTemplate(dictionary.stats.messagesCountCaption, { count: busiestDay.count })}
+                gradient={BUSIEST_DAY_GRADIENT}
+              />
               {silence && (
-                <p className="text-white/80">
-                  {formatTemplate(dictionary.stats.longestSilenceText, {
-                    hours: Math.round(conversationGapStats.longestSilenceHours),
-                    before: formatDate(silence.before.timestamp.getTime(), language),
-                    after: formatDate(silence.after.timestamp.getTime(), language),
+                <StatTile
+                  icon="🌙"
+                  value={`${Math.round(conversationGapStats.longestSilenceHours)} ${dictionary.stats.hoursSuffix}`}
+                  label={dictionary.stats.longestSilenceTitle}
+                  caption={formatTemplate(dictionary.stats.dateRangeValue, {
+                    start: formatDate(silence.before.timestamp.getTime(), language),
+                    end: formatDate(silence.after.timestamp.getTime(), language),
                   })}
-                </p>
+                  gradient={PERSONA_GRADIENTS.nightOwl}
+                />
               )}
             </div>
           </div>
@@ -176,18 +194,6 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
               entries={withColors(personaBreakdown.mentionedCount)}
             />
           )}
-          <StatSection
-            title={dictionary.stats.nightOwlPercent}
-            kind="bar"
-            entries={withColors(personaBreakdown.nightOwlPercent)}
-            valueSuffix="%"
-          />
-          <StatSection
-            title={dictionary.stats.earlyBirdPercent}
-            kind="bar"
-            entries={withColors(personaBreakdown.earlyBirdPercent)}
-            valueSuffix="%"
-          />
         </div>
       </div>
     </div>
