@@ -1,7 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useChatAnalysis } from './worker';
 import { UploadPage } from './pages/UploadPage';
-import { WrappedPage, SharedWrappedPage } from './pages/WrappedPage';
+import { StatsPage } from './pages/StatsPage';
+// The original swipeable "story cards" flow is kept around (unused) so it
+// can be brought back without rebuilding it — see pages/WrappedPage.tsx.
+// SharedWrappedPage still renders old share links (?share=...), which only
+// carry compact per-card data.
+import { SharedWrappedPage } from './pages/WrappedPage';
 import { ExportGuidePage } from './pages/ExportGuidePage';
 import { initAnalytics, trackEvent, trackPageView } from './analytics';
 import { useChatHistory } from './lib/useChatHistory';
@@ -48,15 +53,15 @@ function App() {
   }
 
   if (showExample) {
-    return <WrappedPage analysis={exampleAnalysis} onReset={() => setShowExample(false)} isExample />;
+    return <StatsPage analysis={exampleAnalysis} onBack={() => setShowExample(false)} isExample />;
   }
 
   if (historyEntry) {
-    return <WrappedPage analysis={historyEntry.analysis} fileName={historyEntry.fileName} onReset={() => setHistoryEntry(null)} />;
+    return <StatsPage analysis={historyEntry.analysis} fileName={historyEntry.fileName} onBack={() => setHistoryEntry(null)} />;
   }
 
   if (status === 'done' && result) {
-    return <WrappedPage analysis={result.analysis} fileName={result.fileName} onReset={reset} />;
+    return <StatsPage analysis={result.analysis} fileName={result.fileName} onBack={reset} />;
   }
 
   if (showGuide) {

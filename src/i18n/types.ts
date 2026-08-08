@@ -98,11 +98,19 @@ export interface Dictionary {
   };
   /** Insight templates for persona badges. Each is a template with {sender} and {value}. */
   personas: Record<PersonaId, string>;
-  /** The "all stats" breakdown page reachable from the outro card. */
+  /** The "all stats" breakdown page — now the main results page. */
   stats: {
     title: string;
     subtitle: string;
     backButton: string;
+    overviewTitle: string;
+    totalMessages: string;
+    dateRangeTitle: string;
+    /** Template with {start} and {end} (formatted dates). */
+    dateRangeValue: string;
+    /** Template with {hours}, {before}, {after}. */
+    longestSilenceText: string;
+    topEmojisTitle: string;
     messageCount: string;
     emojiCount: string;
     laughsTriggered: string;
@@ -115,5 +123,6 @@ export interface Dictionary {
     earlyBirdPercent: string;
     minutesSuffix: string;
     daysSuffix: string;
+    hoursSuffix: string;
   };
 }
