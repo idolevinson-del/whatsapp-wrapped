@@ -100,6 +100,7 @@ export const he: Dictionary = {
     title: 'הצ׳אט שלך, מסוכם',
     subtitle: 'כל מה שמצאנו, מפורט לפי כל אחד מכם.',
     backButton: 'העלו קובץ אחר',
+    shareButton: 'שיתוף לוואטסאפ',
     overviewTitle: 'סקירה כללית',
     totalMessages: 'סך הכול הודעות',
     dateRangeTitle: 'טווח הצ׳אט',

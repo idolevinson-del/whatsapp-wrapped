@@ -103,6 +103,7 @@ export interface Dictionary {
     title: string;
     subtitle: string;
     backButton: string;
+    shareButton: string;
     overviewTitle: string;
     totalMessages: string;
     dateRangeTitle: string;

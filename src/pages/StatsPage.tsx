@@ -6,6 +6,8 @@ import { HEADLINE_GRADIENT, OUTRO_GRADIENT, BUSIEST_DAY_GRADIENT, PERSONA_GRADIE
 import { buildSenderColorMap } from '../lib/senderColors';
 import { formatDate } from '../lib/formatDate';
 import { parseChatName } from '../lib/parseChatName';
+import { buildStatsShareText } from '../lib/shareText';
+import { trackEvent } from '../analytics';
 import type { AnalysisResult, SenderValue } from '../analysis';
 
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
@@ -36,6 +38,12 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
     1,
     Math.round((coreStats.lastMessage.timestamp.getTime() - coreStats.firstMessage.timestamp.getTime()) / MS_PER_DAY) + 1
   );
+
+  function handleShareToWhatsApp() {
+    trackEvent('results_shared');
+    const text = buildStatsShareText(analysis, dictionary, language, window.location.origin);
+    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer');
+  }
 
   let headline: string | null = null;
   if (fileName) {
@@ -72,6 +80,15 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
           {dictionary.stats.title}
         </h1>
         <p className="mt-2 text-neutral-400">{headline ?? dictionary.stats.subtitle}</p>
+
+        <button
+          type="button"
+          onClick={handleShareToWhatsApp}
+          className="mt-4 flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-[#25D366] px-5 py-3 text-sm font-semibold text-neutral-950 shadow-lg shadow-black/20 transition-colors hover:bg-[#1fb959]"
+        >
+          <span className="text-lg">🔗</span>
+          {dictionary.stats.shareButton}
+        </button>
 
         <div className="mt-6 space-y-4">
           {/* Overview — chat-wide facts, not per-sender. A KPI grid, not a chart. */}

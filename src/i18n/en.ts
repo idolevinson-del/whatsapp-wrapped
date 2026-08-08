@@ -105,6 +105,7 @@ export const en: Dictionary = {
     title: 'Your chat, wrapped',
     subtitle: 'Everything we found, broken down by person.',
     backButton: 'Upload another file',
+    shareButton: 'Share to WhatsApp',
     overviewTitle: 'Overview',
     totalMessages: 'Total messages',
     dateRangeTitle: 'Chat span',
