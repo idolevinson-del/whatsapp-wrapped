@@ -1,7 +1,7 @@
 import { StatSection } from '../components/charts/StatSection';
 import { StatTile } from '../components/charts/StatTile';
 import { LanguageToggle } from '../components/LanguageToggle';
-import type { ReactNode } from 'react';
+import { LockedOverlay } from '../components/LockedOverlay';
 import type { StatsViewModel } from './statsViewModel';
 
 /** Purely presentational — renders a StatsViewModel, regardless of whether it
@@ -71,60 +71,60 @@ export function StatsView({ model }: { model: StatsViewModel }) {
           </div>
 
           {model.blocks.map((block, i) => {
-            let content: ReactNode;
+            // Locking only ever blurs the data below a block's title — the
+            // title itself always stays readable, so a free visitor can see
+            // *what* they'd be unlocking (e.g. "Avg. Reply Time") before
+            // deciding whether to pay for it, instead of a mystery lock icon.
             if (block.kind === 'topEmojis') {
               if (block.rows.length === 0) return null;
-              content = (
-                <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+              return (
+                <div key={i} className="rounded-2xl border border-white/10 bg-white/5 p-4">
                   <h3 className="text-sm font-semibold uppercase tracking-widest text-white/70">{block.title}</h3>
-                  <ul className="mt-4 space-y-2.5">
-                    {block.rows.map((row) => (
-                      <li key={row.sender} className="flex items-center justify-between gap-3 text-sm">
-                        <span className="flex min-w-0 items-center gap-2 font-medium">
-                          <span
-                            className="h-2.5 w-2.5 shrink-0 rounded-full"
-                            style={{ backgroundColor: row.color }}
-                          />
-                          <span className="truncate">{row.sender}</span>
-                        </span>
-                        <span className="flex shrink-0 gap-3 font-mono text-white/80">
-                          {row.emojis.length > 0 ? (
-                            row.emojis.map((e) => (
-                              <span key={e.value}>
-                                {e.value} <span className="text-white/50">{e.count}</span>
-                              </span>
-                            ))
-                          ) : (
-                            <span className="text-white/40">—</span>
-                          )}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
+                  <div className="relative mt-4 overflow-hidden rounded-xl">
+                    <ul
+                      className={block.locked ? 'space-y-2.5 blur-[6px] pointer-events-none select-none' : 'space-y-2.5'}
+                      aria-hidden={block.locked || undefined}
+                    >
+                      {block.rows.map((row) => (
+                        <li key={row.sender} className="flex items-center justify-between gap-3 text-sm">
+                          <span className="flex min-w-0 items-center gap-2 font-medium">
+                            <span
+                              className="h-2.5 w-2.5 shrink-0 rounded-full"
+                              style={{ backgroundColor: row.color }}
+                            />
+                            <span className="truncate">{row.sender}</span>
+                          </span>
+                          <span className="flex shrink-0 gap-3 font-mono text-white/80">
+                            {row.emojis.length > 0 ? (
+                              row.emojis.map((e) => (
+                                <span key={e.value}>
+                                  {e.value} <span className="text-white/50">{e.count}</span>
+                                </span>
+                              ))
+                            ) : (
+                              <span className="text-white/40">—</span>
+                            )}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                    {block.locked && <LockedOverlay onOpenPremium={model.onOpenPremium} label={model.premiumCtaLabel} />}
+                  </div>
                 </div>
-              );
-            } else {
-              content = (
-                <StatSection title={block.title} kind={block.kind} entries={block.entries} valueSuffix={block.valueSuffix} />
               );
             }
 
-            if (!block.locked) return <div key={i}>{content}</div>;
-
             return (
-              <div key={i} className="relative overflow-hidden rounded-2xl">
-                <div className="pointer-events-none select-none blur-[6px]" aria-hidden="true">
-                  {content}
-                </div>
-                <button
-                  type="button"
-                  onClick={model.onOpenPremium}
-                  className="absolute inset-0 flex cursor-pointer flex-col items-center justify-center gap-1.5 rounded-2xl bg-black/55 backdrop-blur-[1px] transition-colors hover:bg-black/65"
-                >
-                  <span className="text-2xl">🔒</span>
-                  <span className="text-xs font-semibold text-amber-300 underline-offset-2">{model.premiumCtaLabel}</span>
-                </button>
-              </div>
+              <StatSection
+                key={i}
+                title={block.title}
+                kind={block.kind}
+                entries={block.entries}
+                valueSuffix={block.valueSuffix}
+                locked={block.locked}
+                onOpenPremium={model.onOpenPremium}
+                lockLabel={model.premiumCtaLabel}
+              />
             );
           })}
 
