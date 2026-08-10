@@ -114,13 +114,18 @@ export interface Dictionary {
     shareIntro: string;
     /** Bottom call-to-action printed on the shareable image card. */
     shareImageCta: string;
-    /** Short badge labels (noun phrases, gender-neutral) printed on the
-     * shareable image's "Wrapped" badge grid — see lib/headlinePersona.ts's
-     * pickShareBadges/pickShareBadgesFromBreakdown for which persona each
-     * badge is derived from. Free-tier stats only, by design — see
-     * SHARE_BADGE_IDS's doc comment. */
-    badgeMostActive: string;
-    badgeFunniest: string;
+    /** Short badge labels printed on the shareable image's "Wrapped" badge
+     * grid — see lib/headlinePersona.ts's pickShareBadges/
+     * pickShareBadgesFromBreakdown for which persona each badge is derived
+     * from. Free-tier stats only, by design — see SHARE_BADGE_IDS's doc
+     * comment. Most Active and Funniest each have a Group/Solo variant:
+     * "the group's ___" doesn't make sense in a 1-on-1 chat, so that one
+     * uses a plain gender-neutral dual form (X/ית) instead — see
+     * shareBadgeLabel's call sites for which is picked when. */
+    badgeMostActiveGroup: string;
+    badgeMostActiveSolo: string;
+    badgeFunniestGroup: string;
+    badgeFunniestSolo: string;
     badgeMostIgnored: string;
     /** Heading above the bottom "try it yourself" CTA button. */
     likedItHeading: string;
@@ -165,6 +170,13 @@ export interface Dictionary {
     conversationStarterCountInfo: string;
     wordsPerMessageInfo: string;
     mentionedCountInfo: string;
+    /** "Potty Mouth" — curse-word count per sender, see analysis/curseWords.ts. */
+    curseWordCount: string;
+    curseWordCountInfo: string;
+    /** "Voice Message King" — count only, no duration (see
+     * isVoiceMessagePlaceholder's doc comment for why). */
+    voiceMessageCount: string;
+    voiceMessageCountInfo: string;
   };
   /** The one-time-purchase "Wrapped+" unlock: license key entry and feature
    * pitch. No accounts — the license key itself is the credential. */

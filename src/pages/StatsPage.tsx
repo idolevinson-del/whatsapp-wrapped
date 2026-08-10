@@ -79,7 +79,7 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
   async function handleShareToWhatsApp() {
     trackEvent('results_shared');
     const shareUrl = buildStatsShareUrl(buildStatsSharePayload(analysis, fileName, language));
-    const badges = formatShareBadges(personas, dictionary);
+    const badges = formatShareBadges(personas, dictionary, isGroup);
     const blob = await generateShareImageBlob({
       appTitle: dictionary.app.title,
       totalMessages,
@@ -239,6 +239,20 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
             },
           ]
         : []),
+      {
+        kind: 'pie',
+        title: dictionary.stats.curseWordCount,
+        entries: withColors(personaBreakdown.curseWordCount),
+        locked: !userIsPremium,
+        infoText: dictionary.stats.curseWordCountInfo,
+      },
+      {
+        kind: 'pie',
+        title: dictionary.stats.voiceMessageCount,
+        entries: withColors(personaBreakdown.voiceMessageCount),
+        locked: !userIsPremium,
+        infoText: dictionary.stats.voiceMessageCountInfo,
+      },
     ],
     likedItHeading: dictionary.stats.likedItHeading,
     tryItYourselfLabel: dictionary.stats.tryItYourselfButton,

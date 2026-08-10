@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { pickHeadlinePersonaFromBreakdown } from './headlinePersona';
+import { pickHeadlinePersonaFromBreakdown, pickShareBadgesFromBreakdown } from './headlinePersona';
+import { en } from '../i18n/en';
 
 describe('pickHeadlinePersonaFromBreakdown', () => {
   it('picks the highest-priority category that actually has data', () => {
@@ -54,5 +55,32 @@ describe('pickHeadlinePersonaFromBreakdown', () => {
       pb: { mc: [0, 0], wpm: [0, 0], ec: [0, 0], sd: [0, 0], arm: [0, 0], lt: [0, 0], mnc: [] },
     });
     expect(result).toBeUndefined();
+  });
+});
+
+describe('pickShareBadgesFromBreakdown', () => {
+  const groupInput = {
+    senders: ['Alice', 'Bob', 'Carol'],
+    pb: { mc: [40, 2, 25], wpm: [0, 0, 0], ec: [0, 0, 0], sd: [0, 0, 0], arm: [0, 0, 0], lt: [3, 0, 0], mnc: [] },
+  };
+
+  it('uses the Group-flavored labels (never leaks a locked stat) when isGroup is true', () => {
+    const badges = pickShareBadgesFromBreakdown(groupInput, en, true);
+    const mostActive = badges.find((b) => b.name === 'Alice');
+    expect(mostActive?.label).toBe(en.stats.badgeMostActiveGroup);
+    // ghost only applies to groups — Bob has the fewest messages.
+    const mostIgnored = badges.find((b) => b.name === 'Bob');
+    expect(mostIgnored?.label).toBe(en.stats.badgeMostIgnored);
+  });
+
+  it('uses the Solo-flavored labels for a 1-on-1 chat, and never shows "Most Ignored"', () => {
+    const soloInput = {
+      senders: ['Alice', 'Bob'],
+      pb: { mc: [40, 2], wpm: [0, 0], ec: [0, 0], sd: [0, 0], arm: [0, 0], lt: [3, 0], mnc: [] },
+    };
+    const badges = pickShareBadgesFromBreakdown(soloInput, en, false);
+    const mostActive = badges.find((b) => b.name === 'Alice');
+    expect(mostActive?.label).toBe(en.stats.badgeMostActiveSolo);
+    expect(badges.some((b) => b.label === en.stats.badgeMostIgnored)).toBe(false);
   });
 });

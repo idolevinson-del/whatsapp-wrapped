@@ -80,13 +80,20 @@ export const SHARE_BADGE_ICONS: Record<(typeof SHARE_BADGE_IDS)[number], string>
 };
 
 /** Short badge label per share-image badge id — see Dictionary['stats'] for
- * the actual translated strings. */
-export function shareBadgeLabel(id: (typeof SHARE_BADGE_IDS)[number], dictionary: Dictionary): string {
+ * the actual translated strings. Most Active and Funniest each have a
+ * Group/Solo variant ("the group's ___" doesn't make sense in a 1-on-1
+ * chat) — ghost/Most Ignored never needs one, since it never appears for a
+ * 1-on-1 chat in the first place (see SHARE_BADGE_ICONS's callers). */
+export function shareBadgeLabel(
+  id: (typeof SHARE_BADGE_IDS)[number],
+  dictionary: Dictionary,
+  isGroup: boolean
+): string {
   switch (id) {
     case 'chatterbox':
-      return dictionary.stats.badgeMostActive;
+      return isGroup ? dictionary.stats.badgeMostActiveGroup : dictionary.stats.badgeMostActiveSolo;
     case 'comedian':
-      return dictionary.stats.badgeFunniest;
+      return isGroup ? dictionary.stats.badgeFunniestGroup : dictionary.stats.badgeFunniestSolo;
     case 'ghost':
       return dictionary.stats.badgeMostIgnored;
   }
@@ -101,12 +108,12 @@ export interface ShareBadge {
 /** Formats up to 3 persona badges for the shareable image, in SHARE_BADGE_IDS
  * order — only the ones this chat actually produced (e.g. a 1-on-1 chat has
  * no "ghost"). */
-export function formatShareBadges(personas: PersonaResult[], dictionary: Dictionary): ShareBadge[] {
+export function formatShareBadges(personas: PersonaResult[], dictionary: Dictionary, isGroup: boolean): ShareBadge[] {
   return SHARE_BADGE_IDS.map((id) => personas.find((p) => p.id === id))
     .filter((p): p is PersonaResult => Boolean(p))
     .map((p) => ({
       icon: SHARE_BADGE_ICONS[p.id as (typeof SHARE_BADGE_IDS)[number]],
-      label: shareBadgeLabel(p.id as (typeof SHARE_BADGE_IDS)[number], dictionary),
+      label: shareBadgeLabel(p.id as (typeof SHARE_BADGE_IDS)[number], dictionary, isGroup),
       name: firstName(p.sender),
     }));
 }
@@ -208,13 +215,21 @@ export function pickHeadlinePersonaFromBreakdown(input: BreakdownPersonaInput): 
  * what a payload can't carry), so this always matches formatShareBadges
  * exactly whenever both are computed from the same underlying chat.
  */
-export function pickShareBadgesFromBreakdown(input: BreakdownPersonaInput, dictionary: Dictionary): ShareBadge[] {
+export function pickShareBadgesFromBreakdown(
+  input: BreakdownPersonaInput,
+  dictionary: Dictionary,
+  isGroup: boolean
+): ShareBadge[] {
   const winners = computeBreakdownWinners(input);
   const badges: ShareBadge[] = [];
   for (const id of SHARE_BADGE_IDS) {
     const winner = winners[id];
     if (!winner) continue;
-    badges.push({ icon: SHARE_BADGE_ICONS[id], label: shareBadgeLabel(id, dictionary), name: firstName(winner.sender) });
+    badges.push({
+      icon: SHARE_BADGE_ICONS[id],
+      label: shareBadgeLabel(id, dictionary, isGroup),
+      name: firstName(winner.sender),
+    });
   }
   return badges;
 }

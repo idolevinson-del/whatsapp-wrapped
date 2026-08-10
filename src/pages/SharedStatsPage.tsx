@@ -76,7 +76,7 @@ export function SharedStatsPage({ payload }: { payload: StatsSharePayload }) {
     const shareUrl = buildStatsShareUrl(payload);
     // Best-effort — only what the compact link payload carries, see
     // pickShareBadgesFromBreakdown's doc comment for what's derivable.
-    const badges = pickShareBadgesFromBreakdown({ senders: payload.s, pb: payload.pb }, dictionary);
+    const badges = pickShareBadgesFromBreakdown({ senders: payload.s, pb: payload.pb }, dictionary, isGroup);
     const blob = await generateShareImageBlob({
       appTitle: dictionary.app.title,
       totalMessages: payload.total,

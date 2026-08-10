@@ -54,7 +54,8 @@ export interface ChatHistoryEntry {
   lastViewedAt: number;
 }
 
-/** Falls back to empty for entries saved before `personaBreakdown` existed. */
+/** Falls back to empty for entries saved before `personaBreakdown` existed
+ * (or before curseWordCount/voiceMessageCount were added to it). */
 const EMPTY_PERSONA_BREAKDOWN: PersonaBreakdown = {
   messageCount: [],
   wordsPerMessage: [],
@@ -66,6 +67,8 @@ const EMPTY_PERSONA_BREAKDOWN: PersonaBreakdown = {
   earlyBirdPercent: [],
   laughsTriggered: [],
   mentionedCount: [],
+  curseWordCount: [],
+  voiceMessageCount: [],
 };
 
 function reviveMessage(message: ParsedMessage): ParsedMessage {

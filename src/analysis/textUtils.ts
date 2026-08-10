@@ -1,4 +1,5 @@
 import { isStopword } from './stopwords';
+import { CURSE_WORDS } from './curseWords';
 
 // Broad emoji match using Unicode property escapes.
 const EMOJI_REGEX = /\p{Extended_Pictographic}/gu;
@@ -9,6 +10,12 @@ export function containsLaugh(text: string): boolean {
 
 export function extractEmojis(text: string): string[] {
   return text.match(EMOJI_REGEX) ?? [];
+}
+
+/** How many words in this message are in CURSE_WORDS — a message with the
+ * same word twice counts twice, same convention as extractEmojis. */
+export function countCurseWords(text: string): number {
+  return extractWords(text).filter((w) => CURSE_WORDS.has(w.toLowerCase())).length;
 }
 
 // A "word" is a run of letters (Latin or Hebrew) and digits/apostrophes,

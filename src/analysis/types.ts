@@ -66,6 +66,12 @@ export interface PersonaBreakdown {
   earlyBirdPercent: SenderValue[];
   laughsTriggered: SenderValue[];
   mentionedCount: SenderValue[];
+  /** How many curse words each sender used, across all their messages —
+   * see analysis/curseWords.ts. */
+  curseWordCount: SenderValue[];
+  /** How many voice messages each sender sent. Count only — no duration
+   * data exists to sum (see isVoiceMessagePlaceholder's doc comment). */
+  voiceMessageCount: SenderValue[];
 }
 
 export interface AnalysisResult {
