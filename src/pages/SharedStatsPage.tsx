@@ -10,6 +10,7 @@ import { buildStatsShareText } from '../lib/shareText';
 import { generateShareImageBlob, shareOrDownloadImage } from '../lib/shareImage';
 import { isPremium } from '../lib/premium';
 import { DEFAULT_THEME, getSelectedTheme } from '../lib/themes';
+import { formatPersona, pickHeadlinePersonaFromBreakdown } from '../lib/headlinePersona';
 import { trackEvent } from '../analytics';
 import type { StatsSharePayload } from '../lib/statsShareLink';
 import type { StatsViewModel } from './statsViewModel';
@@ -81,6 +82,10 @@ export function SharedStatsPage({ payload }: { payload: StatsSharePayload }) {
         topStreakDays = value;
       }
     });
+    // Best-effort — only what the compact link payload carries, see
+    // pickHeadlinePersonaFromBreakdown's doc comment for what's excluded.
+    const headlinePersona = pickHeadlinePersonaFromBreakdown({ senders: payload.s, pb: payload.pb });
+    const formattedPersona = headlinePersona ? formatPersona(headlinePersona, dictionary) : undefined;
     const blob = await generateShareImageBlob({
       appTitle: dictionary.app.title,
       totalMessages: payload.total,
@@ -104,6 +109,8 @@ export function SharedStatsPage({ payload }: { payload: StatsSharePayload }) {
       urlText: window.location.host,
       dir: language === 'he' ? 'rtl' : 'ltr',
       gradient: theme.hexStops,
+      personaIcon: formattedPersona?.icon,
+      personaText: formattedPersona?.text,
     });
     await shareOrDownloadImage(blob, 'whatsapp-wrapped.png', dictionary.app.title, dictionary.stats.shareIntro);
   }

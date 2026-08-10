@@ -11,6 +11,7 @@ import { buildStatsSharePayload, buildStatsShareUrl } from '../lib/statsShareLin
 import { generateShareImageBlob, shareOrDownloadImage } from '../lib/shareImage';
 import { isPremium } from '../lib/premium';
 import { DEFAULT_THEME, getSelectedTheme } from '../lib/themes';
+import { formatPersona, pickHeadlinePersona } from '../lib/headlinePersona';
 import { trackEvent } from '../analytics';
 import type { AnalysisResult } from '../analysis';
 import type { StatsViewModel } from './statsViewModel';
@@ -27,7 +28,7 @@ interface StatsPageProps {
 
 export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPageProps) {
   const { dictionary, language } = useLanguage();
-  const { personaBreakdown, coreStats, conversationGapStats, busiestDay } = analysis;
+  const { personas, personaBreakdown, coreStats, conversationGapStats, busiestDay } = analysis;
   const senders = coreStats.perSender.map((s) => s.sender);
   const colors = buildSenderColorMap(senders);
   const isGroup = personaBreakdown.mentionedCount.length > 0;
@@ -59,6 +60,10 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
     trackEvent('image_shared');
     const topSender = [...personaBreakdown.messageCount].sort((a, b) => b.value - a.value)[0];
     const topStreak = [...personaBreakdown.streakDays].sort((a, b) => b.value - a.value)[0];
+    // The single most shareable "you are the ___" badge for this chat — the
+    // whole point of a share image is to be about *someone*, not just numbers.
+    const headlinePersona = pickHeadlinePersona(personas);
+    const formattedPersona = headlinePersona ? formatPersona(headlinePersona, dictionary) : undefined;
     const blob = await generateShareImageBlob({
       appTitle: dictionary.app.title,
       totalMessages,
@@ -82,6 +87,8 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
       urlText: window.location.host,
       dir: language === 'he' ? 'rtl' : 'ltr',
       gradient: theme.hexStops,
+      personaIcon: formattedPersona?.icon,
+      personaText: formattedPersona?.text,
     });
     await shareOrDownloadImage(blob, 'whatsapp-wrapped.png', dictionary.app.title, dictionary.stats.shareIntro);
   }

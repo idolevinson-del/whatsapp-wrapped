@@ -2,6 +2,7 @@ import { formatTemplate } from '../i18n';
 import { resolveInsightTemplate } from '../i18n/resolveInsight';
 import { firstName } from '../lib/names';
 import { parseChatName } from '../lib/parseChatName';
+import { orderPersonas } from '../lib/headlinePersona';
 import type { Dictionary } from '../i18n';
 import type { AnalysisResult } from '../analysis';
 import type { SharePayload } from '../lib/shareLink';
@@ -32,26 +33,6 @@ export interface OutroCardData {
 
 export type StoryCardData = HeadlineCardData | PersonaCardData | BusiestDayCardData | OutroCardData;
 
-/**
- * Display order for persona cards, from most to least "interesting" —
- * strong headline stats first, time-of-day personas (less compelling)
- * pushed to the end. Any persona id not listed falls back to the order it
- * was computed in (see Array.indexOf returning -1 for unknown ids).
- */
-const PERSONA_ORDER = [
-  'chatterbox',
-  'streaker',
-  'fastestReplier',
-  'conversationStarter',
-  'philosopher',
-  'emojiEnthusiast',
-  'comedian',
-  'mostMentioned',
-  'ghost',
-  'nightOwl',
-  'earlyBird',
-];
-
 export function buildStoryCards(
   analysis: AnalysisResult,
   dictionary: Dictionary,
@@ -59,9 +40,10 @@ export function buildStoryCards(
 ): StoryCardData[] {
   const { personas, busiestDay } = analysis;
 
-  const orderedPersonas = [...personas].sort(
-    (a, b) => PERSONA_ORDER.indexOf(a.id) - PERSONA_ORDER.indexOf(b.id)
-  );
+  // Persona display order (most to least "interesting") now lives in
+  // lib/headlinePersona.ts, shared with whatever just wants the single best
+  // one (the share image).
+  const orderedPersonas = orderPersonas(personas);
 
   const cards: StoryCardData[] = [];
 

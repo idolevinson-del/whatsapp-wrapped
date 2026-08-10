@@ -32,6 +32,12 @@ export interface ShareImageData {
   ctaText: string;
   urlText: string;
   dir: 'ltr' | 'rtl';
+  /** The chat's single most shareable "you are the ___" badge, e.g. "🦉" +
+   * "Alex is the Comedian — made others laugh 12 times." Optional: not
+   * every payload this renders from has enough data to derive one (see
+   * SharedStatsPage), and the image still works fine without it. */
+  personaIcon?: string;
+  personaText?: string;
 }
 
 function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
@@ -85,6 +91,64 @@ function gradientText(
   grad.addColorStop(1, gradient[2]);
   ctx.fillStyle = grad;
   ctx.fillText(text, x, y);
+}
+
+/** Greedy word-wrap using actual glyph widths (canvas has no CSS-style
+ * auto-wrap) — `ctx.font` must already be set to the font this measures in.
+ * Space-delimited splitting works fine for both English and Hebrew here. */
+function wrapText(ctx: CanvasRenderingContext2D, text: string, maxWidth: number): string[] {
+  const words = text.split(' ');
+  const lines: string[] = [];
+  let current = '';
+  for (const word of words) {
+    const candidate = current ? `${current} ${word}` : word;
+    if (current && ctx.measureText(candidate).width > maxWidth) {
+      lines.push(current);
+      current = word;
+    } else {
+      current = candidate;
+    }
+  }
+  if (current) lines.push(current);
+  return lines;
+}
+
+/**
+ * The "you are the ___" persona badge — icon plus the full formatted
+ * sentence, gradient-styled like the headline number so it reads as the
+ * image's second hero moment, not just another stat row. Returns the y just
+ * below what it drew, so the caller can keep laying out from there.
+ */
+function drawPersonaHero(
+  ctx: CanvasRenderingContext2D,
+  y: number,
+  icon: string,
+  text: string,
+  dir: 'ltr' | 'rtl',
+  gradient: [string, string, string]
+): number {
+  const centerX = WIDTH / 2;
+  const maxWidth = 880;
+
+  ctx.direction = dir;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'alphabetic';
+  ctx.font = '110px system-ui, -apple-system, "Segoe UI", Arial, sans-serif';
+  ctx.fillStyle = '#fff';
+  ctx.fillText(icon, centerX, y + 90);
+
+  const fontSize = 54;
+  const lineHeight = fontSize + 20;
+  const font = `800 ${fontSize}px system-ui, -apple-system, "Segoe UI", Arial, sans-serif`;
+  ctx.font = font; // needed before measureText() inside wrapText
+  const lines = wrapText(ctx, text, maxWidth).slice(0, 2); // hard cap so an unusually long name can't run off-canvas
+
+  let ly = y + 180;
+  for (const line of lines) {
+    gradientText(ctx, line, centerX, ly, font, 'center', maxWidth, gradient);
+    ly += lineHeight;
+  }
+  return ly;
 }
 
 /** A highlight card: icon + big value + label, used for the top-sender and busiest-day rows. */
@@ -198,6 +262,14 @@ export async function generateShareImageBlob(data: ShareImageData): Promise<Blob
       data.topStreakLabel,
       data.dir
     );
+    y += 216;
+  }
+
+  // Persona hero — "you are the ___" — in the gap between the highlight
+  // cards and the fixed-position footer below. Sized to fit that gap even
+  // in the worst case (all 3 cards + a wrapped 2-line persona sentence).
+  if (data.personaIcon && data.personaText) {
+    drawPersonaHero(ctx, y + 30, data.personaIcon, data.personaText, data.dir, data.gradient);
   }
 
   // Footer: CTA + URL
