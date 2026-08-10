@@ -1,16 +1,12 @@
 import { StatSection } from '../components/charts/StatSection';
 import { StatTile } from '../components/charts/StatTile';
-import { HeatmapChart } from '../components/charts/HeatmapChart';
 import { LanguageToggle } from '../components/LanguageToggle';
-import { useLanguage } from '../i18n';
 import type { ReactNode } from 'react';
 import type { StatsViewModel } from './statsViewModel';
 
 /** Purely presentational — renders a StatsViewModel, regardless of whether it
  * came from a live analysis or a decoded share link. */
 export function StatsView({ model }: { model: StatsViewModel }) {
-  const { language } = useLanguage();
-
   return (
     <div className="min-h-screen bg-neutral-950 px-4 py-8 text-white sm:px-8">
       <div className="mx-auto max-w-2xl">
@@ -131,28 +127,6 @@ export function StatsView({ model }: { model: StatsViewModel }) {
               </div>
             );
           })}
-
-          {model.heatmap &&
-            (model.heatmap.locked ? (
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-center">
-                <h3 className="text-sm font-semibold uppercase tracking-widest text-white/70">{model.heatmap.title}</h3>
-                <p className="mx-auto mt-3 max-w-xs text-sm text-white/60">{model.heatmap.lockedMessage}</p>
-                <button
-                  type="button"
-                  onClick={model.onOpenPremium}
-                  className="mt-3 cursor-pointer text-sm font-semibold text-amber-400 underline-offset-2 hover:underline"
-                >
-                  {model.premiumCtaLabel}
-                </button>
-              </div>
-            ) : model.heatmap.noData ? (
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-center">
-                <h3 className="text-sm font-semibold uppercase tracking-widest text-white/70">{model.heatmap.title}</h3>
-                <p className="mx-auto mt-3 max-w-xs text-sm text-white/60">{model.heatmap.noDataMessage}</p>
-              </div>
-            ) : (
-              <HeatmapChart title={model.heatmap.title} grid={model.heatmap.grid} language={language} color={model.heatmap.color} />
-            ))}
 
           <div className="pt-2 pb-4 text-center">
             <p className="text-sm text-white/70">{model.likedItHeading}</p>

@@ -200,35 +200,6 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
           ]
         : []),
     ],
-    heatmap: userIsPremium
-      ? analysis.activityHeatmap.length > 0
-        ? {
-            title: dictionary.stats.heatmapTitle,
-            grid: analysis.activityHeatmap,
-            color: theme.hexStops[1],
-            locked: false,
-            lockedMessage: '',
-            noData: false,
-            noDataMessage: '',
-          }
-        : {
-            title: dictionary.stats.heatmapTitle,
-            grid: [],
-            color: '',
-            locked: false,
-            lockedMessage: '',
-            noData: true,
-            noDataMessage: dictionary.stats.heatmapNoData,
-          }
-      : {
-          title: dictionary.stats.heatmapTitle,
-          grid: [],
-          color: '',
-          locked: true,
-          lockedMessage: dictionary.stats.heatmapLocked,
-          noData: false,
-          noDataMessage: '',
-        },
     likedItHeading: dictionary.stats.likedItHeading,
     tryItYourselfLabel: dictionary.stats.tryItYourselfButton,
     onTryItYourself: onBack,

@@ -63,7 +63,6 @@ function reviveAnalysis(analysis: AnalysisResult): AnalysisResult {
     },
     personaBreakdown: analysis.personaBreakdown ?? EMPTY_PERSONA_BREAKDOWN,
     topWord: analysis.topWord ?? null,
-    activityHeatmap: analysis.activityHeatmap ?? [],
   };
 }
 

@@ -32,9 +32,7 @@ export function SharedStatsPage({ payload }: { payload: StatsSharePayload }) {
   const [, forcePremiumRefresh] = useState(0);
   // The theme is the viewer's own local preference, not the sender's — it
   // applies to how *you* see any results page, same as any other client-side
-  // display setting. Heatmap data, unlike theme, was genuinely never part of
-  // the compact share payload, so there's no equivalent "your own heatmap
-  // preference" to apply here — that block simply doesn't exist on this page.
+  // display setting.
   const userIsPremium = isPremium();
   const theme = userIsPremium ? getSelectedTheme() : DEFAULT_THEME;
 
@@ -212,7 +210,6 @@ export function SharedStatsPage({ payload }: { payload: StatsSharePayload }) {
           ]
         : []),
     ],
-    heatmap: null, // heatmap data was never part of the compact share payload
     likedItHeading: dictionary.stats.likedItHeading,
     tryItYourselfLabel: dictionary.stats.tryItYourselfButton,
     onTryItYourself: goHome,

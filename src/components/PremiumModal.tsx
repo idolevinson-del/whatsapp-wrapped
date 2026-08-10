@@ -114,8 +114,8 @@ export function PremiumModal({ onClose, onPremiumChange, reason }: PremiumModalP
 
             <ul className="mt-4 space-y-2 text-sm text-neutral-300">
               <li className="flex gap-2">
-                <span>🗓️</span>
-                <span>{dictionary.premium.featureHeatmap}</span>
+                <span>🔓</span>
+                <span>{dictionary.premium.featureDeeperStats}</span>
               </li>
               <li className="flex gap-2">
                 <span>🎨</span>

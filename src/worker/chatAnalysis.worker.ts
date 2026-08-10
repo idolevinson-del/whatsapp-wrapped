@@ -4,10 +4,10 @@ import type { WorkerRequest, WorkerResponse } from './types';
 const ctx = self as unknown as Worker;
 
 ctx.onmessage = (event: MessageEvent<WorkerRequest>) => {
-  const { text } = event.data;
+  const { text, fileName } = event.data;
 
   try {
-    const outcome = runAnalysis(text, (stage) => {
+    const outcome = runAnalysis(text, fileName, (stage) => {
       const progress: WorkerResponse = { type: 'progress', stage };
       ctx.postMessage(progress);
     });

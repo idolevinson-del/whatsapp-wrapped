@@ -32,25 +32,6 @@ export interface StatsOverviewTile {
   gradient: string;
 }
 
-/** The Premium-only activity heatmap. `locked: true` renders a teaser (real
- * data withheld) instead of the chart — only StatsPage (live analysis) ever
- * has real heatmap data to show; SharedStatsPage passes `null` (no section)
- * since that data was never part of the compact share payload.
- *
- * A Premium user can still end up with an empty `grid` — chat history saved
- * before this feature existed doesn't have heatmap data backfilled — in
- * which case `noData: true` shows an explanatory message instead of an
- * empty-looking chart. */
-export interface HeatmapModel {
-  title: string;
-  grid: number[][];
-  color: string;
-  locked: boolean;
-  lockedMessage: string;
-  noData: boolean;
-  noDataMessage: string;
-}
-
 export interface StatsViewModel {
   title: string;
   subtitle: string;
@@ -70,11 +51,10 @@ export interface StatsViewModel {
   overviewTiles: StatsOverviewTile[];
   /** Rendered in order — includes both chart sections and the top-emojis block. */
   blocks: StatsBlock[];
-  heatmap: HeatmapModel | null;
   likedItHeading: string;
   tryItYourselfLabel: string;
   onTryItYourself: () => void;
-  /** Opens the Wrapped+ modal — used by the locked-heatmap teaser. */
+  /** Opens the Wrapped+ modal — used by locked-block overlays. */
   onOpenPremium: () => void;
   premiumCtaLabel: string;
 }

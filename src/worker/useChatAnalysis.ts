@@ -76,7 +76,7 @@ export function useChatAnalysis() {
         cleanup();
       };
 
-      const request: WorkerRequest = { type: 'analyze', text: extracted.text };
+      const request: WorkerRequest = { type: 'analyze', text: extracted.text, fileName: file.name };
       worker.postMessage(request);
     });
   }, []);

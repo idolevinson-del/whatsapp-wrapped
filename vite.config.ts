@@ -11,8 +11,13 @@ export default defineConfig({
     VitePWA({
       // Always fetches the latest build in the background and swaps it in
       // silently — a PWA stuck showing a stale cached build is the classic
-      // failure mode this avoids.
+      // failure mode this avoids. injectRegister: false because the default
+      // auto-injected registerSW.js only calls navigator.serviceWorker.register()
+      // — it does NOT reload the page when a new version activates, so an
+      // already-open tab can keep showing old code indefinitely. main.tsx
+      // registers manually instead, with an explicit reload-on-update.
       registerType: 'autoUpdate',
+      injectRegister: false,
       includeAssets: ['favicon.svg'],
       manifest: {
         name: 'WhatsApp Wrapped',

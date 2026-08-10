@@ -18,6 +18,10 @@ export interface AppError {
 export interface AnalyzeRequest {
   type: 'analyze';
   text: string;
+  /** Used to filter out a group's own name if it was ever mis-parsed as a
+   * "sender" (some system-notification lines aren't reliably detectable
+   * from their text alone) — see runAnalysis.ts. */
+  fileName?: string;
 }
 
 export type WorkerRequest = AnalyzeRequest;
