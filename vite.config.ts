@@ -18,6 +18,18 @@ export default defineConfig({
       // registers manually instead, with an explicit reload-on-update.
       registerType: 'autoUpdate',
       injectRegister: false,
+      // vite-plugin-pwa only auto-sets workbox.skipWaiting/clientsClaim when
+      // injectRegister is 'auto' (its default) — turning it off above silently
+      // dropped both, so the built SW ended up in the *manual* skip-waiting
+      // shape (waits for a SKIP_WAITING message) while the client script we
+      // wrote for 'autoUpdate' mode never sends one. Net effect: an updated SW
+      // just sat "waiting" forever and active tabs never got new code — the
+      // exact bug this comment block claims to prevent. Setting these
+      // explicitly restores real auto-activation regardless of injectRegister.
+      workbox: {
+        skipWaiting: true,
+        clientsClaim: true,
+      },
       includeAssets: ['favicon.svg'],
       manifest: {
         name: 'WhatsApp Wrapped',
