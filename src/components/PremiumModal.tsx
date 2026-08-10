@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useLanguage } from '../i18n';
 import { activateLicense, deactivatePremium, isPremium } from '../lib/premium';
-import { THEMES, getSelectedTheme, setSelectedTheme } from '../lib/themes';
 import { CHECKOUT_URL } from '../config/premiumConfig';
 
 interface PremiumModalProps {
@@ -17,7 +16,7 @@ interface PremiumModalProps {
 
 /**
  * The whole "Wrapped+" surface in one modal: pitch + purchase link + license
- * activation when locked, theme picker + deactivate when unlocked. No
+ * activation when locked, active status + deactivate when unlocked. No
  * account system — the license key itself is the credential, validated
  * directly against Gumroad from the browser.
  */
@@ -26,7 +25,6 @@ export function PremiumModal({ onClose, onPremiumChange, reason }: PremiumModalP
   const [premium, setPremiumFlag] = useState(isPremium());
   const [licenseInput, setLicenseInput] = useState('');
   const [status, setStatus] = useState<'idle' | 'checking' | 'error'>('idle');
-  const [selectedThemeId, setSelectedThemeId] = useState(getSelectedTheme().id);
 
   async function handleActivate() {
     if (!licenseInput.trim() || status === 'checking') return;
@@ -44,12 +42,6 @@ export function PremiumModal({ onClose, onPremiumChange, reason }: PremiumModalP
   function handleDeactivate() {
     deactivatePremium();
     setPremiumFlag(false);
-    onPremiumChange();
-  }
-
-  function handleThemePick(id: string) {
-    setSelectedTheme(id);
-    setSelectedThemeId(id);
     onPremiumChange();
   }
 
@@ -77,24 +69,6 @@ export function PremiumModal({ onClose, onPremiumChange, reason }: PremiumModalP
             <p className="mt-2 text-sm font-semibold text-emerald-400">{dictionary.premium.activeTitle}</p>
             <p className="mt-1 text-sm text-neutral-400">{dictionary.premium.activeBody}</p>
 
-            <p className="mt-5 text-xs font-semibold uppercase tracking-widest text-white/60">
-              {dictionary.premium.themeLabel}
-            </p>
-            <div className="mt-2 flex gap-2.5">
-              {THEMES.map((theme) => (
-                <button
-                  key={theme.id}
-                  type="button"
-                  aria-label={theme.label}
-                  title={theme.label}
-                  onClick={() => handleThemePick(theme.id)}
-                  className={`h-9 w-9 cursor-pointer rounded-full bg-gradient-to-br ${theme.gradientClasses} ${
-                    selectedThemeId === theme.id ? 'ring-2 ring-white ring-offset-2 ring-offset-neutral-900' : ''
-                  }`}
-                />
-              ))}
-            </div>
-
             <button
               type="button"
               onClick={handleDeactivate}
@@ -116,10 +90,6 @@ export function PremiumModal({ onClose, onPremiumChange, reason }: PremiumModalP
               <li className="flex gap-2">
                 <span>🔓</span>
                 <span>{dictionary.premium.featureDeeperStats}</span>
-              </li>
-              <li className="flex gap-2">
-                <span>🎨</span>
-                <span>{dictionary.premium.featureThemes}</span>
               </li>
               <li className="flex gap-2">
                 <span>♾️</span>

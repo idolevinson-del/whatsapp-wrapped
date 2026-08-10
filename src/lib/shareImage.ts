@@ -13,7 +13,7 @@ const HEIGHT = 1920;
 
 export interface ShareImageData {
   appTitle: string;
-  /** The three gradient stops (default brand colors, or a Premium theme's). */
+  /** The three gradient stops, matching the app's brand colors. */
   gradient: [string, string, string];
   totalMessages: number;
   totalMessagesLabel: string;

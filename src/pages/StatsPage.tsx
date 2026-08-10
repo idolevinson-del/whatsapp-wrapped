@@ -10,7 +10,7 @@ import { buildStatsShareText } from '../lib/shareText';
 import { buildStatsSharePayload, buildStatsShareUrl } from '../lib/statsShareLink';
 import { generateShareImageBlob, shareOrDownloadImage } from '../lib/shareImage';
 import { isPremium } from '../lib/premium';
-import { DEFAULT_THEME, getSelectedTheme } from '../lib/themes';
+import { DEFAULT_THEME } from '../lib/themes';
 import { formatPersona, pickHeadlinePersona } from '../lib/headlinePersona';
 import { trackEvent } from '../analytics';
 import type { AnalysisResult } from '../analysis';
@@ -35,7 +35,6 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
   const [showPremium, setShowPremium] = useState(false);
   const [, forcePremiumRefresh] = useState(0);
   const userIsPremium = isPremium();
-  const theme = userIsPremium ? getSelectedTheme() : DEFAULT_THEME;
 
   function withColors(values: { sender: string; value: number }[]) {
     return values.map((v) => ({ ...v, color: colors[v.sender] ?? '#94a3b8' }));
@@ -86,7 +85,7 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
       ctaText: dictionary.stats.shareImageCta,
       urlText: window.location.host,
       dir: direction,
-      gradient: theme.hexStops,
+      gradient: DEFAULT_THEME.hexStops,
       personaIcon: formattedPersona?.icon,
       personaText: formattedPersona?.text,
     });
@@ -116,7 +115,7 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
     onShare: handleShareToWhatsApp,
     shareImageLabel: dictionary.stats.shareImageButton,
     onShareImage: handleShareImage,
-    titleGradientClasses: theme.gradientClasses,
+    titleGradientClasses: DEFAULT_THEME.gradientClasses,
     overviewTitle: dictionary.stats.overviewTitle,
     overviewTiles: [
       {

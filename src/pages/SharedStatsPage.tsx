@@ -9,7 +9,7 @@ import { buildStatsShareUrl } from '../lib/statsShareLink';
 import { buildStatsShareText } from '../lib/shareText';
 import { generateShareImageBlob, shareOrDownloadImage } from '../lib/shareImage';
 import { isPremium } from '../lib/premium';
-import { DEFAULT_THEME, getSelectedTheme } from '../lib/themes';
+import { DEFAULT_THEME } from '../lib/themes';
 import { formatPersona, pickHeadlinePersonaFromBreakdown } from '../lib/headlinePersona';
 import { trackEvent } from '../analytics';
 import type { StatsSharePayload } from '../lib/statsShareLink';
@@ -31,11 +31,7 @@ export function SharedStatsPage({ payload }: { payload: StatsSharePayload }) {
   const { dictionary, language, direction, setLanguage } = useLanguage();
   const [showPremium, setShowPremium] = useState(false);
   const [, forcePremiumRefresh] = useState(0);
-  // The theme is the viewer's own local preference, not the sender's — it
-  // applies to how *you* see any results page, same as any other client-side
-  // display setting.
   const userIsPremium = isPremium();
-  const theme = userIsPremium ? getSelectedTheme() : DEFAULT_THEME;
 
   useEffect(() => {
     setLanguage(payload.lang);
@@ -108,7 +104,7 @@ export function SharedStatsPage({ payload }: { payload: StatsSharePayload }) {
       ctaText: dictionary.stats.shareImageCta,
       urlText: window.location.host,
       dir: direction,
-      gradient: theme.hexStops,
+      gradient: DEFAULT_THEME.hexStops,
       personaIcon: formattedPersona?.icon,
       personaText: formattedPersona?.text,
     });
@@ -131,7 +127,7 @@ export function SharedStatsPage({ payload }: { payload: StatsSharePayload }) {
     onShare: handleShareToWhatsApp,
     shareImageLabel: dictionary.stats.shareImageButton,
     onShareImage: handleShareImage,
-    titleGradientClasses: theme.gradientClasses,
+    titleGradientClasses: DEFAULT_THEME.gradientClasses,
     overviewTitle: dictionary.stats.overviewTitle,
     overviewTiles: [
       { icon: '💬', value: String(payload.total), label: dictionary.stats.totalMessages, gradient: HEADLINE_GRADIENT },

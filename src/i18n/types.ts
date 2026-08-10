@@ -144,9 +144,8 @@ export interface Dictionary {
     daysSuffix: string;
     hoursSuffix: string;
   };
-  /** The one-time-purchase "Wrapped+" unlock: license key entry, feature
-   * pitch, and (once unlocked) the color-theme picker. No accounts — the
-   * license key itself is the credential. */
+  /** The one-time-purchase "Wrapped+" unlock: license key entry and feature
+   * pitch. No accounts — the license key itself is the credential. */
   premium: {
     /** Entry-point link/button on the upload page. */
     entryLabel: string;
@@ -158,7 +157,6 @@ export interface Dictionary {
     historyLimitReason: string;
     /** Bullet describing the locked per-sender chart blocks on the results page. */
     featureDeeperStats: string;
-    featureThemes: string;
     featureHistory: string;
     buyButton: string;
     licenseLabel: string;
@@ -168,7 +166,6 @@ export interface Dictionary {
     activateError: string;
     activeTitle: string;
     activeBody: string;
-    themeLabel: string;
     deactivateButton: string;
     closeButton: string;
   };

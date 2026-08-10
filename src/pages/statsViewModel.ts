@@ -45,7 +45,7 @@ export interface StatsViewModel {
   shareImageLabel: string;
   onShareImage: () => void;
   /** Tailwind `from-...via-...to-...` classes for the title text and bottom
-   * CTA button — the selected Premium theme, or the default brand gradient. */
+   * CTA button — the app's brand gradient. */
   titleGradientClasses: string;
   overviewTitle: string;
   overviewTiles: StatsOverviewTile[];
