@@ -4,10 +4,10 @@ export const es: Dictionary = {
   code: 'es',
   app: {
     title: 'WhatsApp Wrapped',
-    tagline: 'Tu año en chats, resumido.',
+    tagline: 'Descubre quién REALMENTE maneja tu grupo de WhatsApp 😂',
   },
   upload: {
-    description: 'Sube tu chat y obtén las estadísticas. Todo se queda contigo.',
+    description: 'Sube tu chat → Obtén las estadísticas de tu grupo → Descubre a tus amigos',
     freeLimitNote: 'Plan gratuito: {count} análisis de chat. Ilimitado con Wrapped+.',
     dropzoneTitle: 'Suelta tu chat aquí',
     dropzoneSubtitle: 'o toca para elegir un archivo',
@@ -112,8 +112,12 @@ export const es: Dictionary = {
     shareBonusHint: 'Comparte con amigos para obtener un análisis gratuito más',
     shareIntro: '👀 Analicemos juntos nuestros mensajes de chat',
     shareImageButton: 'Compartir como imagen',
-    topSenderLabel: 'Más mensajes enviados',
     shareImageCta: 'Pruébalo con tu propio chat 👇',
+    badgeMostActive: 'Quien más participa',
+    badgeFunniest: 'Quien más hace reír',
+    badgeBiggestYapper: 'Quien más habla',
+    badgeNightOwl: 'Búho nocturno',
+    badgeMostIgnored: 'El fantasma del grupo',
     likedItHeading: '¿Te gustó?',
     tryItYourselfButton: 'Pruébalo también',
     overviewTitle: 'Resumen',
@@ -143,8 +147,7 @@ export const es: Dictionary = {
     emojiCountInfo:
       'Cada emoji usado en todos los mensajes, contado individualmente — enviar 😂😂😂 en un mensaje cuenta como 3.',
     topEmojisInfo: 'Los emojis que cada persona más usó, y cuántas veces.',
-    laughsTriggeredInfo:
-      'Se cuenta cada vez que un mensaje fue seguido de inmediato por una respuesta con 😂, 🤣, "haha" o similar.',
+    laughsTriggeredInfo: 'Mensajes que recibieron una respuesta inmediata con 😂, 🤣, "haha" o similar.',
     streakDaysInfo:
       'La racha más larga de días consecutivos con al menos un mensaje enviado — hasta un solo mensaje al día mantiene viva la racha.',
     avgReplyMinutesInfo:

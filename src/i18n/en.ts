@@ -4,10 +4,10 @@ export const en: Dictionary = {
   code: 'en',
   app: {
     title: 'WhatsApp Wrapped',
-    tagline: 'Your year in chats, wrapped.',
+    tagline: 'Discover who REALLY runs your WhatsApp group 😂',
   },
   upload: {
-    description: 'Upload your chat, get the stats. Everything stays with you.',
+    description: "Upload your chat → Get your group's stats → Expose your friends",
     freeLimitNote: 'Free plan: {count} chat checks. Unlimited with Wrapped+.',
     dropzoneTitle: 'Drop your chat here',
     dropzoneSubtitle: 'or tap to choose a file',
@@ -107,8 +107,12 @@ export const en: Dictionary = {
     shareBonusHint: 'Share with friends to get one more free chat check',
     shareIntro: "👀 Let's analyze our chat messages together",
     shareImageButton: 'Share as image',
-    topSenderLabel: 'Most messages sent',
     shareImageCta: 'Try it with your own chat 👇',
+    badgeMostActive: 'Most Active',
+    badgeFunniest: 'Funniest',
+    badgeBiggestYapper: 'Biggest Yapper',
+    badgeNightOwl: 'Night Owl',
+    badgeMostIgnored: 'Most Ignored',
     likedItHeading: 'Liked it?',
     tryItYourselfButton: 'Try it yourself',
     overviewTitle: 'Overview',
@@ -138,8 +142,7 @@ export const en: Dictionary = {
     emojiCountInfo:
       'Every emoji used across all messages, counted individually — sending 😂😂😂 in one message counts as 3.',
     topEmojisInfo: 'The emojis each person used the most, and how many times.',
-    laughsTriggeredInfo:
-      'Counted every time someone’s message was immediately followed by a reply containing 😂, 🤣, "haha", or similar.',
+    laughsTriggeredInfo: 'Messages that got an immediate reply with 😂, 🤣, "haha", or similar.',
     streakDaysInfo:
       'The longest run of consecutive calendar days with at least one message sent — even one message a day keeps the streak alive.',
     avgReplyMinutesInfo:

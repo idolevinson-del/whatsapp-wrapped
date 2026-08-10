@@ -87,7 +87,14 @@ function App() {
   }
 
   if (showExample) {
-    return <StatsPage analysis={exampleAnalysis} onBack={() => setShowExample(false)} isExample />;
+    return (
+      <StatsPage
+        analysis={exampleAnalysis}
+        fileName="WhatsApp Chat - Beach Trip Squad.txt"
+        onBack={() => setShowExample(false)}
+        isExample
+      />
+    );
   }
 
   if (historyEntry) {

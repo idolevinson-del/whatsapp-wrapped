@@ -19,12 +19,6 @@ export interface ShareImageData {
   totalMessagesLabel: string;
   spanDays: number;
   spanLabel: string;
-  topSenderName?: string;
-  topSenderCount?: number;
-  topSenderLabel: string;
-  topStreakName?: string;
-  topStreakDays?: number;
-  topStreakLabel: string;
   busiestDayDate: string;
   busiestDayCount: number;
   busiestDayLabel: string;
@@ -32,12 +26,12 @@ export interface ShareImageData {
   ctaText: string;
   urlText: string;
   dir: 'ltr' | 'rtl';
-  /** The chat's single most shareable "you are the ___" badge, e.g. "🦉" +
-   * "Alex is the Comedian — made others laugh 12 times." Optional: not
-   * every payload this renders from has enough data to derive one (see
-   * SharedStatsPage), and the image still works fine without it. */
-  personaIcon?: string;
-  personaText?: string;
+  /** Up to 5 "Wrapped"-style badges (icon + short label + winner's first
+   * name) — see lib/headlinePersona.ts's formatShareBadges /
+   * pickShareBadgesFromBreakdown. Fewer than 5 is normal: a 1-on-1 chat has
+   * no "ghost", and a re-shared link has no Night Owl (see that function's
+   * doc comment). */
+  badges: { icon: string; label: string; name: string }[];
 }
 
 function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
@@ -93,65 +87,8 @@ function gradientText(
   ctx.fillText(text, x, y);
 }
 
-/** Greedy word-wrap using actual glyph widths (canvas has no CSS-style
- * auto-wrap) — `ctx.font` must already be set to the font this measures in.
- * Space-delimited splitting works fine for both English and Hebrew here. */
-function wrapText(ctx: CanvasRenderingContext2D, text: string, maxWidth: number): string[] {
-  const words = text.split(' ');
-  const lines: string[] = [];
-  let current = '';
-  for (const word of words) {
-    const candidate = current ? `${current} ${word}` : word;
-    if (current && ctx.measureText(candidate).width > maxWidth) {
-      lines.push(current);
-      current = word;
-    } else {
-      current = candidate;
-    }
-  }
-  if (current) lines.push(current);
-  return lines;
-}
-
-/**
- * The "you are the ___" persona badge — icon plus the full formatted
- * sentence, gradient-styled like the headline number so it reads as the
- * image's second hero moment, not just another stat row. Returns the y just
- * below what it drew, so the caller can keep laying out from there.
- */
-function drawPersonaHero(
-  ctx: CanvasRenderingContext2D,
-  y: number,
-  icon: string,
-  text: string,
-  dir: 'ltr' | 'rtl',
-  gradient: [string, string, string]
-): number {
-  const centerX = WIDTH / 2;
-  const maxWidth = 880;
-
-  ctx.direction = dir;
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'alphabetic';
-  ctx.font = '110px system-ui, -apple-system, "Segoe UI", Arial, sans-serif';
-  ctx.fillStyle = '#fff';
-  ctx.fillText(icon, centerX, y + 90);
-
-  const fontSize = 54;
-  const lineHeight = fontSize + 20;
-  const font = `800 ${fontSize}px system-ui, -apple-system, "Segoe UI", Arial, sans-serif`;
-  ctx.font = font; // needed before measureText() inside wrapText
-  const lines = wrapText(ctx, text, maxWidth).slice(0, 2); // hard cap so an unusually long name can't run off-canvas
-
-  let ly = y + 180;
-  for (const line of lines) {
-    gradientText(ctx, line, centerX, ly, font, 'center', maxWidth, gradient);
-    ly += lineHeight;
-  }
-  return ly;
-}
-
-/** A highlight card: icon + big value + label, used for the top-sender and busiest-day rows. */
+/** A highlight card: icon + big value + label — used for the busiest-day row
+ * and for every badge in the "Wrapped" grid below it. */
 function drawHighlightCard(
   ctx: CanvasRenderingContext2D,
   y: number,
@@ -228,20 +165,8 @@ export async function generateShareImageBlob(data: ShareImageData): Promise<Blob
   ctx.fillStyle = '#a3a3a3';
   ctx.fillText(data.spanLabel, centerX, 540);
 
-  // Highlight cards
+  // Busiest day highlight
   let y = 640;
-  if (data.topSenderName) {
-    drawHighlightCard(
-      ctx,
-      y,
-      190,
-      '🏆',
-      `${data.topSenderName} — ${data.topSenderCount}`,
-      data.topSenderLabel,
-      data.dir
-    );
-    y += 216;
-  }
   drawHighlightCard(
     ctx,
     y,
@@ -252,24 +177,14 @@ export async function generateShareImageBlob(data: ShareImageData): Promise<Blob
     data.dir
   );
   y += 216;
-  if (data.topStreakName && data.topStreakDays) {
-    drawHighlightCard(
-      ctx,
-      y,
-      190,
-      '🔥',
-      `${data.topStreakName} — ${data.topStreakDays}`,
-      data.topStreakLabel,
-      data.dir
-    );
-    y += 216;
-  }
 
-  // Persona hero — "you are the ___" — in the gap between the highlight
-  // cards and the fixed-position footer below. Sized to fit that gap even
-  // in the worst case (all 3 cards + a wrapped 2-line persona sentence).
-  if (data.personaIcon && data.personaText) {
-    drawPersonaHero(ctx, y + 30, data.personaIcon, data.personaText, data.dir, data.gradient);
+  // The "Wrapped" badge grid — the whole point of the image, the part
+  // people actually screenshot and send around. Smaller row height than the
+  // busiest-day card above so up to 5 fit with room to spare before the
+  // fixed-position footer.
+  for (const badge of data.badges) {
+    drawHighlightCard(ctx, y, 130, badge.icon, badge.name, badge.label, data.dir);
+    y += 150;
   }
 
   // Footer: CTA + URL

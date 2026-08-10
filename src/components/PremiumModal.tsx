@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useLanguage } from '../i18n';
 import { activateLicense, deactivatePremium, isPremium } from '../lib/premium';
 import { CHECKOUT_URL } from '../config/premiumConfig';
+import { trackEvent } from '../analytics';
 
 interface PremiumModalProps {
   onClose: () => void;
@@ -33,6 +34,7 @@ export function PremiumModal({ onClose, onPremiumChange, reason }: PremiumModalP
     if (result.ok) {
       setPremiumFlag(true);
       setStatus('idle');
+      trackEvent('premium_unlocked');
       onPremiumChange();
     } else {
       setStatus('error');

@@ -12,7 +12,7 @@ import { generateShareImageBlob, shareOrDownloadImage } from '../lib/shareImage'
 import { isPremium } from '../lib/premium';
 import { MAX_BONUS_SLOTS, getBonusSlots, redeemShareBonus } from '../lib/shareBonus';
 import { DEFAULT_THEME } from '../lib/themes';
-import { formatPersona, pickHeadlinePersona } from '../lib/headlinePersona';
+import { formatShareBadges } from '../lib/headlinePersona';
 import { trackEvent } from '../analytics';
 import { CONVERSATION_GAP_HOURS } from '../config/analysisConfig';
 import type { AnalysisResult } from '../analysis';
@@ -76,12 +76,9 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
 
   async function handleShareImage() {
     trackEvent('image_shared');
-    const topSender = [...personaBreakdown.messageCount].sort((a, b) => b.value - a.value)[0];
-    const topStreak = [...personaBreakdown.streakDays].sort((a, b) => b.value - a.value)[0];
-    // The single most shareable "you are the ___" badge for this chat — the
-    // whole point of a share image is to be about *someone*, not just numbers.
-    const headlinePersona = pickHeadlinePersona(personas);
-    const formattedPersona = headlinePersona ? formatPersona(headlinePersona, dictionary) : undefined;
+    // The 5-badge "Wrapped" grid — the whole point of a share image is to be
+    // about *people*, not just numbers.
+    const badges = formatShareBadges(personas, dictionary);
     const blob = await generateShareImageBlob({
       appTitle: dictionary.app.title,
       totalMessages,
@@ -91,12 +88,6 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
         start: formatDate(coreStats.firstMessage.timestamp.getTime(), language),
         end: formatDate(coreStats.lastMessage.timestamp.getTime(), language),
       }),
-      topSenderName: topSender?.sender,
-      topSenderCount: topSender?.value,
-      topSenderLabel: dictionary.stats.topSenderLabel,
-      topStreakName: topStreak?.sender,
-      topStreakDays: topStreak?.value,
-      topStreakLabel: dictionary.stats.streakDays,
       busiestDayDate,
       busiestDayCount: busiestDay.count,
       busiestDayLabel: dictionary.stats.busiestDayTitle,
@@ -105,8 +96,7 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
       urlText: window.location.host,
       dir: direction,
       gradient: DEFAULT_THEME.hexStops,
-      personaIcon: formattedPersona?.icon,
-      personaText: formattedPersona?.text,
+      badges,
     });
     await shareOrDownloadImage(blob, 'whatsapp-wrapped.png', dictionary.app.title, dictionary.stats.shareIntro);
     maybeShowShareBonusToast();

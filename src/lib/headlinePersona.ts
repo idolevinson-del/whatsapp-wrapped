@@ -57,6 +57,61 @@ export function pickHeadlinePersona(personas: PersonaResult[]): PersonaResult | 
   return orderPersonas(personas)[0];
 }
 
+/**
+ * The 5 persona ids shown as badges on the shareable "Wrapped" image, in
+ * display order. Chosen for how well each reads as a one-line badge next to
+ * just a name (unlike e.g. fastestReplier or conversationStarter, whose
+ * insight only makes sense with a number attached).
+ */
+export const SHARE_BADGE_IDS = ['chatterbox', 'comedian', 'philosopher', 'nightOwl', 'ghost'] as const;
+
+/** Fixed icon per share-image badge — independent of PERSONA_ICONS (used
+ * elsewhere for the full persona set) so this list can be curated on its
+ * own without affecting the persona reveal or story cards. */
+export const SHARE_BADGE_ICONS: Record<(typeof SHARE_BADGE_IDS)[number], string> = {
+  chatterbox: '🏆',
+  comedian: '😂',
+  philosopher: '💬',
+  nightOwl: '🌙',
+  ghost: '👻',
+};
+
+/** Short badge label per share-image badge id — see Dictionary['stats'] for
+ * the actual translated strings. */
+export function shareBadgeLabel(id: (typeof SHARE_BADGE_IDS)[number], dictionary: Dictionary): string {
+  switch (id) {
+    case 'chatterbox':
+      return dictionary.stats.badgeMostActive;
+    case 'comedian':
+      return dictionary.stats.badgeFunniest;
+    case 'philosopher':
+      return dictionary.stats.badgeBiggestYapper;
+    case 'nightOwl':
+      return dictionary.stats.badgeNightOwl;
+    case 'ghost':
+      return dictionary.stats.badgeMostIgnored;
+  }
+}
+
+export interface ShareBadge {
+  icon: string;
+  label: string;
+  name: string;
+}
+
+/** Formats up to 5 persona badges for the shareable image, in SHARE_BADGE_IDS
+ * order — only the ones this chat actually produced (e.g. a 1-on-1 chat has
+ * no "ghost"). */
+export function formatShareBadges(personas: PersonaResult[], dictionary: Dictionary): ShareBadge[] {
+  return SHARE_BADGE_IDS.map((id) => personas.find((p) => p.id === id))
+    .filter((p): p is PersonaResult => Boolean(p))
+    .map((p) => ({
+      icon: SHARE_BADGE_ICONS[p.id as (typeof SHARE_BADGE_IDS)[number]],
+      label: shareBadgeLabel(p.id as (typeof SHARE_BADGE_IDS)[number], dictionary),
+      name: firstName(p.sender),
+    }));
+}
+
 export interface FormattedPersona {
   icon: string;
   /** Full sentence, e.g. "Alex is the Comedian — made others laugh 12 times." */
@@ -119,11 +174,13 @@ export interface BreakdownPersonaInput {
  * therefore the exact same winner and displayed number) as the full
  * computation would, so results match whenever both are derivable.
  */
-export function pickHeadlinePersonaFromBreakdown(input: BreakdownPersonaInput): PersonaResult | undefined {
+function computeBreakdownWinners(
+  input: BreakdownPersonaInput
+): Partial<Record<string, { sender: string; value: number } | null>> {
   const { senders, pb } = input;
   const zip = (values: number[]) => senders.map((sender, i) => ({ sender, value: values[i] ?? 0 }));
 
-  const winners: Partial<Record<string, { sender: string; value: number } | null>> = {
+  return {
     chatterbox: pickHighest(zip(pb.mc).filter((s) => s.value > 0)),
     streaker: pickHighest(zip(pb.sd).filter((s) => s.value > 1)),
     fastestReplier: pickLowest(zip(pb.arm).filter((s) => s.value > 0)),
@@ -133,10 +190,32 @@ export function pickHeadlinePersonaFromBreakdown(input: BreakdownPersonaInput): 
     mostMentioned: pb.mnc.length > 0 ? pickHighest(zip(pb.mnc).filter((s) => s.value > 0)) : null,
     ghost: senders.length >= GROUP_MIN_SENDERS ? pickLowest(zip(pb.mc)) : null,
   };
+}
 
+export function pickHeadlinePersonaFromBreakdown(input: BreakdownPersonaInput): PersonaResult | undefined {
+  const winners = computeBreakdownWinners(input);
   for (const id of PERSONA_ORDER) {
     const winner = winners[id];
     if (winner) return { id, sender: winner.sender, insightTemplate: `persona.${id}`, value: winner.value };
   }
   return undefined;
+}
+
+/**
+ * Same 5 badges as formatShareBadges, but derived from a compact share-link
+ * payload instead of a full analysis — used by SharedStatsPage. Night Owl is
+ * never included: the payload carries no hour-of-day breakdown at all (see
+ * pickHeadlinePersonaFromBreakdown's doc comment), so a re-shared image
+ * simply shows 4 badges instead of 5 rather than a fake one.
+ */
+export function pickShareBadgesFromBreakdown(input: BreakdownPersonaInput, dictionary: Dictionary): ShareBadge[] {
+  const winners = computeBreakdownWinners(input);
+  const badges: ShareBadge[] = [];
+  for (const id of SHARE_BADGE_IDS) {
+    if (id === 'nightOwl') continue;
+    const winner = winners[id];
+    if (!winner) continue;
+    badges.push({ icon: SHARE_BADGE_ICONS[id], label: shareBadgeLabel(id, dictionary), name: firstName(winner.sender) });
+  }
+  return badges;
 }

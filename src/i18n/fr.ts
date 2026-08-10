@@ -4,10 +4,10 @@ export const fr: Dictionary = {
   code: 'fr',
   app: {
     title: 'WhatsApp Wrapped',
-    tagline: 'Ton année en discussions, résumée.',
+    tagline: 'Découvre qui dirige VRAIMENT ton groupe WhatsApp 😂',
   },
   upload: {
-    description: 'Envoie ta discussion, obtiens les statistiques. Tout reste chez toi.',
+    description: 'Importe ta discussion → Découvre les stats de ton groupe → Démasque tes amis',
     freeLimitNote: 'Offre gratuite : {count} analyses de discussion. Illimité avec Wrapped+.',
     dropzoneTitle: 'Dépose ta discussion ici',
     dropzoneSubtitle: 'ou touche pour choisir un fichier',
@@ -115,8 +115,12 @@ export const fr: Dictionary = {
     shareBonusHint: 'Partage avec des amis pour obtenir une analyse gratuite de plus',
     shareIntro: '👀 Analysons nos messages ensemble',
     shareImageButton: 'Partager en image',
-    topSenderLabel: 'Le plus de messages envoyés',
     shareImageCta: 'Essaie avec ta propre discussion 👇',
+    badgeMostActive: 'Qui participe le plus',
+    badgeFunniest: 'Qui fait le plus rire',
+    badgeBiggestYapper: 'Qui parle le plus',
+    badgeNightOwl: 'Le noctambule',
+    badgeMostIgnored: 'Le fantôme du groupe',
     likedItHeading: 'Ça t\'a plu ?',
     tryItYourselfButton: 'Essaie aussi',
     overviewTitle: 'Aperçu',
@@ -146,8 +150,7 @@ export const fr: Dictionary = {
     emojiCountInfo:
       'Chaque emoji utilisé dans tous les messages, compté individuellement — envoyer 😂😂😂 dans un message compte pour 3.',
     topEmojisInfo: 'Les emojis que chaque personne a le plus utilisés, et combien de fois.',
-    laughsTriggeredInfo:
-      'Compté chaque fois qu’un message a été immédiatement suivi d’une réponse contenant 😂, 🤣, « haha » ou similaire.',
+    laughsTriggeredInfo: 'Messages ayant reçu une réponse immédiate avec 😂, 🤣, « haha » ou similaire.',
     streakDaysInfo:
       'La plus longue série de jours consécutifs avec au moins un message envoyé — même un seul message par jour suffit à maintenir la série.',
     avgReplyMinutesInfo:

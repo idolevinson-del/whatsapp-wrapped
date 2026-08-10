@@ -11,7 +11,7 @@ import { generateShareImageBlob, shareOrDownloadImage } from '../lib/shareImage'
 import { isPremium } from '../lib/premium';
 import { MAX_BONUS_SLOTS, getBonusSlots, redeemShareBonus } from '../lib/shareBonus';
 import { DEFAULT_THEME } from '../lib/themes';
-import { formatPersona, pickHeadlinePersonaFromBreakdown } from '../lib/headlinePersona';
+import { pickShareBadgesFromBreakdown } from '../lib/headlinePersona';
 import { trackEvent } from '../analytics';
 import { CONVERSATION_GAP_HOURS } from '../config/analysisConfig';
 import type { StatsSharePayload } from '../lib/statsShareLink';
@@ -76,28 +76,10 @@ export function SharedStatsPage({ payload }: { payload: StatsSharePayload }) {
 
   async function handleShareImage() {
     trackEvent('image_shared');
-    let topSenderName: string | undefined;
-    let topSenderCount: number | undefined;
-    payload.s.forEach((sender, i) => {
-      const value = payload.pb.mc[i] ?? 0;
-      if (topSenderCount === undefined || value > topSenderCount) {
-        topSenderName = sender;
-        topSenderCount = value;
-      }
-    });
-    let topStreakName: string | undefined;
-    let topStreakDays: number | undefined;
-    payload.s.forEach((sender, i) => {
-      const value = payload.pb.sd[i] ?? 0;
-      if (topStreakDays === undefined || value > topStreakDays) {
-        topStreakName = sender;
-        topStreakDays = value;
-      }
-    });
     // Best-effort — only what the compact link payload carries, see
-    // pickHeadlinePersonaFromBreakdown's doc comment for what's excluded.
-    const headlinePersona = pickHeadlinePersonaFromBreakdown({ senders: payload.s, pb: payload.pb });
-    const formattedPersona = headlinePersona ? formatPersona(headlinePersona, dictionary) : undefined;
+    // pickShareBadgesFromBreakdown's doc comment for what's excluded (no
+    // Night Owl, since the payload has no hour-of-day breakdown).
+    const badges = pickShareBadgesFromBreakdown({ senders: payload.s, pb: payload.pb }, dictionary);
     const blob = await generateShareImageBlob({
       appTitle: dictionary.app.title,
       totalMessages: payload.total,
@@ -107,12 +89,6 @@ export function SharedStatsPage({ payload }: { payload: StatsSharePayload }) {
         start: formatDate(payload.spanStart, language),
         end: formatDate(payload.spanEnd, language),
       }),
-      topSenderName,
-      topSenderCount,
-      topSenderLabel: dictionary.stats.topSenderLabel,
-      topStreakName,
-      topStreakDays,
-      topStreakLabel: dictionary.stats.streakDays,
       busiestDayDate,
       busiestDayCount: payload.busiestCount,
       busiestDayLabel: dictionary.stats.busiestDayTitle,
@@ -121,8 +97,7 @@ export function SharedStatsPage({ payload }: { payload: StatsSharePayload }) {
       urlText: window.location.host,
       dir: direction,
       gradient: DEFAULT_THEME.hexStops,
-      personaIcon: formattedPersona?.icon,
-      personaText: formattedPersona?.text,
+      badges,
     });
     await shareOrDownloadImage(blob, 'whatsapp-wrapped.png', dictionary.app.title, dictionary.stats.shareIntro);
     maybeShowShareBonusToast();
