@@ -4,6 +4,7 @@ import { LanguagePicker } from '../components/LanguagePicker';
 import { LockedOverlay } from '../components/LockedOverlay';
 import { Toast } from '../components/Toast';
 import { InfoTooltip } from '../components/InfoTooltip';
+import { TRADEMARK_DISCLAIMER } from '../lib/legal';
 import type { StatsViewModel } from './statsViewModel';
 
 /** Purely presentational — renders a StatsViewModel, regardless of whether it
@@ -136,6 +137,10 @@ export function StatsView({ model }: { model: StatsViewModel }) {
               {model.tryItYourselfLabel}
             </button>
           </div>
+
+          <p dir="ltr" className="pb-2 text-center text-[11px] leading-relaxed text-neutral-600">
+            {TRADEMARK_DISCLAIMER}
+          </p>
         </div>
       </div>
       {model.toastMessage && <Toast message={model.toastMessage} />}

@@ -8,6 +8,7 @@ import { FREE_MAX_ENTRIES, getFreeLimit, getLifetimeAnalysisCount } from '../lib
 import type { ChatHistoryEntry } from '../lib/chatHistory';
 import { hasSeenOnboarding, markOnboardingSeen } from '../lib/onboarding';
 import { isPremium } from '../lib/premium';
+import { TRADEMARK_DISCLAIMER } from '../lib/legal';
 import type { AppError, ProgressStage } from '../worker';
 
 function errorMessage(error: AppError, dictionary: Dictionary): string {
@@ -247,6 +248,10 @@ export function UploadPage({
             onDelete={onDeleteHistoryEntry}
             onClearAll={onClearHistory}
           />
+
+          <p dir="ltr" className="mt-8 text-[11px] leading-relaxed text-neutral-600">
+            {TRADEMARK_DISCLAIMER}
+          </p>
         </div>
       </div>
 
