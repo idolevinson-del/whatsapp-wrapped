@@ -20,7 +20,6 @@ export const fr: Dictionary = {
       'Aucun message n\'a pu être lu dans ce fichier. Vérifie qu\'il s\'agit bien d\'une exportation de discussion WhatsApp (.txt).',
     errorUnknown: 'Une erreur est survenue lors de l\'analyse de ce fichier.',
     guideLink: 'Comment exporter une discussion ?',
-    analyticsNote: 'Nous comptons uniquement des visites anonymes. Ta discussion ne quitte jamais ton appareil.',
   },
   exportGuide: {
     title: 'Comment exporter ta discussion WhatsApp',

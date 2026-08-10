@@ -20,7 +20,6 @@ export const pt: Dictionary = {
       'Não conseguimos ler mensagens deste arquivo. Confirme que é uma exportação de conversa do WhatsApp (.txt).',
     errorUnknown: 'Algo deu errado ao analisar este arquivo.',
     guideLink: 'Como exporto uma conversa?',
-    analyticsNote: 'Só contamos visitas anônimas. Sua conversa nunca sai do seu dispositivo.',
   },
   exportGuide: {
     title: 'Como exportar sua conversa do WhatsApp',

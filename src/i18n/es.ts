@@ -20,7 +20,6 @@ export const es: Dictionary = {
       'No se pudieron leer mensajes de este archivo. Asegúrate de que sea una exportación de chat de WhatsApp (.txt).',
     errorUnknown: 'Algo salió mal al analizar este archivo.',
     guideLink: '¿Cómo exporto un chat?',
-    analyticsNote: 'Solo contamos visitas anónimas. Tu chat nunca sale de tu dispositivo.',
   },
   exportGuide: {
     title: 'Cómo exportar tu chat de WhatsApp',

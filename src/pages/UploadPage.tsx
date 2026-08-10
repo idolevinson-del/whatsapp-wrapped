@@ -239,8 +239,6 @@ export function UploadPage({
             </p>
           )}
 
-          <p className="mt-6 text-xs text-neutral-500">{dictionary.upload.analyticsNote}</p>
-
           <ChatHistoryList
             entries={history}
             onOpen={onOpenHistoryEntry}

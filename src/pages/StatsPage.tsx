@@ -11,6 +11,7 @@ import { buildStatsSharePayload, buildStatsShareUrl } from '../lib/statsShareLin
 import { generateShareImageBlob, shareOrDownloadImage } from '../lib/shareImage';
 import { isPremium } from '../lib/premium';
 import { MAX_BONUS_SLOTS, getBonusSlots, redeemShareBonus } from '../lib/shareBonus';
+import { useToast } from '../lib/useToast';
 import { DEFAULT_THEME } from '../lib/themes';
 import { formatShareBadges } from '../lib/headlinePersona';
 import { trackEvent } from '../analytics';
@@ -36,7 +37,7 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
   const isGroup = personaBreakdown.mentionedCount.length > 0;
   const [showPremium, setShowPremium] = useState(false);
   const [, forcePremiumRefresh] = useState(0);
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const { message: toastMessage, show: showToast } = useToast();
   const userIsPremium = isPremium();
 
   function withColors(values: { sender: string; value: number }[]) {
@@ -48,10 +49,12 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
   // visible confirmation, not just the ones that grant a new slot — a
   // silent "did that even work?" moment (premium users, or a free user
   // already at the cap) reads as a bug even though nothing's actually wrong.
+  // useToast (not a plain setTimeout) so the confirmation survives the tab
+  // being backgrounded — which is exactly what happens on mobile the
+  // instant "Share to WhatsApp" deep-links into the WhatsApp app.
   function maybeShowShareBonusToast() {
     const earnedNewSlot = !userIsPremium && redeemShareBonus();
-    setToastMessage(earnedNewSlot ? dictionary.premium.shareBonusEarned : dictionary.premium.shareThanks);
-    setTimeout(() => setToastMessage(null), 4000);
+    showToast(earnedNewSlot ? dictionary.premium.shareBonusEarned : dictionary.premium.shareThanks);
   }
 
   // The hint under the share buttons: only worth showing while there's
@@ -70,8 +73,11 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
     trackEvent('results_shared');
     const shareUrl = buildStatsShareUrl(buildStatsSharePayload(analysis, fileName, language));
     const text = buildStatsShareText(dictionary, shareUrl);
-    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer');
+    // Show the confirmation *before* opening wa.me — on mobile that link
+    // deep-links straight into the WhatsApp app, backgrounding this tab
+    // immediately, so the toast needs to already be committed.
     maybeShowShareBonusToast();
+    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer');
   }
 
   async function handleShareImage() {

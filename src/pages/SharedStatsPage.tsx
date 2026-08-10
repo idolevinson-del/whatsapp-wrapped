@@ -10,6 +10,7 @@ import { buildStatsShareText } from '../lib/shareText';
 import { generateShareImageBlob, shareOrDownloadImage } from '../lib/shareImage';
 import { isPremium } from '../lib/premium';
 import { MAX_BONUS_SLOTS, getBonusSlots, redeemShareBonus } from '../lib/shareBonus';
+import { useToast } from '../lib/useToast';
 import { DEFAULT_THEME } from '../lib/themes';
 import { pickShareBadgesFromBreakdown } from '../lib/headlinePersona';
 import { trackEvent } from '../analytics';
@@ -33,17 +34,18 @@ export function SharedStatsPage({ payload }: { payload: StatsSharePayload }) {
   const { dictionary, language, direction, setLanguage } = useLanguage();
   const [showPremium, setShowPremium] = useState(false);
   const [, forcePremiumRefresh] = useState(0);
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const { message: toastMessage, show: showToast } = useToast();
   const userIsPremium = isPremium();
 
   // Growth lever: sharing (even re-sharing a link you received) raises the
   // viewer's own free lifetime cap by one, up to MAX_BONUS_SLOTS — see
   // lib/shareBonus.ts and StatsPage's identical helper. Every share still
   // gets a visible confirmation, not just the ones that grant a new slot.
+  // useToast (not a plain setTimeout) so the confirmation survives the tab
+  // being backgrounded when wa.me deep-links into the WhatsApp app.
   function maybeShowShareBonusToast() {
     const earnedNewSlot = !userIsPremium && redeemShareBonus();
-    setToastMessage(earnedNewSlot ? dictionary.premium.shareBonusEarned : dictionary.premium.shareThanks);
-    setTimeout(() => setToastMessage(null), 4000);
+    showToast(earnedNewSlot ? dictionary.premium.shareBonusEarned : dictionary.premium.shareThanks);
   }
 
   const showShareBonusHint = !userIsPremium && getBonusSlots() < MAX_BONUS_SLOTS;
@@ -70,8 +72,10 @@ export function SharedStatsPage({ payload }: { payload: StatsSharePayload }) {
     // Re-share the same link — we only ever have the payload we received.
     const shareUrl = buildStatsShareUrl(payload);
     const text = buildStatsShareText(dictionary, shareUrl);
-    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer');
+    // Show the confirmation *before* opening wa.me — see StatsPage's
+    // identical handler for why the order matters.
     maybeShowShareBonusToast();
+    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer');
   }
 
   async function handleShareImage() {

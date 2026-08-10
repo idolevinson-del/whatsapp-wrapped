@@ -33,8 +33,6 @@ export interface Dictionary {
     errorUnknown: string;
     /** Link to the export guide page. */
     guideLink: string;
-    /** Distinguishes anonymous visit-counting analytics from the user's chat data. */
-    analyticsNote: string;
     /** Shown only to non-premium visitors, right under the description —
      * sets expectations up front rather than only at the limit wall.
      * Template with {count} — the free baseline (before any share bonus). */
