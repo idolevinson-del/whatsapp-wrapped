@@ -34,7 +34,7 @@ export default defineConfig({
       manifest: {
         name: 'WhatsApp Wrapped',
         short_name: 'Wrapped',
-        description: 'Your year in chats, wrapped — a fun, private stats breakdown of any WhatsApp chat.',
+        description: 'Discover who REALLY runs your WhatsApp group — a fun, private stats breakdown of any chat.',
         start_url: '/',
         display: 'standalone',
         background_color: '#0a0a0f',
