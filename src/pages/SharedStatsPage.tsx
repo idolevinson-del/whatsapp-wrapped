@@ -13,6 +13,7 @@ import { MAX_BONUS_SLOTS, getBonusSlots, redeemShareBonus } from '../lib/shareBo
 import { DEFAULT_THEME } from '../lib/themes';
 import { formatPersona, pickHeadlinePersonaFromBreakdown } from '../lib/headlinePersona';
 import { trackEvent } from '../analytics';
+import { CONVERSATION_GAP_HOURS } from '../config/analysisConfig';
 import type { StatsSharePayload } from '../lib/statsShareLink';
 import type { StatsViewModel } from './statsViewModel';
 
@@ -182,8 +183,18 @@ export function SharedStatsPage({ payload }: { payload: StatsSharePayload }) {
     ],
     blocks: [
       // Free blocks first, locked ones pushed to the bottom — matches StatsPage.
-      { kind: 'pie', title: dictionary.stats.messageCount, entries: withColors(payload.pb.mc) },
-      { kind: 'pie', title: dictionary.stats.emojiCount, entries: withColors(payload.pb.ec) },
+      {
+        kind: 'pie',
+        title: dictionary.stats.messageCount,
+        entries: withColors(payload.pb.mc),
+        infoText: dictionary.stats.messageCountInfo,
+      },
+      {
+        kind: 'pie',
+        title: dictionary.stats.emojiCount,
+        entries: withColors(payload.pb.ec),
+        infoText: dictionary.stats.emojiCountInfo,
+      },
       {
         kind: 'topEmojis',
         title: dictionary.stats.topEmojisTitle,
@@ -192,14 +203,21 @@ export function SharedStatsPage({ payload }: { payload: StatsSharePayload }) {
           color: colors[sender] ?? '#94a3b8',
           emojis: (payload.te[i] ?? []).map(([value, count]) => ({ value, count })),
         })),
+        infoText: dictionary.stats.topEmojisInfo,
       },
-      { kind: 'pie', title: dictionary.stats.laughsTriggered, entries: withColors(payload.pb.lt) },
+      {
+        kind: 'pie',
+        title: dictionary.stats.laughsTriggered,
+        entries: withColors(payload.pb.lt),
+        infoText: dictionary.stats.laughsTriggeredInfo,
+      },
       {
         kind: 'bar',
         title: dictionary.stats.streakDays,
         entries: withColors(payload.pb.sd),
         valueSuffix: ` ${dictionary.stats.daysSuffix}`,
         locked: !userIsPremium,
+        infoText: dictionary.stats.streakDaysInfo,
       },
       {
         kind: 'bar',
@@ -207,18 +225,21 @@ export function SharedStatsPage({ payload }: { payload: StatsSharePayload }) {
         entries: withColors(payload.pb.arm),
         valueSuffix: ` ${dictionary.stats.minutesSuffix}`,
         locked: !userIsPremium,
+        infoText: formatTemplate(dictionary.stats.avgReplyMinutesInfo, { hours: CONVERSATION_GAP_HOURS }),
       },
       {
         kind: 'pie',
         title: dictionary.stats.conversationStarterCount,
         entries: withColors(payload.pb.csc),
         locked: !userIsPremium,
+        infoText: formatTemplate(dictionary.stats.conversationStarterCountInfo, { hours: CONVERSATION_GAP_HOURS }),
       },
       {
         kind: 'bar',
         title: dictionary.stats.wordsPerMessage,
         entries: withColors(payload.pb.wpm),
         locked: !userIsPremium,
+        infoText: dictionary.stats.wordsPerMessageInfo,
       },
       ...(isGroup
         ? [
@@ -227,6 +248,7 @@ export function SharedStatsPage({ payload }: { payload: StatsSharePayload }) {
               title: dictionary.stats.mentionedCount,
               entries: withColors(payload.pb.mnc),
               locked: !userIsPremium,
+              infoText: dictionary.stats.mentionedCountInfo,
             },
           ]
         : []),

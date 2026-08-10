@@ -139,6 +139,20 @@ export const es: Dictionary = {
     minutesSuffix: 'min',
     daysSuffix: 'días',
     hoursSuffix: 'h',
+    messageCountInfo: 'Un simple conteo de cada mensaje enviado, incluidas fotos, videos y notas de voz.',
+    emojiCountInfo:
+      'Cada emoji usado en todos los mensajes, contado individualmente — enviar 😂😂😂 en un mensaje cuenta como 3.',
+    topEmojisInfo: 'Los emojis que cada persona más usó, y cuántas veces.',
+    laughsTriggeredInfo:
+      'Se cuenta cada vez que un mensaje fue seguido de inmediato por una respuesta con 😂, 🤣, "haha" o similar.',
+    streakDaysInfo:
+      'La racha más larga de días consecutivos con al menos un mensaje enviado — hasta un solo mensaje al día mantiene viva la racha.',
+    avgReplyMinutesInfo:
+      'Tiempo promedio para responder al mensaje de otra persona, contando solo respuestas dentro de {hours} horas — un lapso mayor cuenta como el inicio de una nueva conversación.',
+    conversationStarterCountInfo:
+      'Se cuenta cada vez que alguien envió el primer mensaje después de {hours}+ horas de silencio en el chat (o el primer mensaje de todos).',
+    wordsPerMessageInfo: 'Promedio de palabras por mensaje de texto (los mensajes multimedia no cuentan).',
+    mentionedCountInfo: 'Cuántas veces otra persona escribió tu nombre o apellido como palabra independiente en un mensaje.',
   },
   premium: {
     entryLabel: '🔓 Wrapped+',

@@ -22,6 +22,11 @@ export type StatsBlock = (
    * the DOM (this is a paywall nudge, not real access control — nothing
    * here is sensitive enough to need more than that). */
   locked?: boolean;
+  /** Plain-language explanation of how this stat is actually calculated
+   * (e.g. what counts as "starting a conversation"), shown via an ⓘ next
+   * to the title. Safe to show even when the block is locked — it explains
+   * the feature, not the sender's actual data. */
+  infoText?: string;
 };
 
 export interface StatsOverviewTile {

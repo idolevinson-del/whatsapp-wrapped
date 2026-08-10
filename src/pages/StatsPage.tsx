@@ -14,6 +14,7 @@ import { MAX_BONUS_SLOTS, getBonusSlots, redeemShareBonus } from '../lib/shareBo
 import { DEFAULT_THEME } from '../lib/themes';
 import { formatPersona, pickHeadlinePersona } from '../lib/headlinePersona';
 import { trackEvent } from '../analytics';
+import { CONVERSATION_GAP_HOURS } from '../config/analysisConfig';
 import type { AnalysisResult } from '../analysis';
 import type { StatsViewModel } from './statsViewModel';
 
@@ -180,8 +181,18 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
       // Free blocks first, locked ones pushed to the bottom — so the page
       // opens with content everyone can actually see, and the paywall
       // teasers read as "there's more below" rather than interrupting.
-      { kind: 'pie', title: dictionary.stats.messageCount, entries: withColors(personaBreakdown.messageCount) },
-      { kind: 'pie', title: dictionary.stats.emojiCount, entries: withColors(personaBreakdown.emojiCount) },
+      {
+        kind: 'pie',
+        title: dictionary.stats.messageCount,
+        entries: withColors(personaBreakdown.messageCount),
+        infoText: dictionary.stats.messageCountInfo,
+      },
+      {
+        kind: 'pie',
+        title: dictionary.stats.emojiCount,
+        entries: withColors(personaBreakdown.emojiCount),
+        infoText: dictionary.stats.emojiCountInfo,
+      },
       {
         kind: 'topEmojis',
         title: dictionary.stats.topEmojisTitle,
@@ -190,14 +201,21 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
           color: colors[s.sender] ?? '#94a3b8',
           emojis: s.topEmojis.slice(0, 3),
         })),
+        infoText: dictionary.stats.topEmojisInfo,
       },
-      { kind: 'pie', title: dictionary.stats.laughsTriggered, entries: withColors(personaBreakdown.laughsTriggered) },
+      {
+        kind: 'pie',
+        title: dictionary.stats.laughsTriggered,
+        entries: withColors(personaBreakdown.laughsTriggered),
+        infoText: dictionary.stats.laughsTriggeredInfo,
+      },
       {
         kind: 'bar',
         title: dictionary.stats.streakDays,
         entries: withColors(personaBreakdown.streakDays),
         valueSuffix: ` ${dictionary.stats.daysSuffix}`,
         locked: !userIsPremium,
+        infoText: dictionary.stats.streakDaysInfo,
       },
       {
         kind: 'bar',
@@ -205,18 +223,21 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
         entries: withColors(personaBreakdown.avgReplyMinutes),
         valueSuffix: ` ${dictionary.stats.minutesSuffix}`,
         locked: !userIsPremium,
+        infoText: formatTemplate(dictionary.stats.avgReplyMinutesInfo, { hours: CONVERSATION_GAP_HOURS }),
       },
       {
         kind: 'pie',
         title: dictionary.stats.conversationStarterCount,
         entries: withColors(personaBreakdown.conversationStarterCount),
         locked: !userIsPremium,
+        infoText: formatTemplate(dictionary.stats.conversationStarterCountInfo, { hours: CONVERSATION_GAP_HOURS }),
       },
       {
         kind: 'bar',
         title: dictionary.stats.wordsPerMessage,
         entries: withColors(personaBreakdown.wordsPerMessage),
         locked: !userIsPremium,
+        infoText: dictionary.stats.wordsPerMessageInfo,
       },
       ...(isGroup
         ? [
@@ -225,6 +246,7 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
               title: dictionary.stats.mentionedCount,
               entries: withColors(personaBreakdown.mentionedCount),
               locked: !userIsPremium,
+              infoText: dictionary.stats.mentionedCountInfo,
             },
           ]
         : []),

@@ -150,6 +150,20 @@ export interface Dictionary {
     minutesSuffix: string;
     daysSuffix: string;
     hoursSuffix: string;
+    /** Plain-language explanations of how each stat is actually calculated,
+     * shown via an ⓘ next to that stat's title (see InfoTooltip). Two are
+     * templated with {hours} — the live value of CONVERSATION_GAP_HOURS. */
+    messageCountInfo: string;
+    emojiCountInfo: string;
+    topEmojisInfo: string;
+    laughsTriggeredInfo: string;
+    streakDaysInfo: string;
+    /** Template with {hours}. */
+    avgReplyMinutesInfo: string;
+    /** Template with {hours}. */
+    conversationStarterCountInfo: string;
+    wordsPerMessageInfo: string;
+    mentionedCountInfo: string;
   };
   /** The one-time-purchase "Wrapped+" unlock: license key entry and feature
    * pitch. No accounts — the license key itself is the credential. */

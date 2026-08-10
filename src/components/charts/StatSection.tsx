@@ -1,5 +1,6 @@
 import { PieChart } from './PieChart';
 import { LockedOverlay } from '../LockedOverlay';
+import { InfoTooltip } from '../InfoTooltip';
 
 interface StatEntry {
   sender: string;
@@ -21,9 +22,21 @@ interface StatSectionProps {
   locked?: boolean;
   onOpenPremium?: () => void;
   lockLabel?: string;
+  /** Plain-language explanation of how this stat is calculated, shown via
+   * an ⓘ next to the title. */
+  infoText?: string;
 }
 
-export function StatSection({ title, kind, entries, valueSuffix = '', locked, onOpenPremium, lockLabel }: StatSectionProps) {
+export function StatSection({
+  title,
+  kind,
+  entries,
+  valueSuffix = '',
+  locked,
+  onOpenPremium,
+  lockLabel,
+  infoText,
+}: StatSectionProps) {
   if (entries.length === 0) return null;
 
   const sorted = [...entries].sort((a, b) => b.value - a.value);
@@ -31,7 +44,10 @@ export function StatSection({ title, kind, entries, valueSuffix = '', locked, on
 
   return (
     <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-      <h3 className="text-sm font-semibold uppercase tracking-widest text-white/70">{title}</h3>
+      <h3 className="text-sm font-semibold uppercase tracking-widest text-white/70">
+        {title}
+        {infoText && <InfoTooltip text={infoText} />}
+      </h3>
 
       <div className="relative mt-4 overflow-hidden rounded-xl">
         <div

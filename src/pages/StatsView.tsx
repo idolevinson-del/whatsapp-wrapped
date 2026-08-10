@@ -3,6 +3,7 @@ import { StatTile } from '../components/charts/StatTile';
 import { LanguagePicker } from '../components/LanguagePicker';
 import { LockedOverlay } from '../components/LockedOverlay';
 import { Toast } from '../components/Toast';
+import { InfoTooltip } from '../components/InfoTooltip';
 import type { StatsViewModel } from './statsViewModel';
 
 /** Purely presentational — renders a StatsViewModel, regardless of whether it
@@ -81,7 +82,10 @@ export function StatsView({ model }: { model: StatsViewModel }) {
               if (block.rows.length === 0) return null;
               return (
                 <div key={i} className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                  <h3 className="text-sm font-semibold uppercase tracking-widest text-white/70">{block.title}</h3>
+                  <h3 className="text-sm font-semibold uppercase tracking-widest text-white/70">
+                    {block.title}
+                    {block.infoText && <InfoTooltip text={block.infoText} />}
+                  </h3>
                   <div className="relative mt-4 overflow-hidden rounded-xl">
                     <ul
                       className={block.locked ? 'space-y-2.5 blur-2xl pointer-events-none select-none' : 'space-y-2.5'}
@@ -126,6 +130,7 @@ export function StatsView({ model }: { model: StatsViewModel }) {
                 locked={block.locked}
                 onOpenPremium={model.onOpenPremium}
                 lockLabel={model.premiumCtaLabel}
+                infoText={block.infoText}
               />
             );
           })}
