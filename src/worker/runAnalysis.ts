@@ -12,11 +12,24 @@ import type { AnalysisOutcome, ProgressStage } from './types';
  * recognize (WhatsApp has many such notifications, in every language, and
  * new ones appear with app updates; matching against the group's own name
  * catches all of them structurally instead of chasing each string).
+ *
+ * Guarded by an actual participant count, not just parseChatName's `isGroup`
+ * guess: that guess comes from the filename shape alone (e.g. a "Chat - X"
+ * pattern), and at least one real export format uses that same dash shape
+ * for ordinary 1-on-1 chats too. Trusting it blindly meant a two-person chat
+ * whose filename happened to look "group-shaped" would have every message
+ * from the other person silently deleted, because her name matched the
+ * (wrongly) inferred "group name". A real group needs 3+ distinct senders by
+ * definition — a "group" of one other person doesn't exist — so requiring
+ * that here makes the filter self-correcting regardless of what the filename
+ * looks like.
  */
-function dropGroupNameAsSender(messages: ParsedMessage[], fileName: string | undefined) {
+export function dropGroupNameAsSender(messages: ParsedMessage[], fileName: string | undefined) {
   if (!fileName) return messages;
 
   const senders = [...new Set(messages.map((m) => m.sender.trim()))];
+  if (senders.length < 3) return messages;
+
   const { name, isGroup } = parseChatName(fileName, senders);
   if (!isGroup || !name) return messages;
 
