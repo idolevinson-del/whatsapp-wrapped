@@ -182,7 +182,14 @@ export function UploadPage({
           <input
             ref={inputRef}
             type="file"
-            accept=".txt,.zip"
+            // Extensions alone make Chrome filter by MIME type under the hood —
+            // cloud providers (Drive and friends) often report a generic type
+            // for files saved through them, which can hide/gray out an export
+            // that never went through a plain "Save to Files" flow. Listing
+            // the MIME types too keeps the picker from filtering those out;
+            // extractChatFile still sniffs content, so this only affects what
+            // shows up in the picker, not what's accepted afterwards.
+            accept=".txt,.zip,text/plain,application/zip,application/x-zip-compressed,application/octet-stream"
             className="hidden"
             onChange={(e) => handleFiles(e.target.files)}
           />
