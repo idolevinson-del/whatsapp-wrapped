@@ -34,23 +34,14 @@ export function StatsView({ model }: { model: StatsViewModel }) {
         </h1>
         <p className="mt-2 text-neutral-400">{model.headline ?? model.subtitle}</p>
 
-        <div className="mt-4 flex gap-2.5">
+        <div className="mt-4">
           <button
             type="button"
             onClick={model.onShare}
-            className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-full bg-[#25D366] px-5 py-3 text-sm font-semibold text-neutral-950 shadow-lg shadow-black/20 transition-colors hover:bg-[#1fb959]"
-          >
-            <span className="text-lg">🔗</span>
-            {model.shareLabel}
-          </button>
-          <button
-            type="button"
-            onClick={model.onShareImage}
-            aria-label={model.shareImageLabel}
-            title={model.shareImageLabel}
-            className="flex shrink-0 cursor-pointer items-center justify-center gap-2 rounded-full border border-white/25 bg-white/5 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-black/20 transition-colors hover:bg-white/10"
+            className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-[#25D366] px-5 py-3 text-sm font-semibold text-neutral-950 shadow-lg shadow-black/20 transition-colors hover:bg-[#1fb959]"
           >
             <span className="text-lg">📸</span>
+            {model.shareLabel}
           </button>
         </div>
         {model.shareBonusHint && <p className="mt-1.5 text-center text-xs text-neutral-500">{model.shareBonusHint}</p>}

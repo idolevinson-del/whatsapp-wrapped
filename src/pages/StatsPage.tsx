@@ -69,26 +69,16 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
     Math.round((coreStats.lastMessage.timestamp.getTime() - coreStats.firstMessage.timestamp.getTime()) / MS_PER_DAY) + 1
   );
 
-  function handleShareToWhatsApp() {
+  // The single share action: generates the "Wrapped" badge image and hands
+  // it to the OS share sheet (WhatsApp is one of the targets there — wa.me
+  // links can't carry a file attachment at all, so there's no way to jump
+  // straight into WhatsApp *with the image* the way the old text-only
+  // button jumped straight into a chat). The link is still real and
+  // clickable — it travels in the share sheet's caption text, not baked
+  // into the image's pixels.
+  async function handleShareToWhatsApp() {
     trackEvent('results_shared');
     const shareUrl = buildStatsShareUrl(buildStatsSharePayload(analysis, fileName, language));
-    const text = buildStatsShareText(dictionary, shareUrl);
-    // Show the confirmation *before* opening wa.me — on mobile that link
-    // deep-links straight into the WhatsApp app, backgrounding this tab
-    // immediately, so the toast needs to already be committed.
-    maybeShowShareBonusToast();
-    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer');
-  }
-
-  async function handleShareImage() {
-    trackEvent('image_shared');
-    // The link printed inside the image itself is just plain text — not
-    // clickable, so it can't be how the recipient actually gets to the
-    // app. The real, tappable link has to travel in the share sheet's
-    // text/caption instead, same URL as the WhatsApp text-share button.
-    const shareUrl = buildStatsShareUrl(buildStatsSharePayload(analysis, fileName, language));
-    // The 5-badge "Wrapped" grid — the whole point of a share image is to be
-    // about *people*, not just numbers.
     const badges = formatShareBadges(personas, dictionary);
     const blob = await generateShareImageBlob({
       appTitle: dictionary.app.title,
@@ -135,8 +125,6 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
     shareLabel: dictionary.stats.shareButton,
     onShare: handleShareToWhatsApp,
     shareBonusHint: showShareBonusHint ? dictionary.stats.shareBonusHint : null,
-    shareImageLabel: dictionary.stats.shareImageButton,
-    onShareImage: handleShareImage,
     titleGradientClasses: DEFAULT_THEME.gradientClasses,
     overviewTitle: dictionary.stats.overviewTitle,
     overviewTiles: [

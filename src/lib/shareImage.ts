@@ -26,11 +26,10 @@ export interface ShareImageData {
   ctaText: string;
   urlText: string;
   dir: 'ltr' | 'rtl';
-  /** Up to 5 "Wrapped"-style badges (icon + short label + winner's first
+  /** Up to 3 "Wrapped"-style badges (icon + short label + winner's first
    * name) — see lib/headlinePersona.ts's formatShareBadges /
-   * pickShareBadgesFromBreakdown. Fewer than 5 is normal: a 1-on-1 chat has
-   * no "ghost", and a re-shared link has no Night Owl (see that function's
-   * doc comment). */
+   * pickShareBadgesFromBreakdown. Fewer than 3 is normal: a 1-on-1 chat has
+   * no "ghost" (it only makes sense for groups). */
   badges: { icon: string; label: string; name: string }[];
 }
 
@@ -179,12 +178,12 @@ export async function generateShareImageBlob(data: ShareImageData): Promise<Blob
   y += 216;
 
   // The "Wrapped" badge grid — the whole point of the image, the part
-  // people actually screenshot and send around. Smaller row height than the
-  // busiest-day card above so up to 5 fit with room to spare before the
-  // fixed-position footer.
+  // people actually screenshot and send around. Same card size as the
+  // busiest-day highlight above (there are at most 3 badges now, so a
+  // smaller compressed row would just leave the rest of the canvas empty).
   for (const badge of data.badges) {
-    drawHighlightCard(ctx, y, 130, badge.icon, badge.name, badge.label, data.dir);
-    y += 150;
+    drawHighlightCard(ctx, y, 190, badge.icon, badge.name, badge.label, data.dir);
+    y += 216;
   }
 
   // Footer: CTA + URL
@@ -211,8 +210,13 @@ export async function generateShareImageBlob(data: ShareImageData): Promise<Blob
 
 /**
  * On mobile, hands the image to the native share sheet (so it can go
- * straight to a WhatsApp status or Instagram story). Falls back to a plain
- * download wherever file sharing isn't supported (most desktop browsers).
+ * straight to WhatsApp, Instagram, or anywhere else) with shareText — which
+ * includes the real, clickable link — as the accompanying caption. Falls
+ * back to a plain download wherever file sharing isn't supported (most
+ * desktop browsers): this is now the *only* share mechanism the app has, so
+ * the fallback also best-effort copies shareText to the clipboard, since a
+ * downloaded image alone would otherwise leave the visitor with no link to
+ * actually hand anyone.
  */
 export async function shareOrDownloadImage(blob: Blob, filename: string, shareTitle: string, shareText: string) {
   const file = new File([blob], filename, { type: 'image/png' });
@@ -224,6 +228,13 @@ export async function shareOrDownloadImage(blob: Blob, filename: string, shareTi
     } catch (err) {
       if (err instanceof Error && err.name === 'AbortError') return; // user cancelled — don't also download
     }
+  }
+
+  try {
+    await navigator.clipboard?.writeText(shareText);
+  } catch {
+    // Best-effort — clipboard access can be denied/unavailable; the image
+    // download below still succeeds either way.
   }
 
   const url = URL.createObjectURL(blob);

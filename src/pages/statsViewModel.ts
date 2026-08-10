@@ -45,13 +45,14 @@ export interface StatsViewModel {
   exampleBadgeLabel?: string;
   backLabel: string;
   onBack: () => void;
+  /** The one and only share action — generates the "Wrapped" badge image and
+   * hands it to the OS share sheet (WhatsApp is one of the destinations
+   * there, alongside everything else). */
   shareLabel: string;
   onShare: () => void;
   /** Small incentive line under the share button — only present for
    * non-premium visitors who haven't maxed out the share bonus yet. */
   shareBonusHint?: string | null;
-  shareImageLabel: string;
-  onShareImage: () => void;
   /** Tailwind `from-...via-...to-...` classes for the title text and bottom
    * CTA button — the app's brand gradient. */
   titleGradientClasses: string;

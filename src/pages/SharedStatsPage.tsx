@@ -67,26 +67,15 @@ export function SharedStatsPage({ payload }: { payload: StatsSharePayload }) {
   const hasSilence = payload.silenceHours !== undefined && payload.silenceBefore !== undefined && payload.silenceAfter !== undefined;
   const spanDays = Math.max(1, Math.round((payload.spanEnd - payload.spanStart) / MS_PER_DAY) + 1);
 
-  function handleShareToWhatsApp() {
+  // The single share action — see StatsPage's identical handler for why it
+  // shares an image via the OS share sheet instead of jumping straight into
+  // WhatsApp with a wa.me link (wa.me can't carry a file attachment).
+  async function handleShareToWhatsApp() {
     trackEvent('results_shared');
     // Re-share the same link — we only ever have the payload we received.
     const shareUrl = buildStatsShareUrl(payload);
-    const text = buildStatsShareText(dictionary, shareUrl);
-    // Show the confirmation *before* opening wa.me — see StatsPage's
-    // identical handler for why the order matters.
-    maybeShowShareBonusToast();
-    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer');
-  }
-
-  async function handleShareImage() {
-    trackEvent('image_shared');
-    // The link printed inside the image itself is just plain text — not
-    // clickable — so the real, tappable link has to travel in the share
-    // sheet's text/caption instead. Re-share the same link we received.
-    const shareUrl = buildStatsShareUrl(payload);
     // Best-effort — only what the compact link payload carries, see
-    // pickShareBadgesFromBreakdown's doc comment for what's excluded (no
-    // Night Owl, since the payload has no hour-of-day breakdown).
+    // pickShareBadgesFromBreakdown's doc comment for what's derivable.
     const badges = pickShareBadgesFromBreakdown({ senders: payload.s, pb: payload.pb }, dictionary);
     const blob = await generateShareImageBlob({
       appTitle: dictionary.app.title,
@@ -126,8 +115,6 @@ export function SharedStatsPage({ payload }: { payload: StatsSharePayload }) {
     shareLabel: dictionary.stats.shareButton,
     onShare: handleShareToWhatsApp,
     shareBonusHint: showShareBonusHint ? dictionary.stats.shareBonusHint : null,
-    shareImageLabel: dictionary.stats.shareImageButton,
-    onShareImage: handleShareImage,
     titleGradientClasses: DEFAULT_THEME.gradientClasses,
     overviewTitle: dictionary.stats.overviewTitle,
     overviewTiles: [

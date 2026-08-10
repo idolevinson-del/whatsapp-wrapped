@@ -112,18 +112,15 @@ export interface Dictionary {
     /** The whole WhatsApp share message, minus the link. Short and catchy by
      * design — no stat breakdown. Gender-neutral. */
     shareIntro: string;
-    /** Icon-only button next to shareButton; used as its aria-label/title. */
-    shareImageButton: string;
     /** Bottom call-to-action printed on the shareable image card. */
     shareImageCta: string;
     /** Short badge labels (noun phrases, gender-neutral) printed on the
-     * shareable image's 5-badge "Wrapped" grid — see lib/headlinePersona.ts's
+     * shareable image's "Wrapped" badge grid — see lib/headlinePersona.ts's
      * pickShareBadges/pickShareBadgesFromBreakdown for which persona each
-     * badge is derived from. */
+     * badge is derived from. Free-tier stats only, by design — see
+     * SHARE_BADGE_IDS's doc comment. */
     badgeMostActive: string;
     badgeFunniest: string;
-    badgeBiggestYapper: string;
-    badgeNightOwl: string;
     badgeMostIgnored: string;
     /** Heading above the bottom "try it yourself" CTA button. */
     likedItHeading: string;
