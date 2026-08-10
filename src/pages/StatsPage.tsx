@@ -82,6 +82,11 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
 
   async function handleShareImage() {
     trackEvent('image_shared');
+    // The link printed inside the image itself is just plain text — not
+    // clickable, so it can't be how the recipient actually gets to the
+    // app. The real, tappable link has to travel in the share sheet's
+    // text/caption instead, same URL as the WhatsApp text-share button.
+    const shareUrl = buildStatsShareUrl(buildStatsSharePayload(analysis, fileName, language));
     // The 5-badge "Wrapped" grid — the whole point of a share image is to be
     // about *people*, not just numbers.
     const badges = formatShareBadges(personas, dictionary);
@@ -104,7 +109,7 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
       gradient: DEFAULT_THEME.hexStops,
       badges,
     });
-    await shareOrDownloadImage(blob, 'whatsapp-wrapped.png', dictionary.app.title, dictionary.stats.shareIntro);
+    await shareOrDownloadImage(blob, 'whatsapp-wrapped.png', dictionary.app.title, buildStatsShareText(dictionary, shareUrl));
     maybeShowShareBonusToast();
   }
 

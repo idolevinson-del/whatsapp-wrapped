@@ -80,6 +80,10 @@ export function SharedStatsPage({ payload }: { payload: StatsSharePayload }) {
 
   async function handleShareImage() {
     trackEvent('image_shared');
+    // The link printed inside the image itself is just plain text — not
+    // clickable — so the real, tappable link has to travel in the share
+    // sheet's text/caption instead. Re-share the same link we received.
+    const shareUrl = buildStatsShareUrl(payload);
     // Best-effort — only what the compact link payload carries, see
     // pickShareBadgesFromBreakdown's doc comment for what's excluded (no
     // Night Owl, since the payload has no hour-of-day breakdown).
@@ -103,7 +107,7 @@ export function SharedStatsPage({ payload }: { payload: StatsSharePayload }) {
       gradient: DEFAULT_THEME.hexStops,
       badges,
     });
-    await shareOrDownloadImage(blob, 'whatsapp-wrapped.png', dictionary.app.title, dictionary.stats.shareIntro);
+    await shareOrDownloadImage(blob, 'whatsapp-wrapped.png', dictionary.app.title, buildStatsShareText(dictionary, shareUrl));
     maybeShowShareBonusToast();
   }
 
