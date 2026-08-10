@@ -1,4 +1,4 @@
-import { GUMROAD_PRODUCT_PERMALINK } from '../config/premiumConfig';
+import { GUMROAD_PRODUCT_ID } from '../config/premiumConfig';
 
 /**
  * Premium unlock: a one-time-purchase license key, validated against
@@ -48,8 +48,8 @@ export type ActivateResult = { ok: true } | { ok: false; reason: 'invalid' | 'ne
  * Validates a license key against Gumroad and, if valid, remembers it on
  * this device. Called directly from the browser — Gumroad's
  * `licenses/verify` endpoint is designed for exactly this client-side
- * "enter your key" flow and needs no account secret, only the product
- * permalink and the key itself.
+ * "enter your key" flow and needs no account secret, only the product ID
+ * and the key itself.
  *
  * `increment_uses_count: false` so re-checking a key (e.g. a second visit
  * that re-validates) doesn't eat into any per-license activation limit set
@@ -64,7 +64,7 @@ export async function activateLicense(rawKey: string): Promise<ActivateResult> {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({
-        product_permalink: GUMROAD_PRODUCT_PERMALINK,
+        product_id: GUMROAD_PRODUCT_ID,
         license_key: licenseKey,
         increment_uses_count: 'false',
       }),
