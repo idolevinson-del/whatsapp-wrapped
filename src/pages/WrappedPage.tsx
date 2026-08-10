@@ -26,7 +26,7 @@ export function WrappedPage({ analysis, onReset, fileName, isExample }: WrappedP
   const cards = buildStoryCards(analysis, dictionary, fileName);
 
   if (showStats) {
-    return <StatsPage analysis={analysis} onBack={() => setShowStats(false)} />;
+    return <StatsPage analysis={analysis} fileName={fileName} onBack={() => setShowStats(false)} isExample={isExample} />;
   }
 
   return (

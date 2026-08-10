@@ -3,11 +3,11 @@ import { useChatAnalysis } from './worker';
 import { UploadPage } from './pages/UploadPage';
 import { StatsPage } from './pages/StatsPage';
 import { SharedStatsPage } from './pages/SharedStatsPage';
-// The original swipeable "story cards" flow is kept around (unused) so it
-// can be brought back without rebuilding it — see pages/WrappedPage.tsx.
-// SharedWrappedPage still renders old share links (?share=...), which only
-// carry compact per-card data.
-import { SharedWrappedPage } from './pages/WrappedPage';
+// The swipeable "story cards" reveal is the first thing shown after a fresh,
+// real upload — see the `status === 'done'` branch below. SharedWrappedPage
+// still renders old share links (?share=...), which only carry compact
+// per-card data.
+import { WrappedPage, SharedWrappedPage } from './pages/WrappedPage';
 import { ExportGuidePage } from './pages/ExportGuidePage';
 import { initAnalytics, trackEvent, trackPageView } from './analytics';
 import { useChatHistory } from './lib/useChatHistory';
@@ -94,7 +94,12 @@ function App() {
   }
 
   if (status === 'done' && result) {
-    return <StatsPage analysis={result.analysis} fileName={result.fileName} onBack={reset} />;
+    // A fresh, real upload gets the full "reveal" moment first — swipeable
+    // persona cards, one at a time — before landing on the comprehensive
+    // stats page. Reopened history entries and shared links skip straight
+    // to StatsPage (see below): the reveal is a first-impression thing, not
+    // something to replay every time.
+    return <WrappedPage analysis={result.analysis} fileName={result.fileName} onReset={reset} />;
   }
 
   if (showGuide) {
