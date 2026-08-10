@@ -34,7 +34,25 @@ function writeState(state: PremiumState | null): void {
   }
 }
 
+/**
+ * `?free=1` in the URL forces isPremium() to report false, without touching
+ * the actual stored license — a way to preview exactly what a free visitor
+ * sees on the live site while still having a real purchased license on the
+ * same device/browser. Only ever makes premium look *more* restricted, so
+ * there's no way to (ab)use it to unlock anything — safe to ship live.
+ * Drop the query param (or just remove it from the URL) to see the real
+ * state again; nothing is written to storage either way.
+ */
+function isFreePreview(): boolean {
+  try {
+    return new URLSearchParams(window.location.search).get('free') === '1';
+  } catch {
+    return false;
+  }
+}
+
 export function isPremium(): boolean {
+  if (isFreePreview()) return false;
   return readState() !== null;
 }
 
