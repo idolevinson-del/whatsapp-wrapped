@@ -67,7 +67,7 @@ describe('pickShareBadgesFromBreakdown', () => {
   it('uses the Group-flavored labels (never leaks a locked stat) when isGroup is true', () => {
     const badges = pickShareBadgesFromBreakdown(groupInput, en, true);
     const mostActive = badges.find((b) => b.name === 'Alice');
-    expect(mostActive?.label).toBe(en.stats.badgeMostActiveGroup);
+    expect(mostActive?.label).toBe(en.stats.messageCountGroup);
     // ghost only applies to groups — Bob has the fewest messages.
     const mostIgnored = badges.find((b) => b.name === 'Bob');
     expect(mostIgnored?.label).toBe(en.stats.badgeMostIgnored);
@@ -80,7 +80,7 @@ describe('pickShareBadgesFromBreakdown', () => {
     };
     const badges = pickShareBadgesFromBreakdown(soloInput, en, false);
     const mostActive = badges.find((b) => b.name === 'Alice');
-    expect(mostActive?.label).toBe(en.stats.badgeMostActiveSolo);
+    expect(mostActive?.label).toBe(en.stats.messageCountSolo);
     expect(badges.some((b) => b.label === en.stats.badgeMostIgnored)).toBe(false);
   });
 });

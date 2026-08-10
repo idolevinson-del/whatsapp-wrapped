@@ -118,18 +118,10 @@ export interface Dictionary {
     shareIntro: string;
     /** Bottom call-to-action printed on the shareable image card. */
     shareImageCta: string;
-    /** Short badge labels printed on the shareable image's "Wrapped" badge
-     * grid — see lib/headlinePersona.ts's pickShareBadges/
-     * pickShareBadgesFromBreakdown for which persona each badge is derived
-     * from. Free-tier stats only, by design — see SHARE_BADGE_IDS's doc
-     * comment. Most Active and Funniest each have a Group/Solo variant:
-     * "the group's ___" doesn't make sense in a 1-on-1 chat, so that one
-     * uses a plain gender-neutral dual form (X/ית) instead — see
-     * shareBadgeLabel's call sites for which is picked when. */
-    badgeMostActiveGroup: string;
-    badgeMostActiveSolo: string;
-    badgeFunniestGroup: string;
-    badgeFunniestSolo: string;
+    /** Short label for the "most ignored" (fewest messages) share-image
+     * badge — see lib/headlinePersona.ts's pickShareBadges/
+     * pickShareBadgesFromBreakdown. Never needs a Solo variant: it only
+     * ever appears for a group (3+ senders) in the first place. */
     badgeMostIgnored: string;
     /** Heading above the bottom "try it yourself" CTA button. */
     likedItHeading: string;
@@ -147,9 +139,18 @@ export interface Dictionary {
     /** Template with {count}, used as the top-word tile's caption. */
     topWordCaption: string;
     topEmojisTitle: string;
-    messageCount: string;
+    /** Title for the message-count block — also reused as the "Most
+     * Active" share-image badge label (lib/headlinePersona.ts). Group and
+     * Solo variants: "the group's ___" doesn't make sense in a 1-on-1
+     * chat, so Solo uses a plain gender-neutral dual form (X/ית) instead. */
+    messageCountGroup: string;
+    messageCountSolo: string;
     emojiCount: string;
-    laughsTriggered: string;
+    /** Title for the laughs-triggered block — also reused as the
+     * "Funniest" share-image badge label. Same Group/Solo split as
+     * messageCountGroup/Solo. */
+    laughsTriggeredGroup: string;
+    laughsTriggeredSolo: string;
     conversationStarterCount: string;
     mentionedCount: string;
     wordsPerMessage: string;

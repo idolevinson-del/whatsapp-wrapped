@@ -14,6 +14,7 @@ import { MAX_BONUS_SLOTS, getBonusSlots, redeemShareBonus } from '../lib/shareBo
 import { useToast } from '../lib/useToast';
 import { DEFAULT_THEME } from '../lib/themes';
 import { formatShareBadges } from '../lib/headlinePersona';
+import { STAT_ICONS } from '../lib/statIcons';
 import { trackEvent } from '../analytics';
 import { CONVERSATION_GAP_HOURS } from '../config/analysisConfig';
 import type { AnalysisResult } from '../analysis';
@@ -172,19 +173,19 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
       // teasers read as "there's more below" rather than interrupting.
       {
         kind: 'pie',
-        title: dictionary.stats.messageCount,
+        title: `${STAT_ICONS.messageCount} ${isGroup ? dictionary.stats.messageCountGroup : dictionary.stats.messageCountSolo}`,
         entries: withColors(personaBreakdown.messageCount),
         infoText: dictionary.stats.messageCountInfo,
       },
       {
         kind: 'pie',
-        title: dictionary.stats.emojiCount,
+        title: `${STAT_ICONS.emojiCount} ${dictionary.stats.emojiCount}`,
         entries: withColors(personaBreakdown.emojiCount),
         infoText: dictionary.stats.emojiCountInfo,
       },
       {
         kind: 'topEmojis',
-        title: dictionary.stats.topEmojisTitle,
+        title: `${STAT_ICONS.topEmojis} ${dictionary.stats.topEmojisTitle}`,
         rows: coreStats.perSender.map((s) => ({
           sender: s.sender,
           color: colors[s.sender] ?? '#94a3b8',
@@ -194,13 +195,13 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
       },
       {
         kind: 'pie',
-        title: dictionary.stats.laughsTriggered,
+        title: `${STAT_ICONS.laughsTriggered} ${isGroup ? dictionary.stats.laughsTriggeredGroup : dictionary.stats.laughsTriggeredSolo}`,
         entries: withColors(personaBreakdown.laughsTriggered),
         infoText: dictionary.stats.laughsTriggeredInfo,
       },
       {
         kind: 'bar',
-        title: dictionary.stats.streakDays,
+        title: `${STAT_ICONS.streakDays} ${dictionary.stats.streakDays}`,
         entries: withColors(personaBreakdown.streakDays),
         valueSuffix: ` ${dictionary.stats.daysSuffix}`,
         locked: !userIsPremium,
@@ -208,7 +209,7 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
       },
       {
         kind: 'bar',
-        title: dictionary.stats.avgReplyMinutes,
+        title: `${STAT_ICONS.avgReplyMinutes} ${dictionary.stats.avgReplyMinutes}`,
         entries: withColors(personaBreakdown.avgReplyMinutes),
         valueSuffix: ` ${dictionary.stats.minutesSuffix}`,
         locked: !userIsPremium,
@@ -216,14 +217,14 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
       },
       {
         kind: 'pie',
-        title: dictionary.stats.conversationStarterCount,
+        title: `${STAT_ICONS.conversationStarterCount} ${dictionary.stats.conversationStarterCount}`,
         entries: withColors(personaBreakdown.conversationStarterCount),
         locked: !userIsPremium,
         infoText: formatTemplate(dictionary.stats.conversationStarterCountInfo, { hours: CONVERSATION_GAP_HOURS }),
       },
       {
         kind: 'bar',
-        title: dictionary.stats.wordsPerMessage,
+        title: `${STAT_ICONS.wordsPerMessage} ${dictionary.stats.wordsPerMessage}`,
         entries: withColors(personaBreakdown.wordsPerMessage),
         locked: !userIsPremium,
         infoText: dictionary.stats.wordsPerMessageInfo,
@@ -232,7 +233,7 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
         ? [
             {
               kind: 'pie' as const,
-              title: dictionary.stats.mentionedCount,
+              title: `${STAT_ICONS.mentionedCount} ${dictionary.stats.mentionedCount}`,
               entries: withColors(personaBreakdown.mentionedCount),
               locked: !userIsPremium,
               infoText: dictionary.stats.mentionedCountInfo,
@@ -241,14 +242,14 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
         : []),
       {
         kind: 'pie',
-        title: dictionary.stats.curseWordCount,
+        title: `${STAT_ICONS.curseWordCount} ${dictionary.stats.curseWordCount}`,
         entries: withColors(personaBreakdown.curseWordCount),
         locked: !userIsPremium,
         infoText: dictionary.stats.curseWordCountInfo,
       },
       {
         kind: 'pie',
-        title: dictionary.stats.voiceMessageCount,
+        title: `${STAT_ICONS.voiceMessageCount} ${dictionary.stats.voiceMessageCount}`,
         entries: withColors(personaBreakdown.voiceMessageCount),
         locked: !userIsPremium,
         infoText: dictionary.stats.voiceMessageCountInfo,

@@ -79,11 +79,14 @@ export const SHARE_BADGE_ICONS: Record<(typeof SHARE_BADGE_IDS)[number], string>
   ghost: '👻',
 };
 
-/** Short badge label per share-image badge id — see Dictionary['stats'] for
- * the actual translated strings. Most Active and Funniest each have a
- * Group/Solo variant ("the group's ___" doesn't make sense in a 1-on-1
- * chat) — ghost/Most Ignored never needs one, since it never appears for a
- * 1-on-1 chat in the first place (see SHARE_BADGE_ICONS's callers). */
+/** Short badge label per share-image badge id — reuses the exact same
+ * strings as the matching StatsPage block title (messageCountGroup/Solo,
+ * laughsTriggeredGroup/Solo), so the "who's the funniest" language is
+ * identical whether someone reads it on the results page or on a shared
+ * image. Most Active and Funniest each have a Group/Solo variant ("the
+ * group's ___" doesn't make sense in a 1-on-1 chat) — ghost/Most Ignored
+ * never needs one, since it never appears for a 1-on-1 chat in the first
+ * place (see SHARE_BADGE_ICONS's callers). */
 export function shareBadgeLabel(
   id: (typeof SHARE_BADGE_IDS)[number],
   dictionary: Dictionary,
@@ -91,9 +94,9 @@ export function shareBadgeLabel(
 ): string {
   switch (id) {
     case 'chatterbox':
-      return isGroup ? dictionary.stats.badgeMostActiveGroup : dictionary.stats.badgeMostActiveSolo;
+      return isGroup ? dictionary.stats.messageCountGroup : dictionary.stats.messageCountSolo;
     case 'comedian':
-      return isGroup ? dictionary.stats.badgeFunniestGroup : dictionary.stats.badgeFunniestSolo;
+      return isGroup ? dictionary.stats.laughsTriggeredGroup : dictionary.stats.laughsTriggeredSolo;
     case 'ghost':
       return dictionary.stats.badgeMostIgnored;
   }
