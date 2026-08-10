@@ -9,6 +9,7 @@ export const ar: Dictionary = {
   upload: {
     description: 'ارفعوا محادثتكم • احصلوا على إحصاءات مجموعتكم • افضحوا أصدقاءكم',
     freeLimitNote: 'الخطة المجانية: {count} فحوصات محادثة. بلا حدود مع Wrapped+.',
+    privacyNote: 'ملفكم لا يغادر جهازكم أبداً — كل شيء يحدث داخل متصفحكم.',
     dropzoneTitle: 'أفلتوا محادثتكم هنا',
     dropzoneSubtitle: 'أو اضغطوا لاختيار ملف',
     stageParsing: 'قراءة محادثتكم…',

@@ -9,6 +9,7 @@ export const he: Dictionary = {
   upload: {
     description: 'העלו את הצ׳אט • קבלו את הסטטיסטיקות של הקבוצה • תחשפו את החברים שלכם',
     freeLimitNote: 'בגרסה החינמית: {count} בדיקות צ׳אט. בלי הגבלה עם Wrapped+.',
+    privacyNote: 'הקובץ שלכם לא עוזב את המכשיר שלכם — הכל קורה בדפדפן שלכם.',
     dropzoneTitle: 'גררו את הצ׳אט לכאן',
     dropzoneSubtitle: 'או הקישו לבחירה',
     stageParsing: 'קורא את הצ׳אט שלך…',

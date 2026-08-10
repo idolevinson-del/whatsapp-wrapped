@@ -37,6 +37,10 @@ export interface Dictionary {
      * sets expectations up front rather than only at the limit wall.
      * Template with {count} — the free baseline (before any share bonus). */
     freeLimitNote: string;
+    /** Trust/privacy line under the dropzone — same message as
+     * exportGuide.privacyNote, repeated here since this is the page every
+     * visitor actually lands on. */
+    privacyNote: string;
   };
   exportGuide: {
     title: string;

@@ -9,6 +9,7 @@ export const es: Dictionary = {
   upload: {
     description: 'Sube tu chat → Obtén las estadísticas de tu grupo → Descubre a tus amigos',
     freeLimitNote: 'Plan gratuito: {count} análisis de chat. Ilimitado con Wrapped+.',
+    privacyNote: 'Tu archivo nunca sale de tu dispositivo — todo ocurre en tu navegador.',
     dropzoneTitle: 'Suelta tu chat aquí',
     dropzoneSubtitle: 'o toca para elegir un archivo',
     stageParsing: 'Leyendo tu chat…',

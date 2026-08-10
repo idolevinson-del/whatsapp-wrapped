@@ -9,6 +9,7 @@ export const pt: Dictionary = {
   upload: {
     description: 'Envie sua conversa → Veja as estatísticas do seu grupo → Exponha seus amigos',
     freeLimitNote: 'Plano gratuito: {count} análises de conversa. Ilimitado com Wrapped+.',
+    privacyNote: 'Seu arquivo nunca sai do seu dispositivo — tudo acontece no seu navegador.',
     dropzoneTitle: 'Solte sua conversa aqui',
     dropzoneSubtitle: 'ou toque para escolher um arquivo',
     stageParsing: 'Lendo sua conversa…',

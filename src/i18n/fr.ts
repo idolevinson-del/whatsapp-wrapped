@@ -9,6 +9,7 @@ export const fr: Dictionary = {
   upload: {
     description: 'Importe ta discussion → Découvre les stats de ton groupe → Démasque tes amis',
     freeLimitNote: 'Offre gratuite : {count} analyses de discussion. Illimité avec Wrapped+.',
+    privacyNote: 'Ton fichier ne quitte jamais ton appareil — tout se passe dans ton navigateur.',
     dropzoneTitle: 'Dépose ta discussion ici',
     dropzoneSubtitle: 'ou touche pour choisir un fichier',
     stageParsing: 'Lecture de ta discussion…',
