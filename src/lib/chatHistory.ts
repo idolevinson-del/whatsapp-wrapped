@@ -3,17 +3,42 @@ import type { AnalysisResult, PersonaBreakdown } from '../analysis';
 import type { ParsedMessage } from '../parser/types';
 
 const STORAGE_KEY = 'whatsapp-wrapped:history';
+const LIFETIME_COUNT_KEY = 'whatsapp-wrapped:lifetimeAnalysisCount';
 
 /** Most recent chats kept in history — older entries are dropped. Premium
  * lifts this considerably, but still bounded so localStorage can't grow
- * without limit. Exported so the upload flow can block a free user from
- * even starting analysis on a chat that would exceed the cap, rather than
- * silently evicting an old one. */
+ * without limit. Also doubles as the free tier's total lifetime cap on real
+ * analyses (see getLifetimeAnalysisCount below) — exported so the upload
+ * flow can block a free user from even starting analysis on a chat that
+ * would exceed it. */
 export const FREE_MAX_ENTRIES = 2;
 const PREMIUM_MAX_ENTRIES = 200;
 
 function maxEntries(): number {
   return isPremium() ? PREMIUM_MAX_ENTRIES : FREE_MAX_ENTRIES;
+}
+
+/** Total chats ever analyzed on this device, all-time. Deliberately separate
+ * from getHistory().length: that count drops when an entry is deleted or
+ * history is cleared, which would let a free user reset their "2 free
+ * chats" cap indefinitely just by deleting old ones. This counter only ever
+ * goes up. (A full browser-data wipe still resets it — there's no server to
+ * check against in a no-backend app — but that's a much higher-friction
+ * loophole than a delete button inside the app.) */
+export function getLifetimeAnalysisCount(): number {
+  try {
+    return parseInt(localStorage.getItem(LIFETIME_COUNT_KEY) ?? '0', 10) || 0;
+  } catch {
+    return 0;
+  }
+}
+
+function incrementLifetimeAnalysisCount(): void {
+  try {
+    localStorage.setItem(LIFETIME_COUNT_KEY, String(getLifetimeAnalysisCount() + 1));
+  } catch {
+    // localStorage unavailable — the free cap silently becomes best-effort
+  }
 }
 
 export interface ChatHistoryEntry {
@@ -98,6 +123,7 @@ export function saveHistoryEntry(fileName: string, analysis: AnalysisResult): Ch
   };
 
   writeHistory([entry, ...getHistory()].slice(0, maxEntries()));
+  incrementLifetimeAnalysisCount();
   return entry;
 }
 

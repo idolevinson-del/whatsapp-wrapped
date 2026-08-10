@@ -4,7 +4,7 @@ import type { Dictionary } from '../i18n';
 import { LanguageToggle } from '../components/LanguageToggle';
 import { ChatHistoryList } from '../components/ChatHistoryList';
 import { PremiumModal } from '../components/PremiumModal';
-import { FREE_MAX_ENTRIES } from '../lib/chatHistory';
+import { FREE_MAX_ENTRIES, getLifetimeAnalysisCount } from '../lib/chatHistory';
 import type { ChatHistoryEntry } from '../lib/chatHistory';
 import { hasSeenOnboarding, markOnboardingSeen } from '../lib/onboarding';
 import { isPremium } from '../lib/premium';
@@ -75,7 +75,11 @@ export function UploadPage({
     const file = files?.[0];
     if (!file) return;
 
-    if (!userIsPremium && history.length >= FREE_MAX_ENTRIES) {
+    // Gated on the lifetime count, not on how many chats are currently
+    // saved — history.length drops back below the cap the moment someone
+    // deletes an old entry, which would otherwise let the free limit be
+    // bypassed indefinitely just by clearing history first.
+    if (!userIsPremium && getLifetimeAnalysisCount() >= FREE_MAX_ENTRIES) {
       setPremiumReason(formatTemplate(dictionary.premium.historyLimitReason, { count: FREE_MAX_ENTRIES }));
       setShowPremium(true);
       return;
