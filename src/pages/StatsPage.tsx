@@ -151,7 +151,21 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
         : []),
     ],
     blocks: [
+      // Free blocks first, locked ones pushed to the bottom — so the page
+      // opens with content everyone can actually see, and the paywall
+      // teasers read as "there's more below" rather than interrupting.
       { kind: 'pie', title: dictionary.stats.messageCount, entries: withColors(personaBreakdown.messageCount) },
+      { kind: 'pie', title: dictionary.stats.emojiCount, entries: withColors(personaBreakdown.emojiCount) },
+      {
+        kind: 'topEmojis',
+        title: dictionary.stats.topEmojisTitle,
+        rows: coreStats.perSender.map((s) => ({
+          sender: s.sender,
+          color: colors[s.sender] ?? '#94a3b8',
+          emojis: s.topEmojis.slice(0, 3),
+        })),
+      },
+      { kind: 'pie', title: dictionary.stats.laughsTriggered, entries: withColors(personaBreakdown.laughsTriggered) },
       {
         kind: 'bar',
         title: dictionary.stats.streakDays,
@@ -178,17 +192,6 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
         entries: withColors(personaBreakdown.wordsPerMessage),
         locked: !userIsPremium,
       },
-      { kind: 'pie', title: dictionary.stats.emojiCount, entries: withColors(personaBreakdown.emojiCount) },
-      {
-        kind: 'topEmojis',
-        title: dictionary.stats.topEmojisTitle,
-        rows: coreStats.perSender.map((s) => ({
-          sender: s.sender,
-          color: colors[s.sender] ?? '#94a3b8',
-          emojis: s.topEmojis.slice(0, 3),
-        })),
-      },
-      { kind: 'pie', title: dictionary.stats.laughsTriggered, entries: withColors(personaBreakdown.laughsTriggered) },
       ...(isGroup
         ? [
             {

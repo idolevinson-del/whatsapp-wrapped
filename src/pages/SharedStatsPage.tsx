@@ -161,7 +161,19 @@ export function SharedStatsPage({ payload }: { payload: StatsSharePayload }) {
         : []),
     ],
     blocks: [
+      // Free blocks first, locked ones pushed to the bottom — matches StatsPage.
       { kind: 'pie', title: dictionary.stats.messageCount, entries: withColors(payload.pb.mc) },
+      { kind: 'pie', title: dictionary.stats.emojiCount, entries: withColors(payload.pb.ec) },
+      {
+        kind: 'topEmojis',
+        title: dictionary.stats.topEmojisTitle,
+        rows: payload.s.map((sender, i) => ({
+          sender,
+          color: colors[sender] ?? '#94a3b8',
+          emojis: (payload.te[i] ?? []).map(([value, count]) => ({ value, count })),
+        })),
+      },
+      { kind: 'pie', title: dictionary.stats.laughsTriggered, entries: withColors(payload.pb.lt) },
       {
         kind: 'bar',
         title: dictionary.stats.streakDays,
@@ -188,17 +200,6 @@ export function SharedStatsPage({ payload }: { payload: StatsSharePayload }) {
         entries: withColors(payload.pb.wpm),
         locked: !userIsPremium,
       },
-      { kind: 'pie', title: dictionary.stats.emojiCount, entries: withColors(payload.pb.ec) },
-      {
-        kind: 'topEmojis',
-        title: dictionary.stats.topEmojisTitle,
-        rows: payload.s.map((sender, i) => ({
-          sender,
-          color: colors[sender] ?? '#94a3b8',
-          emojis: (payload.te[i] ?? []).map(([value, count]) => ({ value, count })),
-        })),
-      },
-      { kind: 'pie', title: dictionary.stats.laughsTriggered, entries: withColors(payload.pb.lt) },
       ...(isGroup
         ? [
             {
