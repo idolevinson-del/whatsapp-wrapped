@@ -8,7 +8,7 @@ export const pt: Dictionary = {
   },
   upload: {
     description: 'Envie sua conversa e veja as estatísticas. Tudo fica com você.',
-    zipNote: 'O arquivo .zip também funciona — não precisa descompactar.',
+    freeLimitNote: 'Plano gratuito: {count} análises de conversa. Ilimitado com Wrapped+.',
     dropzoneTitle: 'Solte sua conversa aqui',
     dropzoneSubtitle: 'ou toque para escolher um arquivo',
     stageParsing: 'Lendo sua conversa…',
@@ -106,6 +106,7 @@ export const pt: Dictionary = {
     subtitle: 'Tudo o que encontramos, detalhado por pessoa.',
     backButton: 'Enviar outro arquivo',
     shareButton: 'Compartilhar no WhatsApp',
+    shareBonusHint: 'Compartilhe com amigos para ganhar mais uma análise gratuita',
     shareIntro: '👀 Vamos analisar juntos nossas mensagens',
     shareImageButton: 'Compartilhar como imagem',
     topSenderLabel: 'Mais mensagens enviadas',
@@ -154,5 +155,6 @@ export const pt: Dictionary = {
     deactivateButton: 'Remover a licença deste dispositivo',
     closeButton: 'Fechar',
     shareBonusEarned: '🎉 Obrigado por compartilhar! Você desbloqueou mais uma análise gratuita.',
+    shareThanks: '🙌 Obrigado por compartilhar!',
   },
 };

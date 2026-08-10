@@ -8,7 +8,7 @@ export const en: Dictionary = {
   },
   upload: {
     description: 'Upload your chat, get the stats. Everything stays with you.',
-    zipNote: 'The .zip file works too — no need to unzip it.',
+    freeLimitNote: 'Free plan: {count} chat checks. Unlimited with Wrapped+.',
     dropzoneTitle: 'Drop your chat here',
     dropzoneSubtitle: 'or tap to choose a file',
     stageParsing: 'Reading your chat…',
@@ -104,6 +104,7 @@ export const en: Dictionary = {
     subtitle: 'Everything we found, broken down by person.',
     backButton: 'Upload another file',
     shareButton: 'Share to WhatsApp',
+    shareBonusHint: 'Share with friends to get one more free chat check',
     shareIntro: "👀 Let's analyze our chat messages together",
     shareImageButton: 'Share as image',
     topSenderLabel: 'Most messages sent',
@@ -152,5 +153,6 @@ export const en: Dictionary = {
     deactivateButton: 'Remove license from this device',
     closeButton: 'Close',
     shareBonusEarned: "🎉 Thanks for sharing! You've unlocked one more free chat check.",
+    shareThanks: '🙌 Thanks for sharing!',
   },
 };

@@ -10,7 +10,7 @@ import { buildStatsShareText } from '../lib/shareText';
 import { buildStatsSharePayload, buildStatsShareUrl } from '../lib/statsShareLink';
 import { generateShareImageBlob, shareOrDownloadImage } from '../lib/shareImage';
 import { isPremium } from '../lib/premium';
-import { redeemShareBonus } from '../lib/shareBonus';
+import { MAX_BONUS_SLOTS, getBonusSlots, redeemShareBonus } from '../lib/shareBonus';
 import { DEFAULT_THEME } from '../lib/themes';
 import { formatPersona, pickHeadlinePersona } from '../lib/headlinePersona';
 import { trackEvent } from '../analytics';
@@ -43,15 +43,19 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
   }
 
   // Growth lever: sharing raises the free lifetime cap by one, up to
-  // MAX_BONUS_SLOTS (see lib/shareBonus.ts) — confirmed with a brief toast,
-  // but only when a share actually earned a new slot (not on every repeat
-  // share once already at the cap), and only for free users (premium has no
-  // cap to raise).
+  // MAX_BONUS_SLOTS (see lib/shareBonus.ts). Every share still gets a
+  // visible confirmation, not just the ones that grant a new slot — a
+  // silent "did that even work?" moment (premium users, or a free user
+  // already at the cap) reads as a bug even though nothing's actually wrong.
   function maybeShowShareBonusToast() {
-    if (userIsPremium || !redeemShareBonus()) return;
-    setToastMessage(dictionary.premium.shareBonusEarned);
+    const earnedNewSlot = !userIsPremium && redeemShareBonus();
+    setToastMessage(earnedNewSlot ? dictionary.premium.shareBonusEarned : dictionary.premium.shareThanks);
     setTimeout(() => setToastMessage(null), 4000);
   }
+
+  // The hint under the share buttons: only worth showing while there's
+  // still something real to gain from sharing.
+  const showShareBonusHint = !userIsPremium && getBonusSlots() < MAX_BONUS_SLOTS;
 
   const totalMessages = coreStats.perSender.reduce((sum, s) => sum + s.messageCount, 0);
   const busiestDayDate = formatDate(new Date(`${busiestDay.date}T12:00:00`).getTime(), language);
@@ -128,6 +132,7 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
     onBack,
     shareLabel: dictionary.stats.shareButton,
     onShare: handleShareToWhatsApp,
+    shareBonusHint: showShareBonusHint ? dictionary.stats.shareBonusHint : null,
     shareImageLabel: dictionary.stats.shareImageButton,
     onShareImage: handleShareImage,
     titleGradientClasses: DEFAULT_THEME.gradientClasses,

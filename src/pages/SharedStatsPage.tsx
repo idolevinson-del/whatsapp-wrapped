@@ -9,7 +9,7 @@ import { buildStatsShareUrl } from '../lib/statsShareLink';
 import { buildStatsShareText } from '../lib/shareText';
 import { generateShareImageBlob, shareOrDownloadImage } from '../lib/shareImage';
 import { isPremium } from '../lib/premium';
-import { redeemShareBonus } from '../lib/shareBonus';
+import { MAX_BONUS_SLOTS, getBonusSlots, redeemShareBonus } from '../lib/shareBonus';
 import { DEFAULT_THEME } from '../lib/themes';
 import { formatPersona, pickHeadlinePersonaFromBreakdown } from '../lib/headlinePersona';
 import { trackEvent } from '../analytics';
@@ -37,12 +37,15 @@ export function SharedStatsPage({ payload }: { payload: StatsSharePayload }) {
 
   // Growth lever: sharing (even re-sharing a link you received) raises the
   // viewer's own free lifetime cap by one, up to MAX_BONUS_SLOTS — see
-  // lib/shareBonus.ts and StatsPage's identical helper.
+  // lib/shareBonus.ts and StatsPage's identical helper. Every share still
+  // gets a visible confirmation, not just the ones that grant a new slot.
   function maybeShowShareBonusToast() {
-    if (userIsPremium || !redeemShareBonus()) return;
-    setToastMessage(dictionary.premium.shareBonusEarned);
+    const earnedNewSlot = !userIsPremium && redeemShareBonus();
+    setToastMessage(earnedNewSlot ? dictionary.premium.shareBonusEarned : dictionary.premium.shareThanks);
     setTimeout(() => setToastMessage(null), 4000);
   }
+
+  const showShareBonusHint = !userIsPremium && getBonusSlots() < MAX_BONUS_SLOTS;
 
   useEffect(() => {
     setLanguage(payload.lang);
@@ -138,6 +141,7 @@ export function SharedStatsPage({ payload }: { payload: StatsSharePayload }) {
     onBack: goHome,
     shareLabel: dictionary.stats.shareButton,
     onShare: handleShareToWhatsApp,
+    shareBonusHint: showShareBonusHint ? dictionary.stats.shareBonusHint : null,
     shareImageLabel: dictionary.stats.shareImageButton,
     onShareImage: handleShareImage,
     titleGradientClasses: DEFAULT_THEME.gradientClasses,

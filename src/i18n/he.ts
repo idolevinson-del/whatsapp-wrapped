@@ -8,7 +8,7 @@ export const he: Dictionary = {
   },
   upload: {
     description: 'העלו את הצ׳אט, קבלו את הסטטיסטיקות. הכול נשאר אצלכם.',
-    zipNote: 'גם קובץ ה-zip עובד — בלי לחלץ אותו.',
+    freeLimitNote: 'בגרסה החינמית: {count} בדיקות צ׳אט. בלי הגבלה עם Wrapped+.',
     dropzoneTitle: 'גררו את הצ׳אט לכאן',
     dropzoneSubtitle: 'או הקישו לבחירה',
     stageParsing: 'קורא את הצ׳אט שלך…',
@@ -100,6 +100,7 @@ export const he: Dictionary = {
     subtitle: 'כל מה שמצאנו, מפורט לפי כל אחד מכם.',
     backButton: 'העלו קובץ אחר',
     shareButton: 'שיתוף לוואטסאפ',
+    shareBonusHint: 'שתפו עם חברים ותקבלו עוד בדיקה בחינם',
     shareIntro: '👀 בואו ננתח ביחד את ההודעות שלנו בצ׳אט',
     shareImageButton: 'שיתוף כתמונה',
     topSenderLabel: 'הכי הרבה הודעות',
@@ -148,5 +149,6 @@ export const he: Dictionary = {
     deactivateButton: 'הסרת הרישוי מהמכשיר הזה',
     closeButton: 'סגירה',
     shareBonusEarned: '🎉 תודה ששיתפתם! פתחתם עוד בדיקה בחינם.',
+    shareThanks: '🙌 תודה ששיתפתם!',
   },
 };

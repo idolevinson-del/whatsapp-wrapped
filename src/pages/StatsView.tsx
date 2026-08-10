@@ -52,6 +52,7 @@ export function StatsView({ model }: { model: StatsViewModel }) {
             <span className="text-lg">📸</span>
           </button>
         </div>
+        {model.shareBonusHint && <p className="mt-1.5 text-center text-xs text-neutral-500">{model.shareBonusHint}</p>}
 
         <div className="mt-6 space-y-4">
           {/* Overview — chat-wide facts, not per-sender. A KPI grid, not a chart. */}

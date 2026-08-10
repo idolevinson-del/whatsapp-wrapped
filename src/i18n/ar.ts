@@ -8,7 +8,7 @@ export const ar: Dictionary = {
   },
   upload: {
     description: 'ارفعوا محادثتكم واحصلوا على الإحصائيات. كل شيء يبقى معكم.',
-    zipNote: 'ملف ال-zip يعمل أيضاً — لا حاجة لفك ضغطه.',
+    freeLimitNote: 'الخطة المجانية: {count} فحوصات محادثة. بلا حدود مع Wrapped+.',
     dropzoneTitle: 'أفلتوا محادثتكم هنا',
     dropzoneSubtitle: 'أو اضغطوا لاختيار ملف',
     stageParsing: 'قراءة محادثتكم…',
@@ -104,6 +104,7 @@ export const ar: Dictionary = {
     subtitle: 'كل ما وجدناه، مفصّلاً حسب كل شخص.',
     backButton: 'رفع ملف آخر',
     shareButton: 'مشاركة على واتساب',
+    shareBonusHint: 'شاركوا مع الأصدقاء واحصلوا على فحص محادثة مجاني إضافي',
     shareIntro: '👀 لنحلل رسائل محادثتنا معاً',
     shareImageButton: 'مشاركة كصورة',
     topSenderLabel: 'الأكثر إرسالاً للرسائل',
@@ -152,5 +153,6 @@ export const ar: Dictionary = {
     deactivateButton: 'إزالة الترخيص من هذا الجهاز',
     closeButton: 'إغلاق',
     shareBonusEarned: '🎉 شكراً لمشاركتكم! فتحتم فحص محادثة مجاني إضافي.',
+    shareThanks: '🙌 شكراً لمشاركتكم!',
   },
 };

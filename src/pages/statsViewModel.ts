@@ -42,6 +42,9 @@ export interface StatsViewModel {
   onBack: () => void;
   shareLabel: string;
   onShare: () => void;
+  /** Small incentive line under the share button — only present for
+   * non-premium visitors who haven't maxed out the share bonus yet. */
+  shareBonusHint?: string | null;
   shareImageLabel: string;
   onShareImage: () => void;
   /** Tailwind `from-...via-...to-...` classes for the title text and bottom

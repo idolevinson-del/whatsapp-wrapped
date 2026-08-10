@@ -8,7 +8,7 @@ export const fr: Dictionary = {
   },
   upload: {
     description: 'Envoie ta discussion, obtiens les statistiques. Tout reste chez toi.',
-    zipNote: 'Le fichier .zip fonctionne aussi — pas besoin de le décompresser.',
+    freeLimitNote: 'Offre gratuite : {count} analyses de discussion. Illimité avec Wrapped+.',
     dropzoneTitle: 'Dépose ta discussion ici',
     dropzoneSubtitle: 'ou touche pour choisir un fichier',
     stageParsing: 'Lecture de ta discussion…',
@@ -112,6 +112,7 @@ export const fr: Dictionary = {
     subtitle: 'Tout ce qu\'on a trouvé, détaillé par personne.',
     backButton: 'Envoyer un autre fichier',
     shareButton: 'Partager sur WhatsApp',
+    shareBonusHint: 'Partage avec des amis pour obtenir une analyse gratuite de plus',
     shareIntro: '👀 Analysons nos messages ensemble',
     shareImageButton: 'Partager en image',
     topSenderLabel: 'Le plus de messages envoyés',
@@ -160,5 +161,6 @@ export const fr: Dictionary = {
     deactivateButton: 'Retirer la licence de cet appareil',
     closeButton: 'Fermer',
     shareBonusEarned: '🎉 Merci d\'avoir partagé ! Tu as débloqué une analyse gratuite de plus.',
+    shareThanks: '🙌 Merci d\'avoir partagé !',
   },
 };

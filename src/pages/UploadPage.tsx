@@ -4,7 +4,7 @@ import type { Dictionary } from '../i18n';
 import { LanguagePicker } from '../components/LanguagePicker';
 import { ChatHistoryList } from '../components/ChatHistoryList';
 import { PremiumModal } from '../components/PremiumModal';
-import { getFreeLimit, getLifetimeAnalysisCount } from '../lib/chatHistory';
+import { FREE_MAX_ENTRIES, getFreeLimit, getLifetimeAnalysisCount } from '../lib/chatHistory';
 import type { ChatHistoryEntry } from '../lib/chatHistory';
 import { hasSeenOnboarding, markOnboardingSeen } from '../lib/onboarding';
 import { isPremium } from '../lib/premium';
@@ -147,7 +147,11 @@ export function UploadPage({
           </h1>
           <p className="mt-3 text-lg font-semibold text-white/80">{dictionary.app.tagline}</p>
           <p className="mt-4 text-neutral-400">{dictionary.upload.description}</p>
-          <p className="mt-1 text-sm text-neutral-500">{dictionary.upload.zipNote}</p>
+          {!userIsPremium && (
+            <p className="mt-1 text-sm text-neutral-500">
+              {formatTemplate(dictionary.upload.freeLimitNote, { count: FREE_MAX_ENTRIES })}
+            </p>
+          )}
           <div className="mt-2 flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
             <button
               type="button"

@@ -8,7 +8,7 @@ export const es: Dictionary = {
   },
   upload: {
     description: 'Sube tu chat y obtén las estadísticas. Todo se queda contigo.',
-    zipNote: 'El archivo .zip también funciona — no hace falta descomprimirlo.',
+    freeLimitNote: 'Plan gratuito: {count} análisis de chat. Ilimitado con Wrapped+.',
     dropzoneTitle: 'Suelta tu chat aquí',
     dropzoneSubtitle: 'o toca para elegir un archivo',
     stageParsing: 'Leyendo tu chat…',
@@ -109,6 +109,7 @@ export const es: Dictionary = {
     subtitle: 'Todo lo que encontramos, desglosado por persona.',
     backButton: 'Subir otro archivo',
     shareButton: 'Compartir en WhatsApp',
+    shareBonusHint: 'Comparte con amigos para obtener un análisis gratuito más',
     shareIntro: '👀 Analicemos juntos nuestros mensajes de chat',
     shareImageButton: 'Compartir como imagen',
     topSenderLabel: 'Más mensajes enviados',
@@ -157,5 +158,6 @@ export const es: Dictionary = {
     deactivateButton: 'Quitar la licencia de este dispositivo',
     closeButton: 'Cerrar',
     shareBonusEarned: '🎉 ¡Gracias por compartir! Desbloqueaste un análisis gratuito más.',
+    shareThanks: '🙌 ¡Gracias por compartir!',
   },
 };

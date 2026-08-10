@@ -22,7 +22,6 @@ export interface Dictionary {
   };
   upload: {
     description: string;
-    zipNote: string;
     dropzoneTitle: string;
     dropzoneSubtitle: string;
     stageParsing: string;
@@ -36,6 +35,10 @@ export interface Dictionary {
     guideLink: string;
     /** Distinguishes anonymous visit-counting analytics from the user's chat data. */
     analyticsNote: string;
+    /** Shown only to non-premium visitors, right under the description —
+     * sets expectations up front rather than only at the limit wall.
+     * Template with {count} — the free baseline (before any share bonus). */
+    freeLimitNote: string;
   };
   exportGuide: {
     title: string;
@@ -104,6 +107,10 @@ export interface Dictionary {
     subtitle: string;
     backButton: string;
     shareButton: string;
+    /** Small incentive line under the share button — shown only to
+     * non-premium visitors who haven't maxed out the share bonus yet
+     * (see lib/shareBonus.ts). */
+    shareBonusHint: string;
     /** The whole WhatsApp share message, minus the link. Short and catchy by
      * design — no stat breakdown. Gender-neutral. */
     shareIntro: string;
@@ -171,5 +178,9 @@ export interface Dictionary {
     /** Toast shown right after sharing earns a bonus free chat check — see
      * lib/shareBonus.ts. Only shown when a new slot was actually granted. */
     shareBonusEarned: string;
+    /** Toast shown after sharing when no new bonus slot was granted (already
+     * premium, or already at the bonus cap) — every share still gets some
+     * visible confirmation, not silence. */
+    shareThanks: string;
   };
 }
