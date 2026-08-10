@@ -82,7 +82,7 @@ export function StatsView({ model }: { model: StatsViewModel }) {
                   <h3 className="text-sm font-semibold uppercase tracking-widest text-white/70">{block.title}</h3>
                   <div className="relative mt-4 overflow-hidden rounded-xl">
                     <ul
-                      className={block.locked ? 'space-y-2.5 blur-[6px] pointer-events-none select-none' : 'space-y-2.5'}
+                      className={block.locked ? 'space-y-2.5 blur-2xl pointer-events-none select-none' : 'space-y-2.5'}
                       aria-hidden={block.locked || undefined}
                     >
                       {block.rows.map((row) => (

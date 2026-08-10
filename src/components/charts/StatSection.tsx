@@ -35,7 +35,7 @@ export function StatSection({ title, kind, entries, valueSuffix = '', locked, on
 
       <div className="relative mt-4 overflow-hidden rounded-xl">
         <div
-          className={locked ? 'flex items-center gap-5 blur-[6px] pointer-events-none select-none' : 'flex items-center gap-5'}
+          className={locked ? 'flex items-center gap-5 blur-2xl pointer-events-none select-none' : 'flex items-center gap-5'}
           aria-hidden={locked || undefined}
         >
           {kind === 'pie' && (
