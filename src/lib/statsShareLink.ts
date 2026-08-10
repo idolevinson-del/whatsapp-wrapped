@@ -2,8 +2,29 @@ import { deflateSync, inflateSync } from 'fflate';
 import { BinaryReader, BinaryWriter } from './binaryCodec';
 import { firstName } from './names';
 import { parseChatName } from './parseChatName';
+import { LANGUAGES } from '../i18n/languages';
 import type { AnalysisResult } from '../analysis';
 import type { Language } from '../i18n';
+
+/**
+ * The single language byte in the wire format is this array's *index*, not
+ * the language code itself (no room for variable-length strings in a
+ * hand-packed binary format). LANGUAGES happens to list 'en' first and 'he'
+ * second — the only two values any link in the wild was ever encoded with
+ * — so this stays byte-for-byte compatible with every already-shared link:
+ * old links only ever wrote 0 or 1, and still decode to the same language
+ * they always did. New languages are simply appended after, at whatever
+ * index they sit at in LANGUAGES — never reorder that array's first two
+ * entries, or old links start decoding to the wrong language.
+ */
+function languageToByte(lang: Language): number {
+  const index = LANGUAGES.findIndex((l) => l.code === lang);
+  return index === -1 ? 0 : index;
+}
+
+function byteToLanguage(byte: number): Language {
+  return LANGUAGES[byte]?.code ?? 'en';
+}
 
 /**
  * Compact snapshot of everything StatsView renders, carried entirely inside
@@ -95,7 +116,7 @@ function encodeBinaryPayload(payload: StatsSharePayload): Uint8Array {
 
   w.writeUint8(3); // version
   w.writeUint8((payload.n ? 1 : 0) | (isGroup ? 2 : 0) | (hasSilence ? 4 : 0) | (hasMnc ? 8 : 0));
-  w.writeUint8(payload.lang === 'he' ? 1 : 0);
+  w.writeUint8(languageToByte(payload.lang));
   if (payload.n) w.writeString(payload.n);
 
   w.writeVarint(payload.s.length);
@@ -141,7 +162,7 @@ function decodeBinaryPayload(bytes: Uint8Array): StatsSharePayload | null {
   const isGroup = (flags & 2) !== 0;
   const hasSilence = (flags & 4) !== 0;
   const hasMnc = (flags & 8) !== 0;
-  const lang: Language = r.readUint8() === 1 ? 'he' : 'en';
+  const lang: Language = byteToLanguage(r.readUint8());
   const n = hasName ? r.readString() : undefined;
 
   const senderCount = r.readVarint();

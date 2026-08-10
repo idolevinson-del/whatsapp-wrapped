@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useLanguage } from '../i18n';
-import { LanguageToggle } from '../components/LanguageToggle';
+import { LanguagePicker } from '../components/LanguagePicker';
 import { ShareButton } from '../components/ShareButton';
 import { StoryViewer } from '../components/StoryViewer';
 import { HeadlineCard } from '../components/cards/HeadlineCard';
@@ -44,7 +44,7 @@ export function WrappedPage({ analysis, onReset, fileName, isExample }: WrappedP
         <ShareButton cards={cards} />
       </div>
       <div className="absolute bottom-4 end-4 z-30">
-        <LanguageToggle />
+        <LanguagePicker />
       </div>
 
       {/* onComplete: the reveal always ends up on the full stats page on its
@@ -83,7 +83,7 @@ export function SharedWrappedPage({ cards }: { cards: StoryCardData[] }) {
   return (
     <div className="relative">
       <div className="absolute bottom-4 end-4 z-30">
-        <LanguageToggle />
+        <LanguagePicker />
       </div>
 
       <StoryViewer>

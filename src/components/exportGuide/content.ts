@@ -1,4 +1,5 @@
 import type { GuideStep } from './types';
+import type { Language } from '../../i18n';
 
 interface GuideContent {
   contactName: string;
@@ -36,7 +37,15 @@ const MESSAGES_HE = [
  * "Export chat"; iPhone: tap the contact name -> scroll -> "Export Chat"
  * directly, no "More" level) — not just relabeled, the step count differs.
  */
-export const EXPORT_GUIDE_CONTENT: Record<'en' | 'he', Record<'android' | 'iphone', GuideContent>> = {
+type GuideContentByPlatform = Record<'android' | 'iphone', GuideContent>;
+
+// Only 'en' and 'he' have full illustrated content today (see
+// ExportGuidePage.tsx, which falls back to 'en' for every other language) —
+// those two are required, the rest are optional so TypeScript enforces
+// handling the missing case instead of silently indexing into undefined,
+// while `.en` itself stays guaranteed non-optional for the fallback.
+export const EXPORT_GUIDE_CONTENT: Record<'en' | 'he', GuideContentByPlatform> &
+  Partial<Record<Exclude<Language, 'en' | 'he'>, GuideContentByPlatform>> = {
   en: {
     android: {
       contactName: 'Dana',

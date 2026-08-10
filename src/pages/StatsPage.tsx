@@ -27,7 +27,7 @@ interface StatsPageProps {
 }
 
 export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPageProps) {
-  const { dictionary, language } = useLanguage();
+  const { dictionary, language, direction } = useLanguage();
   const { personas, personaBreakdown, coreStats, conversationGapStats, busiestDay } = analysis;
   const senders = coreStats.perSender.map((s) => s.sender);
   const colors = buildSenderColorMap(senders);
@@ -85,7 +85,7 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
       busiestDayCountLabel: formatTemplate(dictionary.stats.messagesCountCaption, { count: busiestDay.count }),
       ctaText: dictionary.stats.shareImageCta,
       urlText: window.location.host,
-      dir: language === 'he' ? 'rtl' : 'ltr',
+      dir: direction,
       gradient: theme.hexStops,
       personaIcon: formattedPersona?.icon,
       personaText: formattedPersona?.text,

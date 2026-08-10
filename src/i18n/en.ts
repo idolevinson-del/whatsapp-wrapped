@@ -2,9 +2,6 @@ import type { Dictionary } from './types';
 
 export const en: Dictionary = {
   code: 'en',
-  language: {
-    switchTo: 'עברית',
-  },
   app: {
     title: 'WhatsApp Wrapped',
     tagline: 'Your year in chats, wrapped.',

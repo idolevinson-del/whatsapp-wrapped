@@ -1,9 +1,10 @@
 import { deflateSync, inflateSync } from 'fflate';
+import type { Language } from '../i18n';
 
 /** Compact payload stored in share URLs — raw values only, no formatted text. */
 export interface SharePayload {
   v: 1;
-  lang: 'he' | 'en';
+  lang: Language;
   p: Array<[string, string, number | string]>; // [personaId, senderFirstName, value]
   d: [string, number]; // ['YYYY-MM-DD', count]
 }

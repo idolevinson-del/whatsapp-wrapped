@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useLanguage } from '../i18n';
-import { LanguageToggle } from '../components/LanguageToggle';
+import { LanguagePicker } from '../components/LanguagePicker';
 import { PhoneGuide } from '../components/exportGuide/PhoneGuide';
 import { EXPORT_GUIDE_CONTENT } from '../components/exportGuide/content';
 
@@ -12,7 +12,12 @@ export function ExportGuidePage({ onBack }: ExportGuidePageProps) {
   const { dictionary, language } = useLanguage();
   const [platform, setPlatform] = useState<'android' | 'iphone'>('android');
 
-  const guide = EXPORT_GUIDE_CONTENT[language][platform];
+  // The illustrated phone mockup (simulated WhatsApp menu items, dialog
+  // text, etc.) is only fully localized for English and Hebrew so far —
+  // falls back to English for the newer languages rather than erroring.
+  // Everything else on this page (title, intro, captions from the
+  // dictionary) still shows in the visitor's actual language.
+  const guide = (EXPORT_GUIDE_CONTENT[language] ?? EXPORT_GUIDE_CONTENT.en)[platform];
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-neutral-950 text-white">
@@ -26,7 +31,7 @@ export function ExportGuidePage({ onBack }: ExportGuidePageProps) {
       />
 
       <div className="absolute end-4 top-4 z-10">
-        <LanguageToggle />
+        <LanguagePicker />
       </div>
 
       <div className="relative z-0 flex min-h-screen items-center justify-center p-6">

@@ -28,7 +28,7 @@ function goHome() {
  * shared in, but the visitor can still toggle.
  */
 export function SharedStatsPage({ payload }: { payload: StatsSharePayload }) {
-  const { dictionary, language, setLanguage } = useLanguage();
+  const { dictionary, language, direction, setLanguage } = useLanguage();
   const [showPremium, setShowPremium] = useState(false);
   const [, forcePremiumRefresh] = useState(0);
   // The theme is the viewer's own local preference, not the sender's — it
@@ -107,7 +107,7 @@ export function SharedStatsPage({ payload }: { payload: StatsSharePayload }) {
       busiestDayCountLabel: formatTemplate(dictionary.stats.messagesCountCaption, { count: payload.busiestCount }),
       ctaText: dictionary.stats.shareImageCta,
       urlText: window.location.host,
-      dir: language === 'he' ? 'rtl' : 'ltr',
+      dir: direction,
       gradient: theme.hexStops,
       personaIcon: formattedPersona?.icon,
       personaText: formattedPersona?.text,

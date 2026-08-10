@@ -1,6 +1,6 @@
 import { StatSection } from '../components/charts/StatSection';
 import { StatTile } from '../components/charts/StatTile';
-import { LanguageToggle } from '../components/LanguageToggle';
+import { LanguagePicker } from '../components/LanguagePicker';
 import { LockedOverlay } from '../components/LockedOverlay';
 import type { StatsViewModel } from './statsViewModel';
 
@@ -18,7 +18,7 @@ export function StatsView({ model }: { model: StatsViewModel }) {
           >
             ← {model.backLabel}
           </button>
-          <LanguageToggle />
+          <LanguagePicker />
         </div>
 
         {model.isExample && model.exampleBadgeLabel && (

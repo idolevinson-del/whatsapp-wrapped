@@ -3,9 +3,14 @@ import { resolveInsightTemplate } from '../i18n/resolveInsight';
 import { firstName } from '../lib/names';
 import { parseChatName } from '../lib/parseChatName';
 import { FREE_PERSONA_IDS, orderPersonas } from '../lib/headlinePersona';
-import type { Dictionary } from '../i18n';
+import { LANGUAGES } from '../i18n/languages';
+import type { Dictionary, Language } from '../i18n';
 import type { AnalysisResult } from '../analysis';
 import type { SharePayload } from '../lib/shareLink';
+
+function localeFor(code: Language): string {
+  return LANGUAGES.find((l) => l.code === code)?.intlLocale ?? 'en-US';
+}
 
 export interface HeadlineCardData {
   kind: 'headline';
@@ -73,7 +78,7 @@ export function buildStoryCards(
     });
   }
 
-  const locale = dictionary.code === 'he' ? 'he-IL' : 'en-US';
+  const locale = localeFor(dictionary.code);
   const dateStr = new Intl.DateTimeFormat(locale, { month: 'long', day: 'numeric', year: 'numeric' }).format(
     new Date(`${busiestDay.date}T12:00:00`)
   );
@@ -109,7 +114,7 @@ export function rebuildCardsFromPayload(payload: SharePayload, dict: Dictionary,
   }
 
   const [rawDate, count] = payload.d;
-  const locale = dict.code === 'he' ? 'he-IL' : 'en-US';
+  const locale = localeFor(dict.code);
   const dateStr = new Intl.DateTimeFormat(locale, { month: 'long', day: 'numeric', year: 'numeric' }).format(
     new Date(`${rawDate}T12:00:00`)
   );

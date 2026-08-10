@@ -1,4 +1,4 @@
-export type Language = 'en' | 'he';
+export type Language = 'en' | 'he' | 'es' | 'pt' | 'ar' | 'fr';
 export type Direction = 'ltr' | 'rtl';
 
 export type PersonaId =
@@ -16,10 +16,6 @@ export type PersonaId =
 
 export interface Dictionary {
   code: Language;
-  language: {
-    /** Label for the language toggle button — the name of the *other* language. */
-    switchTo: string;
-  };
   app: {
     title: string;
     tagline: string;

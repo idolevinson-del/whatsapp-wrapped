@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { formatTemplate, useLanguage } from '../i18n';
 import type { Dictionary } from '../i18n';
-import { LanguageToggle } from '../components/LanguageToggle';
+import { LanguagePicker } from '../components/LanguagePicker';
 import { ChatHistoryList } from '../components/ChatHistoryList';
 import { PremiumModal } from '../components/PremiumModal';
 import { FREE_MAX_ENTRIES, getLifetimeAnalysisCount } from '../lib/chatHistory';
@@ -111,7 +111,7 @@ export function UploadPage({
       />
 
       <div className="absolute end-4 top-4 z-10">
-        <LanguageToggle />
+        <LanguagePicker />
       </div>
 
       <div className="relative z-0 flex min-h-screen items-center justify-center p-6">
