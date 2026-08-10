@@ -16,6 +16,7 @@ import { hasSeenOnboarding, markOnboardingSeen } from './lib/onboarding';
 import { decodeSharePayload } from './lib/shareLink';
 import { decodeStatsSharePayload } from './lib/statsShareLink';
 import { rebuildCardsFromPayload } from './pages/buildStoryCards';
+import { isPremium } from './lib/premium';
 import { he } from './i18n/he';
 import { en } from './i18n/en';
 import type { ChatHistoryEntry } from './lib/chatHistory';
@@ -38,7 +39,7 @@ function App() {
     const payload = decodeSharePayload(encoded);
     if (!payload) return null;
     const dict = payload.lang === 'he' ? he : en;
-    return rebuildCardsFromPayload(payload, dict);
+    return rebuildCardsFromPayload(payload, dict, isPremium());
   });
 
   const { status, stage, error, result, analyzeFile, reset } = useChatAnalysis();

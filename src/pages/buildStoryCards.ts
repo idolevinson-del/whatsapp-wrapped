@@ -2,7 +2,7 @@ import { formatTemplate } from '../i18n';
 import { resolveInsightTemplate } from '../i18n/resolveInsight';
 import { firstName } from '../lib/names';
 import { parseChatName } from '../lib/parseChatName';
-import { orderPersonas } from '../lib/headlinePersona';
+import { FREE_PERSONA_IDS, orderPersonas } from '../lib/headlinePersona';
 import type { Dictionary } from '../i18n';
 import type { AnalysisResult } from '../analysis';
 import type { SharePayload } from '../lib/shareLink';
@@ -36,14 +36,18 @@ export type StoryCardData = HeadlineCardData | PersonaCardData | BusiestDayCardD
 export function buildStoryCards(
   analysis: AnalysisResult,
   dictionary: Dictionary,
-  fileName?: string
+  fileName?: string,
+  /** Non-premium viewers only get personas that don't leak a locked chart's
+   * number — see FREE_PERSONA_IDS. Defaults to the free (most restrictive)
+   * behavior so a caller can't forget to pass it and accidentally leak. */
+  userIsPremium = false
 ): StoryCardData[] {
   const { personas, busiestDay } = analysis;
 
   // Persona display order (most to least "interesting") now lives in
   // lib/headlinePersona.ts, shared with whatever just wants the single best
   // one (the share image).
-  const orderedPersonas = orderPersonas(personas);
+  const orderedPersonas = orderPersonas(personas).filter((p) => userIsPremium || FREE_PERSONA_IDS.has(p.id));
 
   const cards: StoryCardData[] = [];
 
@@ -85,11 +89,14 @@ export function buildStoryCards(
   return cards;
 }
 
-/** Rebuilds story cards from a compact share payload using the viewer's dictionary. */
-export function rebuildCardsFromPayload(payload: SharePayload, dict: Dictionary): StoryCardData[] {
+/** Rebuilds story cards from a compact share payload using the viewer's
+ * dictionary and *the viewer's own* premium status — same free-persona
+ * filtering as buildStoryCards, see FREE_PERSONA_IDS. */
+export function rebuildCardsFromPayload(payload: SharePayload, dict: Dictionary, userIsPremium = false): StoryCardData[] {
   const cards: StoryCardData[] = [];
 
   for (const [id, sender, value] of payload.p) {
+    if (!userIsPremium && !FREE_PERSONA_IDS.has(id)) continue;
     const template = resolveInsightTemplate(`persona.${id}`, dict);
     if (!template) continue;
     cards.push({

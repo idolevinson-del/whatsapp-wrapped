@@ -9,6 +9,7 @@ import { BusiestDayCard } from '../components/cards/BusiestDayCard';
 import { OutroCard } from '../components/cards/OutroCard';
 import { StatsPage } from './StatsPage';
 import { buildStoryCards } from './buildStoryCards';
+import { isPremium } from '../lib/premium';
 import type { StoryCardData } from './buildStoryCards';
 import type { AnalysisResult } from '../analysis';
 
@@ -23,7 +24,10 @@ interface WrappedPageProps {
 export function WrappedPage({ analysis, onReset, fileName, isExample }: WrappedPageProps) {
   const { dictionary } = useLanguage();
   const [showStats, setShowStats] = useState(false);
-  const cards = buildStoryCards(analysis, dictionary, fileName);
+  const userIsPremium = isPremium();
+  // Non-premium viewers don't get personas that would leak a locked chart's
+  // number for free — see FREE_PERSONA_IDS.
+  const cards = buildStoryCards(analysis, dictionary, fileName, userIsPremium);
 
   if (showStats) {
     return <StatsPage analysis={analysis} fileName={fileName} onBack={() => setShowStats(false)} isExample={isExample} />;
@@ -43,7 +47,11 @@ export function WrappedPage({ analysis, onReset, fileName, isExample }: WrappedP
         <LanguageToggle />
       </div>
 
-      <StoryViewer>
+      {/* onComplete: the reveal always ends up on the full stats page on its
+       * own — nobody has to notice or tap "See all the stats" for that to
+       * happen, since most people won't. The button stays as a skip-ahead
+       * shortcut for anyone who doesn't want to wait out the cards. */}
+      <StoryViewer onComplete={() => setShowStats(true)}>
         {cards.map((card, i) => {
           switch (card.kind) {
             case 'headline':
