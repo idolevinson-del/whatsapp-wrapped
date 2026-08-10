@@ -157,19 +157,27 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
         title: dictionary.stats.streakDays,
         entries: withColors(personaBreakdown.streakDays),
         valueSuffix: ` ${dictionary.stats.daysSuffix}`,
+        locked: !userIsPremium,
       },
       {
         kind: 'bar',
         title: dictionary.stats.avgReplyMinutes,
         entries: withColors(personaBreakdown.avgReplyMinutes),
         valueSuffix: ` ${dictionary.stats.minutesSuffix}`,
+        locked: !userIsPremium,
       },
       {
         kind: 'pie',
         title: dictionary.stats.conversationStarterCount,
         entries: withColors(personaBreakdown.conversationStarterCount),
+        locked: !userIsPremium,
       },
-      { kind: 'bar', title: dictionary.stats.wordsPerMessage, entries: withColors(personaBreakdown.wordsPerMessage) },
+      {
+        kind: 'bar',
+        title: dictionary.stats.wordsPerMessage,
+        entries: withColors(personaBreakdown.wordsPerMessage),
+        locked: !userIsPremium,
+      },
       { kind: 'pie', title: dictionary.stats.emojiCount, entries: withColors(personaBreakdown.emojiCount) },
       {
         kind: 'topEmojis',
@@ -187,13 +195,40 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
               kind: 'pie' as const,
               title: dictionary.stats.mentionedCount,
               entries: withColors(personaBreakdown.mentionedCount),
+              locked: !userIsPremium,
             },
           ]
         : []),
     ],
     heatmap: userIsPremium
-      ? { title: dictionary.stats.heatmapTitle, grid: analysis.activityHeatmap, color: theme.hexStops[1], locked: false, lockedMessage: '' }
-      : { title: dictionary.stats.heatmapTitle, grid: [], color: '', locked: true, lockedMessage: dictionary.stats.heatmapLocked },
+      ? analysis.activityHeatmap.length > 0
+        ? {
+            title: dictionary.stats.heatmapTitle,
+            grid: analysis.activityHeatmap,
+            color: theme.hexStops[1],
+            locked: false,
+            lockedMessage: '',
+            noData: false,
+            noDataMessage: '',
+          }
+        : {
+            title: dictionary.stats.heatmapTitle,
+            grid: [],
+            color: '',
+            locked: false,
+            lockedMessage: '',
+            noData: true,
+            noDataMessage: dictionary.stats.heatmapNoData,
+          }
+      : {
+          title: dictionary.stats.heatmapTitle,
+          grid: [],
+          color: '',
+          locked: true,
+          lockedMessage: dictionary.stats.heatmapLocked,
+          noData: false,
+          noDataMessage: '',
+        },
     likedItHeading: dictionary.stats.likedItHeading,
     tryItYourselfLabel: dictionary.stats.tryItYourselfButton,
     onTryItYourself: onBack,

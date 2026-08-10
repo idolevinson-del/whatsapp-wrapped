@@ -151,6 +151,9 @@ export interface Dictionary {
     heatmapTitle: string;
     /** Shown over the heatmap for non-Premium users, in place of the real chart. */
     heatmapLocked: string;
+    /** Shown to Premium users when this particular result has no heatmap
+     * data — chat history saved before the feature existed. */
+    heatmapNoData: string;
   };
   /** The one-time-purchase "Wrapped+" unlock: license key entry, feature
    * pitch, and (once unlocked) the color-theme picker. No accounts — the
@@ -160,6 +163,10 @@ export interface Dictionary {
     entryLabel: string;
     modalTitle: string;
     pitch: string;
+    /** Shown above the pitch when the modal opens because a free-tier limit
+     * was hit (e.g. the 2-chat history cap), instead of the plain entry
+     * point. Template with {count} — the free limit. */
+    historyLimitReason: string;
     featureHeatmap: string;
     featureThemes: string;
     featureHistory: string;

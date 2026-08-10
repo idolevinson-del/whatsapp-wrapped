@@ -169,15 +169,27 @@ export function SharedStatsPage({ payload }: { payload: StatsSharePayload }) {
         title: dictionary.stats.streakDays,
         entries: withColors(payload.pb.sd),
         valueSuffix: ` ${dictionary.stats.daysSuffix}`,
+        locked: !userIsPremium,
       },
       {
         kind: 'bar',
         title: dictionary.stats.avgReplyMinutes,
         entries: withColors(payload.pb.arm),
         valueSuffix: ` ${dictionary.stats.minutesSuffix}`,
+        locked: !userIsPremium,
       },
-      { kind: 'pie', title: dictionary.stats.conversationStarterCount, entries: withColors(payload.pb.csc) },
-      { kind: 'bar', title: dictionary.stats.wordsPerMessage, entries: withColors(payload.pb.wpm) },
+      {
+        kind: 'pie',
+        title: dictionary.stats.conversationStarterCount,
+        entries: withColors(payload.pb.csc),
+        locked: !userIsPremium,
+      },
+      {
+        kind: 'bar',
+        title: dictionary.stats.wordsPerMessage,
+        entries: withColors(payload.pb.wpm),
+        locked: !userIsPremium,
+      },
       { kind: 'pie', title: dictionary.stats.emojiCount, entries: withColors(payload.pb.ec) },
       {
         kind: 'topEmojis',
@@ -190,7 +202,14 @@ export function SharedStatsPage({ payload }: { payload: StatsSharePayload }) {
       },
       { kind: 'pie', title: dictionary.stats.laughsTriggered, entries: withColors(payload.pb.lt) },
       ...(isGroup
-        ? [{ kind: 'pie' as const, title: dictionary.stats.mentionedCount, entries: withColors(payload.pb.mnc) }]
+        ? [
+            {
+              kind: 'pie' as const,
+              title: dictionary.stats.mentionedCount,
+              entries: withColors(payload.pb.mnc),
+              locked: !userIsPremium,
+            },
+          ]
         : []),
     ],
     heatmap: null, // heatmap data was never part of the compact share payload

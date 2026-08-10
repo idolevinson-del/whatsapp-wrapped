@@ -3,6 +3,7 @@ import { StatTile } from '../components/charts/StatTile';
 import { HeatmapChart } from '../components/charts/HeatmapChart';
 import { LanguageToggle } from '../components/LanguageToggle';
 import { useLanguage } from '../i18n';
+import type { ReactNode } from 'react';
 import type { StatsViewModel } from './statsViewModel';
 
 /** Purely presentational — renders a StatsViewModel, regardless of whether it
@@ -74,10 +75,11 @@ export function StatsView({ model }: { model: StatsViewModel }) {
           </div>
 
           {model.blocks.map((block, i) => {
+            let content: ReactNode;
             if (block.kind === 'topEmojis') {
               if (block.rows.length === 0) return null;
-              return (
-                <div key={i} className="rounded-2xl border border-white/10 bg-white/5 p-4">
+              content = (
+                <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                   <h3 className="text-sm font-semibold uppercase tracking-widest text-white/70">{block.title}</h3>
                   <ul className="mt-4 space-y-2.5">
                     {block.rows.map((row) => (
@@ -105,16 +107,28 @@ export function StatsView({ model }: { model: StatsViewModel }) {
                   </ul>
                 </div>
               );
+            } else {
+              content = (
+                <StatSection title={block.title} kind={block.kind} entries={block.entries} valueSuffix={block.valueSuffix} />
+              );
             }
 
+            if (!block.locked) return <div key={i}>{content}</div>;
+
             return (
-              <StatSection
-                key={i}
-                title={block.title}
-                kind={block.kind}
-                entries={block.entries}
-                valueSuffix={block.valueSuffix}
-              />
+              <div key={i} className="relative overflow-hidden rounded-2xl">
+                <div className="pointer-events-none select-none blur-[6px]" aria-hidden="true">
+                  {content}
+                </div>
+                <button
+                  type="button"
+                  onClick={model.onOpenPremium}
+                  className="absolute inset-0 flex cursor-pointer flex-col items-center justify-center gap-1.5 rounded-2xl bg-black/55 backdrop-blur-[1px] transition-colors hover:bg-black/65"
+                >
+                  <span className="text-2xl">🔒</span>
+                  <span className="text-xs font-semibold text-amber-300 underline-offset-2">{model.premiumCtaLabel}</span>
+                </button>
+              </div>
             );
           })}
 
@@ -130,6 +144,11 @@ export function StatsView({ model }: { model: StatsViewModel }) {
                 >
                   {model.premiumCtaLabel}
                 </button>
+              </div>
+            ) : model.heatmap.noData ? (
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-center">
+                <h3 className="text-sm font-semibold uppercase tracking-widest text-white/70">{model.heatmap.title}</h3>
+                <p className="mx-auto mt-3 max-w-xs text-sm text-white/60">{model.heatmap.noDataMessage}</p>
               </div>
             ) : (
               <HeatmapChart title={model.heatmap.title} grid={model.heatmap.grid} language={language} color={model.heatmap.color} />

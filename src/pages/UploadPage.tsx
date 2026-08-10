@@ -4,6 +4,7 @@ import type { Dictionary } from '../i18n';
 import { LanguageToggle } from '../components/LanguageToggle';
 import { ChatHistoryList } from '../components/ChatHistoryList';
 import { PremiumModal } from '../components/PremiumModal';
+import { FREE_MAX_ENTRIES } from '../lib/chatHistory';
 import type { ChatHistoryEntry } from '../lib/chatHistory';
 import { hasSeenOnboarding, markOnboardingSeen } from '../lib/onboarding';
 import { isPremium } from '../lib/premium';
@@ -51,6 +52,7 @@ export function UploadPage({
   const [isDragging, setIsDragging] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(() => !hasSeenOnboarding());
   const [showPremium, setShowPremium] = useState(false);
+  const [premiumReason, setPremiumReason] = useState<string | null>(null);
   // Bumped (not read) whenever premium state changes in the modal — premium
   // itself lives in localStorage, not React state, so this just forces a
   // re-render to pick up the fresh value below.
@@ -71,7 +73,15 @@ export function UploadPage({
 
   function handleFiles(files: FileList | null) {
     const file = files?.[0];
-    if (file) onFileSelected(file);
+    if (!file) return;
+
+    if (!userIsPremium && history.length >= FREE_MAX_ENTRIES) {
+      setPremiumReason(formatTemplate(dictionary.premium.historyLimitReason, { count: FREE_MAX_ENTRIES }));
+      setShowPremium(true);
+      return;
+    }
+
+    onFileSelected(file);
   }
 
   const stageLabel =
@@ -149,7 +159,10 @@ export function UploadPage({
             </button>
             <button
               type="button"
-              onClick={() => setShowPremium(true)}
+              onClick={() => {
+                setPremiumReason(null);
+                setShowPremium(true);
+              }}
               className="cursor-pointer text-sm font-medium text-amber-400 underline-offset-2 hover:underline"
             >
               {dictionary.premium.entryLabel}
@@ -228,7 +241,14 @@ export function UploadPage({
       </div>
 
       {showPremium && (
-        <PremiumModal onClose={() => setShowPremium(false)} onPremiumChange={() => forcePremiumRefresh((n) => n + 1)} />
+        <PremiumModal
+          onClose={() => {
+            setShowPremium(false);
+            setPremiumReason(null);
+          }}
+          onPremiumChange={() => forcePremiumRefresh((n) => n + 1)}
+          reason={premiumReason ?? undefined}
+        />
       )}
     </div>
   );

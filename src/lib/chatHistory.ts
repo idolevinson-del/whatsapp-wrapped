@@ -6,8 +6,10 @@ const STORAGE_KEY = 'whatsapp-wrapped:history';
 
 /** Most recent chats kept in history — older entries are dropped. Premium
  * lifts this considerably, but still bounded so localStorage can't grow
- * without limit. */
-const FREE_MAX_ENTRIES = 10;
+ * without limit. Exported so the upload flow can block a free user from
+ * even starting analysis on a chat that would exceed the cap, rather than
+ * silently evicting an old one. */
+export const FREE_MAX_ENTRIES = 2;
 const PREMIUM_MAX_ENTRIES = 200;
 
 function maxEntries(): number {

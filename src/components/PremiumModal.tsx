@@ -10,6 +10,9 @@ interface PremiumModalProps {
    * state lives outside React state (localStorage) and the caller needs to
    * re-render with the new value. */
   onPremiumChange: () => void;
+  /** Optional context shown above the pitch — e.g. why the modal opened
+   * ("you hit the free history limit"), instead of the generic entry point. */
+  reason?: string;
 }
 
 /**
@@ -18,7 +21,7 @@ interface PremiumModalProps {
  * account system — the license key itself is the credential, validated
  * directly against Gumroad from the browser.
  */
-export function PremiumModal({ onClose, onPremiumChange }: PremiumModalProps) {
+export function PremiumModal({ onClose, onPremiumChange, reason }: PremiumModalProps) {
   const { dictionary } = useLanguage();
   const [premium, setPremiumFlag] = useState(isPremium());
   const [licenseInput, setLicenseInput] = useState('');
@@ -102,6 +105,11 @@ export function PremiumModal({ onClose, onPremiumChange }: PremiumModalProps) {
           </>
         ) : (
           <>
+            {reason && (
+              <p className="mt-2 rounded-lg border border-amber-400/30 bg-amber-400/10 px-3 py-2 text-sm font-medium text-amber-300">
+                {reason}
+              </p>
+            )}
             <p className="mt-2 text-sm text-neutral-400">{dictionary.premium.pitch}</p>
 
             <ul className="mt-4 space-y-2 text-sm text-neutral-300">
