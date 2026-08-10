@@ -80,17 +80,21 @@ export function PhoneGuide({ steps, captions, contactName, contactSub, messages 
           <GuideStepView step={step} ctx={{ contactName, contactSub, messages }} />
         </div>
 
+        {/* Tap-zone sides and chevron glyphs below were swapped relative to
+         * their actions (tapping the "forward" side went backward, and vice
+         * versa) — start/end here matches StoryViewer's convention: tap the
+         * end side (right in LTR, left in RTL) to advance. */}
         <button
           type="button"
           aria-label="Previous"
           onClick={() => userGoTo(index - 1)}
-          className="absolute inset-y-0 end-0 z-10 w-[30%] cursor-pointer"
+          className="absolute inset-y-0 start-0 z-10 w-[30%] cursor-pointer"
         />
         <button
           type="button"
           aria-label="Next"
           onClick={() => userGoTo(index + 1)}
-          className="absolute inset-y-0 start-0 z-10 w-[30%] cursor-pointer"
+          className="absolute inset-y-0 end-0 z-10 w-[30%] cursor-pointer"
         />
       </div>
 
@@ -105,7 +109,7 @@ export function PhoneGuide({ steps, captions, contactName, contactSub, messages 
           aria-label="Previous step"
           className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-white/15 bg-white/5 text-sm hover:bg-white/10"
         >
-          ›
+          ‹
         </button>
         <div className="flex max-w-[220px] flex-wrap justify-center gap-1.5">
           {steps.map((_, i) => (
@@ -126,7 +130,7 @@ export function PhoneGuide({ steps, captions, contactName, contactSub, messages 
           aria-label="Next step"
           className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-white/15 bg-white/5 text-sm hover:bg-white/10"
         >
-          ‹
+          ›
         </button>
       </div>
     </div>
