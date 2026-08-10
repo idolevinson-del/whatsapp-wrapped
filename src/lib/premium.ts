@@ -1,13 +1,15 @@
+import { GUMROAD_PRODUCT_PERMALINK } from '../config/premiumConfig';
+
 /**
  * Premium unlock: a one-time-purchase license key, validated against
- * LemonSqueezy's public License API and then remembered on this device.
- * Deliberately not an account system — no email/password, no server of our
- * own. The license key itself is the credential; losing it means asking
- * LemonSqueezy to resend the purchase email.
+ * Gumroad's public License Verification API and then remembered on this
+ * device. Deliberately not an account system — no email/password, no
+ * server of our own. The license key itself is the credential; losing it
+ * means asking Gumroad to resend the purchase receipt.
  */
 
 const STORAGE_KEY = 'whatsapp-wrapped:premium';
-const LEMONSQUEEZY_VALIDATE_URL = 'https://api.lemonsqueezy.com/v1/licenses/validate';
+const GUMROAD_VERIFY_URL = 'https://api.gumroad.com/v2/licenses/verify';
 
 interface PremiumState {
   licenseKey: string;
@@ -43,23 +45,32 @@ export function getLicenseKey(): string | null {
 export type ActivateResult = { ok: true } | { ok: false; reason: 'invalid' | 'network' };
 
 /**
- * Validates a license key against LemonSqueezy and, if valid, remembers it
- * on this device. Called directly from the browser — LemonSqueezy's
- * `licenses/validate` endpoint is designed for exactly this client-side
- * "enter your key" flow and needs no store secret, only the key itself.
+ * Validates a license key against Gumroad and, if valid, remembers it on
+ * this device. Called directly from the browser — Gumroad's
+ * `licenses/verify` endpoint is designed for exactly this client-side
+ * "enter your key" flow and needs no account secret, only the product
+ * permalink and the key itself.
+ *
+ * `increment_uses_count: false` so re-checking a key (e.g. a second visit
+ * that re-validates) doesn't eat into any per-license activation limit set
+ * on the Gumroad product.
  */
 export async function activateLicense(rawKey: string): Promise<ActivateResult> {
   const licenseKey = rawKey.trim();
   if (!licenseKey) return { ok: false, reason: 'invalid' };
 
   try {
-    const response = await fetch(LEMONSQUEEZY_VALIDATE_URL, {
+    const response = await fetch(GUMROAD_VERIFY_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-      body: JSON.stringify({ license_key: licenseKey }),
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        product_permalink: GUMROAD_PRODUCT_PERMALINK,
+        license_key: licenseKey,
+        increment_uses_count: 'false',
+      }),
     });
-    const data = (await response.json()) as { valid?: boolean };
-    if (!data.valid) return { ok: false, reason: 'invalid' };
+    const data = (await response.json()) as { success?: boolean };
+    if (!data.success) return { ok: false, reason: 'invalid' };
 
     writeState({ licenseKey, activatedAt: Date.now() });
     return { ok: true };

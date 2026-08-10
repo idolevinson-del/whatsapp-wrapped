@@ -16,7 +16,7 @@ interface PremiumModalProps {
  * The whole "Wrapped+" surface in one modal: pitch + purchase link + license
  * activation when locked, theme picker + deactivate when unlocked. No
  * account system — the license key itself is the credential, validated
- * directly against LemonSqueezy from the browser.
+ * directly against Gumroad from the browser.
  */
 export function PremiumModal({ onClose, onPremiumChange }: PremiumModalProps) {
   const { dictionary } = useLanguage();
