@@ -239,10 +239,14 @@ export function buildStatsSharePayload(
       fileName,
       coreStats.perSender.map((s) => s.sender)
     );
-    if (parsed.name) {
-      name = parsed.name;
-      isGroup = parsed.isGroup;
-    }
+    // isGroup is meaningful even when no name could be extracted (e.g. a
+    // renamed export file) — it shouldn't be silently lost just because the
+    // headline has nothing to show. Previously this whole block was gated
+    // on `parsed.name`, so a group chat with an unrecognized filename would
+    // reach SharedStatsPage as isGroup: undefined and never show the
+    // "mentioned by name" section.
+    isGroup = parsed.isGroup;
+    if (parsed.name) name = parsed.name;
   }
 
   // personaBreakdown arrays may not be in the same sender order as
