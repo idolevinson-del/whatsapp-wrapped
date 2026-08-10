@@ -61,3 +61,34 @@ describe('lifetime analysis cap', () => {
     expect(getLifetimeAnalysisCount()).toBe(3);
   });
 });
+
+describe('getFreeLimit', () => {
+  it('starts at the baseline and rises with each share bonus, capped', async () => {
+    const { getFreeLimit, FREE_MAX_ENTRIES } = await import('./chatHistory');
+    const { redeemShareBonus, MAX_BONUS_SLOTS } = await import('./shareBonus');
+
+    expect(getFreeLimit()).toBe(FREE_MAX_ENTRIES);
+
+    redeemShareBonus();
+    expect(getFreeLimit()).toBe(FREE_MAX_ENTRIES + 1);
+
+    for (let i = 0; i < MAX_BONUS_SLOTS + 5; i++) redeemShareBonus();
+    expect(getFreeLimit()).toBe(FREE_MAX_ENTRIES + MAX_BONUS_SLOTS);
+  });
+
+  it('actually raises what blocks a free user from analyzing another chat', async () => {
+    const { saveHistoryEntry, getLifetimeAnalysisCount, getFreeLimit, FREE_MAX_ENTRIES } = await import('./chatHistory');
+    const { redeemShareBonus } = await import('./shareBonus');
+
+    saveHistoryEntry('a.txt', fakeAnalysis());
+    saveHistoryEntry('b.txt', fakeAnalysis());
+    // At the baseline cap — a free user would be blocked here (this mirrors
+    // UploadPage's own check: lifetime count >= getFreeLimit()).
+    expect(getLifetimeAnalysisCount()).toBe(FREE_MAX_ENTRIES);
+    expect(getLifetimeAnalysisCount() >= getFreeLimit()).toBe(true);
+
+    redeemShareBonus();
+    // Same lifetime count, but the ceiling moved — no longer blocked.
+    expect(getLifetimeAnalysisCount() >= getFreeLimit()).toBe(false);
+  });
+});

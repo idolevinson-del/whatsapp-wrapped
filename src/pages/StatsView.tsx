@@ -2,6 +2,7 @@ import { StatSection } from '../components/charts/StatSection';
 import { StatTile } from '../components/charts/StatTile';
 import { LanguagePicker } from '../components/LanguagePicker';
 import { LockedOverlay } from '../components/LockedOverlay';
+import { Toast } from '../components/Toast';
 import type { StatsViewModel } from './statsViewModel';
 
 /** Purely presentational — renders a StatsViewModel, regardless of whether it
@@ -140,6 +141,7 @@ export function StatsView({ model }: { model: StatsViewModel }) {
           </div>
         </div>
       </div>
+      {model.toastMessage && <Toast message={model.toastMessage} />}
     </div>
   );
 }

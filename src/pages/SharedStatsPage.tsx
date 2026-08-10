@@ -9,6 +9,7 @@ import { buildStatsShareUrl } from '../lib/statsShareLink';
 import { buildStatsShareText } from '../lib/shareText';
 import { generateShareImageBlob, shareOrDownloadImage } from '../lib/shareImage';
 import { isPremium } from '../lib/premium';
+import { redeemShareBonus } from '../lib/shareBonus';
 import { DEFAULT_THEME } from '../lib/themes';
 import { formatPersona, pickHeadlinePersonaFromBreakdown } from '../lib/headlinePersona';
 import { trackEvent } from '../analytics';
@@ -31,7 +32,17 @@ export function SharedStatsPage({ payload }: { payload: StatsSharePayload }) {
   const { dictionary, language, direction, setLanguage } = useLanguage();
   const [showPremium, setShowPremium] = useState(false);
   const [, forcePremiumRefresh] = useState(0);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
   const userIsPremium = isPremium();
+
+  // Growth lever: sharing (even re-sharing a link you received) raises the
+  // viewer's own free lifetime cap by one, up to MAX_BONUS_SLOTS — see
+  // lib/shareBonus.ts and StatsPage's identical helper.
+  function maybeShowShareBonusToast() {
+    if (userIsPremium || !redeemShareBonus()) return;
+    setToastMessage(dictionary.premium.shareBonusEarned);
+    setTimeout(() => setToastMessage(null), 4000);
+  }
 
   useEffect(() => {
     setLanguage(payload.lang);
@@ -56,6 +67,7 @@ export function SharedStatsPage({ payload }: { payload: StatsSharePayload }) {
     const shareUrl = buildStatsShareUrl(payload);
     const text = buildStatsShareText(dictionary, shareUrl);
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer');
+    maybeShowShareBonusToast();
   }
 
   async function handleShareImage() {
@@ -109,6 +121,7 @@ export function SharedStatsPage({ payload }: { payload: StatsSharePayload }) {
       personaText: formattedPersona?.text,
     });
     await shareOrDownloadImage(blob, 'whatsapp-wrapped.png', dictionary.app.title, dictionary.stats.shareIntro);
+    maybeShowShareBonusToast();
   }
 
   const headline = payload.n
@@ -219,6 +232,7 @@ export function SharedStatsPage({ payload }: { payload: StatsSharePayload }) {
     onTryItYourself: goHome,
     onOpenPremium: () => setShowPremium(true),
     premiumCtaLabel: dictionary.premium.buyButton,
+    toastMessage,
   };
 
   return (

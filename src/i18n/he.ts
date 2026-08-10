@@ -147,5 +147,6 @@ export const he: Dictionary = {
     activeBody: 'כל הגרפים והיסטוריה בלי הגבלה — הכל פתוח.',
     deactivateButton: 'הסרת הרישוי מהמכשיר הזה',
     closeButton: 'סגירה',
+    shareBonusEarned: '🎉 תודה ששיתפתם! פתחתם עוד בדיקה בחינם.',
   },
 };

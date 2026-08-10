@@ -1,21 +1,26 @@
 import { isPremium } from './premium';
+import { getBonusSlots } from './shareBonus';
 import type { AnalysisResult, PersonaBreakdown } from '../analysis';
 import type { ParsedMessage } from '../parser/types';
 
 const STORAGE_KEY = 'whatsapp-wrapped:history';
 const LIFETIME_COUNT_KEY = 'whatsapp-wrapped:lifetimeAnalysisCount';
 
-/** Most recent chats kept in history — older entries are dropped. Premium
- * lifts this considerably, but still bounded so localStorage can't grow
- * without limit. Also doubles as the free tier's total lifetime cap on real
- * analyses (see getLifetimeAnalysisCount below) — exported so the upload
- * flow can block a free user from even starting analysis on a chat that
- * would exceed it. */
+/** Baseline free lifetime cap on real analyses, before any share bonus —
+ * see getFreeLimit() for the number that actually gates uploads. */
 export const FREE_MAX_ENTRIES = 2;
 const PREMIUM_MAX_ENTRIES = 200;
 
+/** The free tier's actual lifetime cap: the baseline plus whatever bonus
+ * slots sharing has earned (see lib/shareBonus.ts), capped there too. This
+ * is what the upload flow should check against — not FREE_MAX_ENTRIES
+ * directly — so earning a bonus slot actually raises the ceiling. */
+export function getFreeLimit(): number {
+  return FREE_MAX_ENTRIES + getBonusSlots();
+}
+
 function maxEntries(): number {
-  return isPremium() ? PREMIUM_MAX_ENTRIES : FREE_MAX_ENTRIES;
+  return isPremium() ? PREMIUM_MAX_ENTRIES : getFreeLimit();
 }
 
 /** Total chats ever analyzed on this device, all-time. Deliberately separate

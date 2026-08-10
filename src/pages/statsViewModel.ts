@@ -57,4 +57,8 @@ export interface StatsViewModel {
   /** Opens the Wrapped+ modal — used by locked-block overlays. */
   onOpenPremium: () => void;
   premiumCtaLabel: string;
+  /** Brief confirmation toast (e.g. "thanks for sharing, one more unlocked!")
+   * — present only right after it should show; the page clears it itself
+   * after a few seconds. */
+  toastMessage?: string | null;
 }

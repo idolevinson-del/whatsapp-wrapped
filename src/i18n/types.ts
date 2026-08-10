@@ -168,5 +168,8 @@ export interface Dictionary {
     activeBody: string;
     deactivateButton: string;
     closeButton: string;
+    /** Toast shown right after sharing earns a bonus free chat check — see
+     * lib/shareBonus.ts. Only shown when a new slot was actually granted. */
+    shareBonusEarned: string;
   };
 }

@@ -151,5 +151,6 @@ export const en: Dictionary = {
     activeBody: 'Every chart and unlimited history are unlocked.',
     deactivateButton: 'Remove license from this device',
     closeButton: 'Close',
+    shareBonusEarned: "🎉 Thanks for sharing! You've unlocked one more free chat check.",
   },
 };

@@ -153,5 +153,6 @@ export const pt: Dictionary = {
     activeBody: 'Todos os gráficos e o histórico ilimitado estão desbloqueados.',
     deactivateButton: 'Remover a licença deste dispositivo',
     closeButton: 'Fechar',
+    shareBonusEarned: '🎉 Obrigado por compartilhar! Você desbloqueou mais uma análise gratuita.',
   },
 };

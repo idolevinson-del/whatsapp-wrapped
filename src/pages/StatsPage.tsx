@@ -10,6 +10,7 @@ import { buildStatsShareText } from '../lib/shareText';
 import { buildStatsSharePayload, buildStatsShareUrl } from '../lib/statsShareLink';
 import { generateShareImageBlob, shareOrDownloadImage } from '../lib/shareImage';
 import { isPremium } from '../lib/premium';
+import { redeemShareBonus } from '../lib/shareBonus';
 import { DEFAULT_THEME } from '../lib/themes';
 import { formatPersona, pickHeadlinePersona } from '../lib/headlinePersona';
 import { trackEvent } from '../analytics';
@@ -34,10 +35,22 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
   const isGroup = personaBreakdown.mentionedCount.length > 0;
   const [showPremium, setShowPremium] = useState(false);
   const [, forcePremiumRefresh] = useState(0);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
   const userIsPremium = isPremium();
 
   function withColors(values: { sender: string; value: number }[]) {
     return values.map((v) => ({ ...v, color: colors[v.sender] ?? '#94a3b8' }));
+  }
+
+  // Growth lever: sharing raises the free lifetime cap by one, up to
+  // MAX_BONUS_SLOTS (see lib/shareBonus.ts) — confirmed with a brief toast,
+  // but only when a share actually earned a new slot (not on every repeat
+  // share once already at the cap), and only for free users (premium has no
+  // cap to raise).
+  function maybeShowShareBonusToast() {
+    if (userIsPremium || !redeemShareBonus()) return;
+    setToastMessage(dictionary.premium.shareBonusEarned);
+    setTimeout(() => setToastMessage(null), 4000);
   }
 
   const totalMessages = coreStats.perSender.reduce((sum, s) => sum + s.messageCount, 0);
@@ -53,6 +66,7 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
     const shareUrl = buildStatsShareUrl(buildStatsSharePayload(analysis, fileName, language));
     const text = buildStatsShareText(dictionary, shareUrl);
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer');
+    maybeShowShareBonusToast();
   }
 
   async function handleShareImage() {
@@ -90,6 +104,7 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
       personaText: formattedPersona?.text,
     });
     await shareOrDownloadImage(blob, 'whatsapp-wrapped.png', dictionary.app.title, dictionary.stats.shareIntro);
+    maybeShowShareBonusToast();
   }
 
   let headline: string | null = null;
@@ -214,6 +229,7 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
     onTryItYourself: onBack,
     onOpenPremium: () => setShowPremium(true),
     premiumCtaLabel: dictionary.premium.buyButton,
+    toastMessage,
   };
 
   return (

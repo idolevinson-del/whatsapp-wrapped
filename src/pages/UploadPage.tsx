@@ -4,7 +4,7 @@ import type { Dictionary } from '../i18n';
 import { LanguagePicker } from '../components/LanguagePicker';
 import { ChatHistoryList } from '../components/ChatHistoryList';
 import { PremiumModal } from '../components/PremiumModal';
-import { FREE_MAX_ENTRIES, getLifetimeAnalysisCount } from '../lib/chatHistory';
+import { getFreeLimit, getLifetimeAnalysisCount } from '../lib/chatHistory';
 import type { ChatHistoryEntry } from '../lib/chatHistory';
 import { hasSeenOnboarding, markOnboardingSeen } from '../lib/onboarding';
 import { isPremium } from '../lib/premium';
@@ -78,9 +78,11 @@ export function UploadPage({
     // Gated on the lifetime count, not on how many chats are currently
     // saved — history.length drops back below the cap the moment someone
     // deletes an old entry, which would otherwise let the free limit be
-    // bypassed indefinitely just by clearing history first.
-    if (!userIsPremium && getLifetimeAnalysisCount() >= FREE_MAX_ENTRIES) {
-      setPremiumReason(formatTemplate(dictionary.premium.historyLimitReason, { count: FREE_MAX_ENTRIES }));
+    // bypassed indefinitely just by clearing history first. The limit
+    // itself (getFreeLimit) isn't fixed — sharing raises it, see shareBonus.ts.
+    const freeLimit = getFreeLimit();
+    if (!userIsPremium && getLifetimeAnalysisCount() >= freeLimit) {
+      setPremiumReason(formatTemplate(dictionary.premium.historyLimitReason, { count: freeLimit }));
       setShowPremium(true);
       return;
     }

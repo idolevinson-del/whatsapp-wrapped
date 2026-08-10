@@ -151,5 +151,6 @@ export const ar: Dictionary = {
     activeBody: 'جميع الرسوم البيانية والسجل غير المحدود أصبحا متاحين.',
     deactivateButton: 'إزالة الترخيص من هذا الجهاز',
     closeButton: 'إغلاق',
+    shareBonusEarned: '🎉 شكراً لمشاركتكم! فتحتم فحص محادثة مجاني إضافي.',
   },
 };
