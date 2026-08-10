@@ -76,4 +76,8 @@ export interface AnalysisResult {
   busiestDay: { date: string; count: number };
   /** Most-used word across the whole chat, stopwords/greetings/fillers excluded. */
   topWord: CountEntry | null;
+  /** Message counts by [day-of-week 0-6 (Sun-Sat)][hour-of-day 0-23], in the
+   * device's local time — a Premium-only chart, kept in every analysis
+   * result since it's cheap to compute regardless of who ends up seeing it. */
+  activityHeatmap: number[][];
 }

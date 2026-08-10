@@ -1,12 +1,16 @@
+import { useState } from 'react';
 import { formatTemplate, useLanguage } from '../i18n';
 import { StatsView } from './StatsView';
 import { HEADLINE_GRADIENT, OUTRO_GRADIENT, BUSIEST_DAY_GRADIENT, PERSONA_GRADIENTS } from '../components/cards/cardStyles';
+import { PremiumModal } from '../components/PremiumModal';
 import { buildSenderColorMap } from '../lib/senderColors';
 import { formatDate } from '../lib/formatDate';
 import { parseChatName } from '../lib/parseChatName';
 import { buildStatsShareText } from '../lib/shareText';
 import { buildStatsSharePayload, buildStatsShareUrl } from '../lib/statsShareLink';
 import { generateShareImageBlob, shareOrDownloadImage } from '../lib/shareImage';
+import { isPremium } from '../lib/premium';
+import { DEFAULT_THEME, getSelectedTheme } from '../lib/themes';
 import { trackEvent } from '../analytics';
 import type { AnalysisResult } from '../analysis';
 import type { StatsViewModel } from './statsViewModel';
@@ -27,6 +31,10 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
   const senders = coreStats.perSender.map((s) => s.sender);
   const colors = buildSenderColorMap(senders);
   const isGroup = personaBreakdown.mentionedCount.length > 0;
+  const [showPremium, setShowPremium] = useState(false);
+  const [, forcePremiumRefresh] = useState(0);
+  const userIsPremium = isPremium();
+  const theme = userIsPremium ? getSelectedTheme() : DEFAULT_THEME;
 
   function withColors(values: { sender: string; value: number }[]) {
     return values.map((v) => ({ ...v, color: colors[v.sender] ?? '#94a3b8' }));
@@ -73,6 +81,7 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
       ctaText: dictionary.stats.shareImageCta,
       urlText: window.location.host,
       dir: language === 'he' ? 'rtl' : 'ltr',
+      gradient: theme.hexStops,
     });
     await shareOrDownloadImage(blob, 'whatsapp-wrapped.png', dictionary.app.title, dictionary.stats.shareIntro);
   }
@@ -100,6 +109,7 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
     onShare: handleShareToWhatsApp,
     shareImageLabel: dictionary.stats.shareImageButton,
     onShareImage: handleShareImage,
+    titleGradientClasses: theme.gradientClasses,
     overviewTitle: dictionary.stats.overviewTitle,
     overviewTiles: [
       {
@@ -181,10 +191,22 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
           ]
         : []),
     ],
+    heatmap: userIsPremium
+      ? { title: dictionary.stats.heatmapTitle, grid: analysis.activityHeatmap, color: theme.hexStops[1], locked: false, lockedMessage: '' }
+      : { title: dictionary.stats.heatmapTitle, grid: [], color: '', locked: true, lockedMessage: dictionary.stats.heatmapLocked },
     likedItHeading: dictionary.stats.likedItHeading,
     tryItYourselfLabel: dictionary.stats.tryItYourselfButton,
     onTryItYourself: onBack,
+    onOpenPremium: () => setShowPremium(true),
+    premiumCtaLabel: dictionary.premium.buyButton,
   };
 
-  return <StatsView model={model} />;
+  return (
+    <>
+      <StatsView model={model} />
+      {showPremium && (
+        <PremiumModal onClose={() => setShowPremium(false)} onPremiumChange={() => forcePremiumRefresh((n) => n + 1)} />
+      )}
+    </>
+  );
 }

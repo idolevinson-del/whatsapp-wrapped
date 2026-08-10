@@ -1,12 +1,15 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { formatTemplate, useLanguage } from '../i18n';
 import { StatsView } from './StatsView';
 import { HEADLINE_GRADIENT, OUTRO_GRADIENT, BUSIEST_DAY_GRADIENT, PERSONA_GRADIENTS } from '../components/cards/cardStyles';
+import { PremiumModal } from '../components/PremiumModal';
 import { buildSenderColorMap } from '../lib/senderColors';
 import { formatDate } from '../lib/formatDate';
 import { buildStatsShareUrl } from '../lib/statsShareLink';
 import { buildStatsShareText } from '../lib/shareText';
 import { generateShareImageBlob, shareOrDownloadImage } from '../lib/shareImage';
+import { isPremium } from '../lib/premium';
+import { DEFAULT_THEME, getSelectedTheme } from '../lib/themes';
 import { trackEvent } from '../analytics';
 import type { StatsSharePayload } from '../lib/statsShareLink';
 import type { StatsViewModel } from './statsViewModel';
@@ -25,6 +28,15 @@ function goHome() {
  */
 export function SharedStatsPage({ payload }: { payload: StatsSharePayload }) {
   const { dictionary, language, setLanguage } = useLanguage();
+  const [showPremium, setShowPremium] = useState(false);
+  const [, forcePremiumRefresh] = useState(0);
+  // The theme is the viewer's own local preference, not the sender's — it
+  // applies to how *you* see any results page, same as any other client-side
+  // display setting. Heatmap data, unlike theme, was genuinely never part of
+  // the compact share payload, so there's no equivalent "your own heatmap
+  // preference" to apply here — that block simply doesn't exist on this page.
+  const userIsPremium = isPremium();
+  const theme = userIsPremium ? getSelectedTheme() : DEFAULT_THEME;
 
   useEffect(() => {
     setLanguage(payload.lang);
@@ -93,6 +105,7 @@ export function SharedStatsPage({ payload }: { payload: StatsSharePayload }) {
       ctaText: dictionary.stats.shareImageCta,
       urlText: window.location.host,
       dir: language === 'he' ? 'rtl' : 'ltr',
+      gradient: theme.hexStops,
     });
     await shareOrDownloadImage(blob, 'whatsapp-wrapped.png', dictionary.app.title, dictionary.stats.shareIntro);
   }
@@ -113,6 +126,7 @@ export function SharedStatsPage({ payload }: { payload: StatsSharePayload }) {
     onShare: handleShareToWhatsApp,
     shareImageLabel: dictionary.stats.shareImageButton,
     onShareImage: handleShareImage,
+    titleGradientClasses: theme.gradientClasses,
     overviewTitle: dictionary.stats.overviewTitle,
     overviewTiles: [
       { icon: '💬', value: String(payload.total), label: dictionary.stats.totalMessages, gradient: HEADLINE_GRADIENT },
@@ -179,10 +193,20 @@ export function SharedStatsPage({ payload }: { payload: StatsSharePayload }) {
         ? [{ kind: 'pie' as const, title: dictionary.stats.mentionedCount, entries: withColors(payload.pb.mnc) }]
         : []),
     ],
+    heatmap: null, // heatmap data was never part of the compact share payload
     likedItHeading: dictionary.stats.likedItHeading,
     tryItYourselfLabel: dictionary.stats.tryItYourselfButton,
     onTryItYourself: goHome,
+    onOpenPremium: () => setShowPremium(true),
+    premiumCtaLabel: dictionary.premium.buyButton,
   };
 
-  return <StatsView model={model} />;
+  return (
+    <>
+      <StatsView model={model} />
+      {showPremium && (
+        <PremiumModal onClose={() => setShowPremium(false)} onPremiumChange={() => forcePremiumRefresh((n) => n + 1)} />
+      )}
+    </>
+  );
 }

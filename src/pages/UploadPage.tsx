@@ -3,8 +3,10 @@ import { formatTemplate, useLanguage } from '../i18n';
 import type { Dictionary } from '../i18n';
 import { LanguageToggle } from '../components/LanguageToggle';
 import { ChatHistoryList } from '../components/ChatHistoryList';
+import { PremiumModal } from '../components/PremiumModal';
 import type { ChatHistoryEntry } from '../lib/chatHistory';
 import { hasSeenOnboarding, markOnboardingSeen } from '../lib/onboarding';
+import { isPremium } from '../lib/premium';
 import type { AppError, ProgressStage } from '../worker';
 
 function errorMessage(error: AppError, dictionary: Dictionary): string {
@@ -48,7 +50,13 @@ export function UploadPage({
   const { dictionary } = useLanguage();
   const [isDragging, setIsDragging] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(() => !hasSeenOnboarding());
+  const [showPremium, setShowPremium] = useState(false);
+  // Bumped (not read) whenever premium state changes in the modal — premium
+  // itself lives in localStorage, not React state, so this just forces a
+  // re-render to pick up the fresh value below.
+  const [, forcePremiumRefresh] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
+  const userIsPremium = isPremium();
 
   function dismissOnboarding() {
     markOnboardingSeen();
@@ -139,6 +147,14 @@ export function UploadPage({
             >
               {dictionary.onboarding.viewExampleLink}
             </button>
+            <button
+              type="button"
+              onClick={() => setShowPremium(true)}
+              className="cursor-pointer text-sm font-medium text-amber-400 underline-offset-2 hover:underline"
+            >
+              {dictionary.premium.entryLabel}
+              {userIsPremium ? ' ✓' : ''}
+            </button>
           </div>
 
           <div
@@ -210,6 +226,10 @@ export function UploadPage({
           />
         </div>
       </div>
+
+      {showPremium && (
+        <PremiumModal onClose={() => setShowPremium(false)} onPremiumChange={() => forcePremiumRefresh((n) => n + 1)} />
+      )}
     </div>
   );
 }

@@ -1,10 +1,18 @@
+import { isPremium } from './premium';
 import type { AnalysisResult, PersonaBreakdown } from '../analysis';
 import type { ParsedMessage } from '../parser/types';
 
 const STORAGE_KEY = 'whatsapp-wrapped:history';
 
-/** Most recent chats kept in history — older entries are dropped. */
-const MAX_ENTRIES = 10;
+/** Most recent chats kept in history — older entries are dropped. Premium
+ * lifts this considerably, but still bounded so localStorage can't grow
+ * without limit. */
+const FREE_MAX_ENTRIES = 10;
+const PREMIUM_MAX_ENTRIES = 200;
+
+function maxEntries(): number {
+  return isPremium() ? PREMIUM_MAX_ENTRIES : FREE_MAX_ENTRIES;
+}
 
 export interface ChatHistoryEntry {
   id: string;
@@ -53,6 +61,7 @@ function reviveAnalysis(analysis: AnalysisResult): AnalysisResult {
     },
     personaBreakdown: analysis.personaBreakdown ?? EMPTY_PERSONA_BREAKDOWN,
     topWord: analysis.topWord ?? null,
+    activityHeatmap: analysis.activityHeatmap ?? [],
   };
 }
 
@@ -87,7 +96,7 @@ export function saveHistoryEntry(fileName: string, analysis: AnalysisResult): Ch
     lastViewedAt: now,
   };
 
-  writeHistory([entry, ...getHistory()].slice(0, MAX_ENTRIES));
+  writeHistory([entry, ...getHistory()].slice(0, maxEntries()));
   return entry;
 }
 

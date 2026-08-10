@@ -147,5 +147,32 @@ export interface Dictionary {
     minutesSuffix: string;
     daysSuffix: string;
     hoursSuffix: string;
+    /** Title of the Premium-only activity heatmap chart. */
+    heatmapTitle: string;
+    /** Shown over the heatmap for non-Premium users, in place of the real chart. */
+    heatmapLocked: string;
+  };
+  /** The one-time-purchase "Wrapped+" unlock: license key entry, feature
+   * pitch, and (once unlocked) the color-theme picker. No accounts — the
+   * license key itself is the credential. */
+  premium: {
+    /** Entry-point link/button on the upload page. */
+    entryLabel: string;
+    modalTitle: string;
+    pitch: string;
+    featureHeatmap: string;
+    featureThemes: string;
+    featureHistory: string;
+    buyButton: string;
+    licenseLabel: string;
+    licensePlaceholder: string;
+    activateButton: string;
+    activating: string;
+    activateError: string;
+    activeTitle: string;
+    activeBody: string;
+    themeLabel: string;
+    deactivateButton: string;
+    closeButton: string;
   };
 }

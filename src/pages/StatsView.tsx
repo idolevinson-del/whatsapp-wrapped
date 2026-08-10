@@ -1,11 +1,15 @@
 import { StatSection } from '../components/charts/StatSection';
 import { StatTile } from '../components/charts/StatTile';
+import { HeatmapChart } from '../components/charts/HeatmapChart';
 import { LanguageToggle } from '../components/LanguageToggle';
+import { useLanguage } from '../i18n';
 import type { StatsViewModel } from './statsViewModel';
 
 /** Purely presentational — renders a StatsViewModel, regardless of whether it
  * came from a live analysis or a decoded share link. */
 export function StatsView({ model }: { model: StatsViewModel }) {
+  const { language } = useLanguage();
+
   return (
     <div className="min-h-screen bg-neutral-950 px-4 py-8 text-white sm:px-8">
       <div className="mx-auto max-w-2xl">
@@ -26,7 +30,7 @@ export function StatsView({ model }: { model: StatsViewModel }) {
           </div>
         )}
 
-        <h1 className="mt-4 bg-gradient-to-r from-amber-400 via-rose-400 to-purple-400 bg-clip-text text-3xl font-extrabold text-transparent sm:text-4xl">
+        <h1 className={`mt-4 bg-gradient-to-r ${model.titleGradientClasses} bg-clip-text text-3xl font-extrabold text-transparent sm:text-4xl`}>
           {model.title}
         </h1>
         <p className="mt-2 text-neutral-400">{model.headline ?? model.subtitle}</p>
@@ -114,12 +118,29 @@ export function StatsView({ model }: { model: StatsViewModel }) {
             );
           })}
 
+          {model.heatmap &&
+            (model.heatmap.locked ? (
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-center">
+                <h3 className="text-sm font-semibold uppercase tracking-widest text-white/70">{model.heatmap.title}</h3>
+                <p className="mx-auto mt-3 max-w-xs text-sm text-white/60">{model.heatmap.lockedMessage}</p>
+                <button
+                  type="button"
+                  onClick={model.onOpenPremium}
+                  className="mt-3 cursor-pointer text-sm font-semibold text-amber-400 underline-offset-2 hover:underline"
+                >
+                  {model.premiumCtaLabel}
+                </button>
+              </div>
+            ) : (
+              <HeatmapChart title={model.heatmap.title} grid={model.heatmap.grid} language={language} color={model.heatmap.color} />
+            ))}
+
           <div className="pt-2 pb-4 text-center">
             <p className="text-sm text-white/70">{model.likedItHeading}</p>
             <button
               type="button"
               onClick={model.onTryItYourself}
-              className="mt-3 cursor-pointer rounded-full bg-gradient-to-r from-amber-400 via-rose-400 to-purple-400 px-6 py-3 text-sm font-semibold text-neutral-950 hover:opacity-90"
+              className={`mt-3 cursor-pointer rounded-full bg-gradient-to-r ${model.titleGradientClasses} px-6 py-3 text-sm font-semibold text-neutral-950 hover:opacity-90`}
             >
               {model.tryItYourselfLabel}
             </button>

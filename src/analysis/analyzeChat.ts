@@ -24,6 +24,15 @@ function computeBusiestDay(messages: ParsedMessage[]): { date: string; count: nu
   return { date: maxDate, count: maxCount };
 }
 
+/** [day-of-week 0-6][hour-of-day 0-23] message counts, in local time. */
+function computeActivityHeatmap(messages: ParsedMessage[]): number[][] {
+  const grid = Array.from({ length: 7 }, () => new Array(24).fill(0));
+  for (const m of messages) {
+    grid[m.timestamp.getDay()][m.timestamp.getHours()]++;
+  }
+  return grid;
+}
+
 export function analyzeChat(
   messages: ParsedMessage[],
   gapHours: number = CONVERSATION_GAP_HOURS
@@ -37,6 +46,7 @@ export function analyzeChat(
   const { personas, breakdown: personaBreakdown } = computePersonas(messages, coreStats, conversationGapStats);
   const busiestDay = computeBusiestDay(messages);
   const topWord = computeTopWord(messages);
+  const activityHeatmap = computeActivityHeatmap(messages);
 
-  return { coreStats, conversationGapStats, personas, personaBreakdown, busiestDay, topWord };
+  return { coreStats, conversationGapStats, personas, personaBreakdown, busiestDay, topWord, activityHeatmap };
 }

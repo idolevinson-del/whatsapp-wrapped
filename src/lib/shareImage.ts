@@ -10,10 +10,11 @@
 
 const WIDTH = 1080;
 const HEIGHT = 1920;
-const GRADIENT = ['#fbbf24', '#fb7185', '#c084fc']; // amber-400 → rose-400 → purple-400, the app's own brand gradient
 
 export interface ShareImageData {
   appTitle: string;
+  /** The three gradient stops (default brand colors, or a Premium theme's). */
+  gradient: [string, string, string];
   totalMessages: number;
   totalMessagesLabel: string;
   spanDays: number;
@@ -72,15 +73,16 @@ function gradientText(
   y: number,
   font: string,
   align: CanvasTextAlign,
-  approxWidth: number
+  approxWidth: number,
+  gradient: [string, string, string]
 ) {
   ctx.font = font;
   ctx.textAlign = align;
   ctx.textBaseline = 'alphabetic';
   const grad = ctx.createLinearGradient(x - approxWidth / 2, 0, x + approxWidth / 2, 0);
-  grad.addColorStop(0, GRADIENT[0]);
-  grad.addColorStop(0.5, GRADIENT[1]);
-  grad.addColorStop(1, GRADIENT[2]);
+  grad.addColorStop(0, gradient[0]);
+  grad.addColorStop(0.5, gradient[1]);
+  grad.addColorStop(1, gradient[2]);
   ctx.fillStyle = grad;
   ctx.fillText(text, x, y);
 }
@@ -151,7 +153,8 @@ export async function generateShareImageBlob(data: ShareImageData): Promise<Blob
     420,
     '800 200px system-ui, -apple-system, "Segoe UI", Arial, sans-serif',
     'center',
-    900
+    900,
+    data.gradient
   );
   ctx.font = '500 44px system-ui, -apple-system, "Segoe UI", Arial, sans-serif';
   ctx.fillStyle = '#e5e5e5';
