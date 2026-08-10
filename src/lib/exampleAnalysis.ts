@@ -4,13 +4,20 @@ import type { ParsedMessage } from '../parser/types';
 
 /**
  * The "try it with sample data" chat — a 5-person friend group over ~12
- * weeks, deliberately written so every persona badge has an obvious winner
- * instead of a flat, boring tie: Alex organizes everything (Most Active),
- * Sam's jokes land (Funniest), Jordan never sends a short message
- * (Biggest Yapper), Riley is awake at 2am more often than not (Night Owl),
- * and Casey says maybe three words a day (Most Ignored). A group, not a
- * 1-on-1, because the "who really runs the group" framing this app leads
- * with only pays off with more than 2 people in the chat.
+ * weeks, deliberately written so every persona badge/locked stat has an
+ * obvious winner instead of a flat, boring tie: Alex organizes everything
+ * (Most Active), Sam's jokes land (Funniest), Jordan never sends a short
+ * message (Biggest Yapper), Riley is awake at 2am more often than not
+ * (Night Owl) and sends voice notes instead of typing while there (Voice
+ * Message King), Casey says maybe three words a day but swears when they
+ * do (Most Ignored *and* Potty Mouth). A group, not a 1-on-1, because the
+ * "who really runs the group" framing this app leads with only pays off
+ * with more than 2 people in the chat.
+ *
+ * A few scripts include an 'audio omitted'/curse-word line specifically so
+ * the "Voice Message King" and "Potty Mouth" locked stats have real,
+ * non-zero data to demo — those two categories don't naturally arise from
+ * ordinary dialogue the way message counts or emoji use do.
  */
 const ALEX = 'Alex';
 const SAM = 'Sam';
@@ -55,7 +62,7 @@ const MEME_DUMP: Line[] = [
     sender: SAM,
     hour: 13,
     minute: 10,
-    text: 'just saw a guy fall off his scooter and do a full superhero landing recovery, 10/10 no notes',
+    text: 'holy shit, just saw a guy fall off his scooter and do a full superhero landing recovery, 10/10 no notes',
   },
   { sender: ALEX, hour: 13, minute: 11, text: 'hahahaha no way' },
   { sender: JORDAN, hour: 13, minute: 12, text: '😂😂😂' },
@@ -80,12 +87,13 @@ const WEEKEND_PLANS: Line[] = [
     minute: 5,
     text: "depends what we're doing, if it's another one of Alex's 6am hike ideas I'm out",
   },
-  { sender: ALEX, hour: 18, minute: 6, text: 'it was ONE time Jordan' },
+  { sender: ALEX, hour: 18, minute: 6, text: 'it was ONE fucking time Jordan' },
   { sender: SAM, hour: 18, minute: 7, text: 'it was three times 😂' },
   { sender: RILEY, hour: 18, minute: 30, text: 'I vote beach' },
   { sender: CASEY, hour: 18, minute: 31, text: '+1 beach' },
   { sender: ALEX, hour: 18, minute: 32, text: 'beach it is, Sam bring the speaker' },
   { sender: SAM, hour: 18, minute: 33, text: 'on it' },
+  { sender: SAM, hour: 18, minute: 34, text: 'audio omitted', isMedia: true },
   { sender: JORDAN, hour: 18, minute: 40, text: 'can Riley actually wake up before noon for this' },
   { sender: RILEY, hour: 18, minute: 41, text: 'excuse me I have arrived on time to things before' },
   { sender: SAM, hour: 18, minute: 42, text: 'name one time 💀' },
@@ -105,7 +113,8 @@ const WEEKEND_PLANS: Line[] = [
 
 const LATE_NIGHT_RILEY: Line[] = [
   { sender: RILEY, hour: 1, minute: 12, text: "does anyone else think about how weird it is that we're all just floating on a rock" },
-  { sender: RILEY, hour: 1, minute: 14, text: 'no? just me? ok' },
+  { sender: RILEY, hour: 1, minute: 14, text: 'no? just me? shit, ok' },
+  { sender: RILEY, hour: 1, minute: 20, text: 'audio omitted', isMedia: true },
   { sender: RILEY, hour: 1, minute: 40, text: 'also I reorganized my entire closet at 1am for no reason' },
   { sender: RILEY, hour: 2, minute: 10, text: 'anyway goodnight for real this time' },
   { sender: SAM, hour: 8, minute: 5, text: 'Riley what is happening to you' },
@@ -120,6 +129,7 @@ const JORDAN_RANT: Line[] = [
     minute: 15,
     text: "ok so I've been thinking about this a lot and I really think the reason group chats die is not because people get bored of each other but because someone stops responding fast enough and then everyone silently agrees to let the thread cool down and it's honestly kind of sad if you think about it, we should have a rule against that",
   },
+  { sender: JORDAN, hour: 20, minute: 16, text: 'audio omitted', isMedia: true },
   { sender: ALEX, hour: 20, minute: 20, text: "Jordan it's 8pm on a tuesday" },
   { sender: SAM, hour: 20, minute: 21, text: 'the group chat philosopher has entered the chat 😂' },
   { sender: CASEY, hour: 20, minute: 25, text: "he's not wrong though" },
@@ -136,9 +146,10 @@ const GYM_MONDAY: Line[] = [
   { sender: SAM, hour: 6, minute: 55, text: "absolutely not, mondays are a scam" },
   { sender: ALEX, hour: 6, minute: 56, text: '😂 fine more gains for us' },
   { sender: CASEY, hour: 6, minute: 57, text: '🏋️' },
+  { sender: CASEY, hour: 6, minute: 58, text: 'audio omitted', isMedia: true },
   { sender: JORDAN, hour: 8, minute: 0, text: 'did yall actually go' },
   { sender: ALEX, hour: 8, minute: 1, text: 'yes and Casey out-lifted me it was humbling' },
-  { sender: CASEY, hour: 8, minute: 2, text: '😂 finally my time to shine' },
+  { sender: CASEY, hour: 8, minute: 2, text: '😂 finally my time to shine, this is fucking incredible' },
   { sender: SAM, hour: 8, minute: 3, text: 'meanwhile I lifted my blanket back over my head, also a workout' },
   { sender: ALEX, hour: 8, minute: 4, text: 'hahaha valid' },
 ];
@@ -155,10 +166,10 @@ const FOOD_PICS: Line[] = [
 ];
 
 const WORK_COMPLAINTS: Line[] = [
-  { sender: JORDAN, hour: 15, minute: 0, text: 'my manager just scheduled a meeting to discuss another meeting' },
+  { sender: JORDAN, hour: 15, minute: 0, text: 'my manager just scheduled a fucking meeting to discuss another meeting' },
   { sender: ALEX, hour: 15, minute: 1, text: 'hahahaha corporate really said that' },
   { sender: SAM, hour: 15, minute: 2, text: '😂😂😂 rough' },
-  { sender: CASEY, hour: 15, minute: 10, text: 'at least you have a manager who schedules things, mine just shows up' },
+  { sender: CASEY, hour: 15, minute: 10, text: 'at least you have a manager who schedules shit, mine just shows up' },
   { sender: JORDAN, hour: 15, minute: 11, text: 'that sounds worse honestly' },
   { sender: RILEY, hour: 15, minute: 30, text: 'meanwhile I just woke up, no notes' },
   { sender: SAM, hour: 15, minute: 31, text: 'must be nice' },
@@ -190,10 +201,11 @@ const SUNDAY_RECAP: Line[] = [
   { sender: ALEX, hour: 21, minute: 1, text: 'agreed, shoutout Sam for organizing everything as usual' },
   { sender: SAM, hour: 21, minute: 2, text: 'aww stop it 🥹' },
   { sender: JORDAN, hour: 21, minute: 3, text: 'shoutout Casey for finally texting more than one word at a time' },
-  { sender: CASEY, hour: 21, minute: 4, text: '😂 rude but fair' },
+  { sender: CASEY, hour: 21, minute: 4, text: '😂 rude but fair, damn' },
   { sender: RILEY, hour: 21, minute: 5, text: 'shoutout me for surviving on 4 hours of sleep all week' },
   { sender: ALEX, hour: 21, minute: 6, text: "Riley that's not something to be proud of" },
   { sender: SAM, hour: 21, minute: 7, text: 'hahaha true' },
+  { sender: ALEX, hour: 21, minute: 8, text: 'audio omitted', isMedia: true },
   { sender: JORDAN, hour: 21, minute: 10, text: 'anyway love you weirdos, see everyone next week' },
   { sender: CASEY, hour: 21, minute: 11, text: '❤️' },
 ];
