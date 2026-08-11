@@ -61,10 +61,9 @@ export const he: Dictionary = {
     confirmClearAllMessage: 'כל הצ׳אטים השמורים יימחקו מהמכשיר הזה. לא ניתן לבטל פעולה זו.',
   },
   onboarding: {
-    bannerTitle: 'חדשים כאן?',
-    bannerSubtitle: 'רוצים לראות דוגמה קודם?',
-    viewExample: 'צפייה בדוגמה',
-    dismiss: 'דלגו',
+    introTitle: 'זו רק דוגמה',
+    introSubtitle: 'צ׳אט לדוגמה, כדי שתדעו למה לצפות. אחר כך תעלו את הצ׳אט שלכם ותקבלו את התוצאות האמיתיות שלכם.',
+    introContinue: 'המשך',
     viewExampleLink: 'צפייה בדוגמה',
     exampleBadge: 'דוגמה',
     exampleCta: 'העלו את הצ׳אט שלכם',

@@ -64,10 +64,9 @@ export const es: Dictionary = {
     confirmClearAllMessage: 'Se eliminarán todos los chats guardados de este dispositivo. Esto no se puede deshacer.',
   },
   onboarding: {
-    bannerTitle: '¿Primera vez aquí?',
-    bannerSubtitle: '¿Quieres ver un ejemplo primero?',
-    viewExample: 'Ver un ejemplo',
-    dismiss: 'Omitir',
+    introTitle: 'Esto es solo un ejemplo',
+    introSubtitle: 'Un chat de muestra, para que sepas qué esperar. Luego sube tu propio chat para obtener tus resultados reales.',
+    introContinue: 'Continuar',
     viewExampleLink: 'Ver un ejemplo',
     exampleBadge: 'Ejemplo',
     exampleCta: 'Sube tu propio chat',

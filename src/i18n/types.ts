@@ -72,11 +72,11 @@ export interface Dictionary {
     confirmClearAllMessage: string;
   };
   onboarding: {
-    bannerTitle: string;
-    bannerSubtitle: string;
-    viewExample: string;
-    dismiss: string;
-    /** Persistent link shown even after the first-visit banner is dismissed. */
+    /** Shown briefly to every brand-new visitor, before the real upload screen — see ExampleIntroCard. */
+    introTitle: string;
+    introSubtitle: string;
+    introContinue: string;
+    /** Persistent "see an example" link on the upload page, for anyone who wants the full example on demand. */
     viewExampleLink: string;
     /** Badge shown on the Wrapped view when browsing the example. */
     exampleBadge: string;

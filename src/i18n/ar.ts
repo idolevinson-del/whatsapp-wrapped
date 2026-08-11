@@ -61,10 +61,9 @@ export const ar: Dictionary = {
     confirmClearAllMessage: 'ستُحذف جميع المحادثات المحفوظة على هذا الجهاز. لا يمكن التراجع عن هذا الإجراء.',
   },
   onboarding: {
-    bannerTitle: 'هل هذه زيارتكم الأولى؟',
-    bannerSubtitle: 'تريدون رؤية مثال أولاً؟',
-    viewExample: 'مشاهدة مثال',
-    dismiss: 'تخطي',
+    introTitle: 'هذا مجرد مثال',
+    introSubtitle: 'محادثة نموذجية، لتعرفوا ما تتوقعونه. بعد ذلك ارفعوا محادثتكم الخاصة لتحصلوا على نتائجكم الحقيقية.',
+    introContinue: 'متابعة',
     viewExampleLink: 'مشاهدة مثال',
     exampleBadge: 'مثال',
     exampleCta: 'ارفعوا محادثتكم الخاصة',

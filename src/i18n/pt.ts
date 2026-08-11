@@ -64,10 +64,9 @@ export const pt: Dictionary = {
     confirmClearAllMessage: 'Todas as conversas salvas neste dispositivo serão removidas. Isso não pode ser desfeito.',
   },
   onboarding: {
-    bannerTitle: 'Primeira vez aqui?',
-    bannerSubtitle: 'Quer ver um exemplo primeiro?',
-    viewExample: 'Ver um exemplo',
-    dismiss: 'Pular',
+    introTitle: 'Isso é só um exemplo',
+    introSubtitle: 'Uma conversa de amostra, para você saber o que esperar. Depois envie sua própria conversa para ver seus resultados reais.',
+    introContinue: 'Continuar',
     viewExampleLink: 'Ver um exemplo',
     exampleBadge: 'Exemplo',
     exampleCta: 'Envie sua própria conversa',

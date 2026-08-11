@@ -65,10 +65,9 @@ export const en: Dictionary = {
     confirmClearAllMessage: 'This will remove every saved chat from this device. This can’t be undone.',
   },
   onboarding: {
-    bannerTitle: 'New here?',
-    bannerSubtitle: 'Want to see an example first?',
-    viewExample: 'See an example',
-    dismiss: 'Skip',
+    introTitle: 'This is just an example',
+    introSubtitle: 'A sample chat, so you know what to expect. Upload your own chat next to get your real results.',
+    introContinue: 'Continue',
     viewExampleLink: 'See an example',
     exampleBadge: 'Example',
     exampleCta: 'Upload your own chat',

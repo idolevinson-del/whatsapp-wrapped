@@ -6,7 +6,6 @@ import { ChatHistoryList } from '../components/ChatHistoryList';
 import { PremiumModal } from '../components/PremiumModal';
 import { FREE_MAX_ENTRIES, getFreeLimit, getLifetimeAnalysisCount } from '../lib/chatHistory';
 import type { ChatHistoryEntry } from '../lib/chatHistory';
-import { hasSeenOnboarding, markOnboardingSeen } from '../lib/onboarding';
 import { isPremium } from '../lib/premium';
 import { TRADEMARK_DISCLAIMER } from '../lib/legal';
 import type { AppError, ProgressStage } from '../worker';
@@ -51,7 +50,6 @@ export function UploadPage({
 }: UploadPageProps) {
   const { dictionary } = useLanguage();
   const [isDragging, setIsDragging] = useState(false);
-  const [showOnboarding, setShowOnboarding] = useState(() => !hasSeenOnboarding());
   const [showPremium, setShowPremium] = useState(false);
   const [premiumReason, setPremiumReason] = useState<string | null>(null);
   // Bumped (not read) whenever premium state changes in the modal — premium
@@ -60,17 +58,6 @@ export function UploadPage({
   const [, forcePremiumRefresh] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const userIsPremium = isPremium();
-
-  function dismissOnboarding() {
-    markOnboardingSeen();
-    setShowOnboarding(false);
-  }
-
-  function handleShowExample() {
-    markOnboardingSeen();
-    setShowOnboarding(false);
-    onShowExample();
-  }
 
   function handleFiles(files: FileList | null) {
     const file = files?.[0];
@@ -119,29 +106,6 @@ export function UploadPage({
 
       <div className="relative z-0 flex min-h-screen items-center justify-center p-6">
         <div className="w-full max-w-xl text-center">
-          {showOnboarding && (
-            <div className="mb-6 rounded-2xl border border-white/20 bg-white/5 p-4 text-start">
-              <p className="text-lg font-bold">{dictionary.onboarding.bannerTitle}</p>
-              <p className="mt-1 text-sm text-white/70">{dictionary.onboarding.bannerSubtitle}</p>
-              <div className="mt-3 flex gap-2">
-                <button
-                  type="button"
-                  onClick={handleShowExample}
-                  className="cursor-pointer rounded-full bg-gradient-to-r from-amber-400 via-rose-400 to-purple-400 px-4 py-2 text-sm font-semibold text-neutral-950"
-                >
-                  {dictionary.onboarding.viewExample}
-                </button>
-                <button
-                  type="button"
-                  onClick={dismissOnboarding}
-                  className="cursor-pointer rounded-full border border-white/40 px-4 py-2 text-sm font-semibold hover:bg-white/10"
-                >
-                  {dictionary.onboarding.dismiss}
-                </button>
-              </div>
-            </div>
-          )}
-
           <span className="inline-block animate-bounce text-5xl">💬</span>
           <h1 className="mt-4 bg-gradient-to-r from-amber-400 via-rose-400 to-purple-400 bg-clip-text text-5xl font-extrabold text-transparent sm:text-6xl">
             {dictionary.app.title}

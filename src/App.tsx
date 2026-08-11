@@ -3,6 +3,7 @@ import { useChatAnalysis } from './worker';
 import { UploadPage } from './pages/UploadPage';
 import { StatsPage } from './pages/StatsPage';
 import { SharedStatsPage } from './pages/SharedStatsPage';
+import { ExampleIntroCard } from './components/ExampleIntroCard';
 // The original swipeable "story cards" flow is kept around (unused) so it
 // can be brought back without rebuilding it — see pages/WrappedPage.tsx.
 // SharedWrappedPage still renders old share links (?share=...), which only
@@ -51,23 +52,20 @@ function App() {
     clear: clearHistory,
   } = useChatHistory();
   const [showGuide, setShowGuide] = useState(false);
-  // First-ever visit (no history, never dismissed onboarding): open straight
-  // into the live example instead of a blank upload page, so trust is built
-  // before we ask for real data. Marked seen immediately so a reload or
-  // leaving the example doesn't loop back into it.
-  const [showExample, setShowExample] = useState(() => !hasSeenOnboarding());
+  // First-ever visit (no history, never dismissed onboarding): show a brief
+  // "heads up, this next bit is just a demo" card before anything else —
+  // see ExampleIntroCard for why. Its onDone always lands on the real
+  // upload screen; the full example stays reachable from there manually.
+  const [showIntroCard, setShowIntroCard] = useState(() => !hasSeenOnboarding());
+  // Manually triggered only (the "See an example" link on the upload page,
+  // or the intro card used to auto-show this directly before it existed).
+  const [showExample, setShowExample] = useState(false);
   const [historyEntry, setHistoryEntry] = useState<ChatHistoryEntry | null>(null);
   const exampleAnalysis = useMemo(() => buildExampleAnalysis(), []);
 
   useEffect(() => {
     initAnalytics();
     trackPageView();
-  }, []);
-
-  useEffect(() => {
-    if (showExample) markOnboardingSeen();
-    // Only ever runs for the auto-shown first-visit example (see initializer above).
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -84,6 +82,17 @@ function App() {
 
   if (sharedCards) {
     return <SharedWrappedPage cards={sharedCards} />;
+  }
+
+  if (showIntroCard) {
+    return (
+      <ExampleIntroCard
+        onDone={() => {
+          markOnboardingSeen();
+          setShowIntroCard(false);
+        }}
+      />
+    );
   }
 
   if (showExample) {

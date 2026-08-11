@@ -64,10 +64,9 @@ export const fr: Dictionary = {
     confirmClearAllMessage: 'Toutes les discussions enregistrées sur cet appareil seront supprimées. Cette action est irréversible.',
   },
   onboarding: {
-    bannerTitle: 'Nouveau ici ?',
-    bannerSubtitle: 'Tu veux d\'abord voir un exemple ?',
-    viewExample: 'Voir un exemple',
-    dismiss: 'Passer',
+    introTitle: 'Ceci est juste un exemple',
+    introSubtitle: 'Une discussion type, pour que tu saches à quoi t\'attendre. Envoie ensuite ta propre discussion pour obtenir tes vrais résultats.',
+    introContinue: 'Continuer',
     viewExampleLink: 'Voir un exemple',
     exampleBadge: 'Exemple',
     exampleCta: 'Envoie ta propre discussion',
