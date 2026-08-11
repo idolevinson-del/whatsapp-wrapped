@@ -1,4 +1,6 @@
+import { useEffect, useState } from 'react';
 import { PieChart } from './PieChart';
+import { StatEntryRow } from './StatEntryRow';
 import { LockedOverlay } from '../LockedOverlay';
 import { InfoTooltip } from '../InfoTooltip';
 
@@ -37,6 +39,13 @@ export function StatSection({
   lockLabel,
   infoText,
 }: StatSectionProps) {
+  const [animateIn, setAnimateIn] = useState(false);
+
+  useEffect(() => {
+    const raf = requestAnimationFrame(() => setAnimateIn(true));
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
   if (entries.length === 0) return null;
 
   const sorted = [...entries].sort((a, b) => b.value - a.value);
@@ -59,30 +68,18 @@ export function StatSection({
           )}
 
           <ul className="flex-1 space-y-2.5">
-            {sorted.map((entry) => (
-              <li key={entry.sender} className="text-start">
-                <div className="flex items-center justify-between gap-2 text-sm">
-                  <span className="flex min-w-0 items-center gap-2 font-medium">
-                    <span
-                      className="h-2.5 w-2.5 shrink-0 rounded-full"
-                      style={{ backgroundColor: entry.color }}
-                    />
-                    <span className="truncate">{entry.sender}</span>
-                  </span>
-                  <span className="shrink-0 font-mono text-white/80">
-                    {entry.value}
-                    {valueSuffix}
-                  </span>
-                </div>
-                {kind === 'bar' && (
-                  <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-white/10">
-                    <div
-                      className="h-full rounded-full"
-                      style={{ width: `${(entry.value / maxValue) * 100}%`, backgroundColor: entry.color }}
-                    />
-                  </div>
-                )}
-              </li>
+            {sorted.map((entry, i) => (
+              <StatEntryRow
+                key={entry.sender}
+                sender={entry.sender}
+                value={entry.value}
+                color={entry.color}
+                valueSuffix={valueSuffix}
+                kind={kind}
+                widthPercent={(entry.value / maxValue) * 100}
+                animateIn={animateIn}
+                delayMs={i * 80}
+              />
             ))}
           </ul>
         </div>
