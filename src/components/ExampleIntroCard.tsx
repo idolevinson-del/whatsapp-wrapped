@@ -14,9 +14,9 @@ interface ExampleIntroCardProps {
  * most people never noticed that badge (or the "upload your own chat"
  * button tucked at the bottom) and assumed it was somehow already their
  * own data. This card makes the "just an example" framing impossible to
- * miss, then always lands on the real (empty) upload screen. The full
- * example is still one tap away from there, via "See an example", for
- * anyone who wants to explore it deliberately — see App.tsx.
+ * miss *before* that same example page loads (see App.tsx: onDone flows
+ * straight into it) — people still get to see what a Wrapped actually
+ * looks like, they just can't mistake it for their own results anymore.
  *
  * Auto-advances after AUTO_ADVANCE_MS (with a fillbar progress hint reused
  * from the export guide's auto-advancing steps, see index.css), or the

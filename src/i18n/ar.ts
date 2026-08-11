@@ -62,7 +62,7 @@ export const ar: Dictionary = {
   },
   onboarding: {
     introTitle: 'هذا مجرد مثال',
-    introSubtitle: 'محادثة نموذجية، لتعرفوا ما تتوقعونه. بعد ذلك ارفعوا محادثتكم الخاصة لتحصلوا على نتائجكم الحقيقية.',
+    introSubtitle: 'أولاً، نظرة على محادثة نموذجية — ثم ارفعوا محادثتكم الخاصة لتحصلوا على نتائجكم الحقيقية.',
     introContinue: 'متابعة',
     viewExampleLink: 'مشاهدة مثال',
     exampleBadge: 'مثال',

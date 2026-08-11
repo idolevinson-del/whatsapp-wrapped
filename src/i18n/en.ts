@@ -66,7 +66,7 @@ export const en: Dictionary = {
   },
   onboarding: {
     introTitle: 'This is just an example',
-    introSubtitle: 'A sample chat, so you know what to expect. Upload your own chat next to get your real results.',
+    introSubtitle: 'First, a look at a sample chat — then upload your own to get your real results.',
     introContinue: 'Continue',
     viewExampleLink: 'See an example',
     exampleBadge: 'Example',

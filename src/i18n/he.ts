@@ -62,7 +62,7 @@ export const he: Dictionary = {
   },
   onboarding: {
     introTitle: 'זו רק דוגמה',
-    introSubtitle: 'צ׳אט לדוגמה, כדי שתדעו למה לצפות. אחר כך תעלו את הצ׳אט שלכם ותקבלו את התוצאות האמיתיות שלכם.',
+    introSubtitle: 'קודם הצצה לצ׳אט לדוגמה — ואז תעלו את הצ׳אט שלכם ותקבלו את התוצאות האמיתיות שלכם.',
     introContinue: 'המשך',
     viewExampleLink: 'צפייה בדוגמה',
     exampleBadge: 'דוגמה',

@@ -53,12 +53,13 @@ function App() {
   } = useChatHistory();
   const [showGuide, setShowGuide] = useState(false);
   // First-ever visit (no history, never dismissed onboarding): show a brief
-  // "heads up, this next bit is just a demo" card before anything else —
-  // see ExampleIntroCard for why. Its onDone always lands on the real
-  // upload screen; the full example stays reachable from there manually.
+  // "heads up, what's next is just a demo" card before anything else — see
+  // ExampleIntroCard for why. Its onDone flows into the example itself
+  // (showExample below), so people still actually see what a Wrapped looks
+  // like — the card only makes sure they know it isn't their own data.
   const [showIntroCard, setShowIntroCard] = useState(() => !hasSeenOnboarding());
-  // Manually triggered only (the "See an example" link on the upload page,
-  // or the intro card used to auto-show this directly before it existed).
+  // Set by the intro card once it's done, or manually via the "See an
+  // example" link on the upload page.
   const [showExample, setShowExample] = useState(false);
   const [historyEntry, setHistoryEntry] = useState<ChatHistoryEntry | null>(null);
   const exampleAnalysis = useMemo(() => buildExampleAnalysis(), []);
@@ -90,6 +91,7 @@ function App() {
         onDone={() => {
           markOnboardingSeen();
           setShowIntroCard(false);
+          setShowExample(true);
         }}
       />
     );

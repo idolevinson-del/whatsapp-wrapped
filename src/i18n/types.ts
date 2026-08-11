@@ -72,11 +72,11 @@ export interface Dictionary {
     confirmClearAllMessage: string;
   };
   onboarding: {
-    /** Shown briefly to every brand-new visitor, before the real upload screen — see ExampleIntroCard. */
+    /** Shown briefly to every brand-new visitor, right before the example itself loads — see ExampleIntroCard. */
     introTitle: string;
     introSubtitle: string;
     introContinue: string;
-    /** Persistent "see an example" link on the upload page, for anyone who wants the full example on demand. */
+    /** Persistent "see an example" link on the upload page, for revisiting the example on demand. */
     viewExampleLink: string;
     /** Badge shown on the Wrapped view when browsing the example. */
     exampleBadge: string;
