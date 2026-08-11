@@ -128,7 +128,6 @@ export const ar: Dictionary = {
     conversationStarterCount: 'المحادثات المُبتدأة',
     mentionedCount: 'ذُكر بالاسم',
     curseWordCount: 'الفم الأكثر بذاءة',
-    voiceMessageCount: 'ملك/ة الرسائل الصوتية',
     wordsPerMessage: 'متوسط الكلمات في الرسالة',
     avgReplyMinutes: 'متوسط زمن الرد',
     streakDays: 'أطول تتابع يومي',
@@ -147,7 +146,6 @@ export const ar: Dictionary = {
     wordsPerMessageInfo: 'متوسط عدد الكلمات في الرسالة النصية (رسائل الوسائط لا تُحسب).',
     mentionedCountInfo: 'كم مرة كتب شخص آخر اسمك الأول أو الأخير ككلمة منفصلة في رسالة.',
     curseWordCountInfo: 'يحسب عدد الكلمات النابية التي استخدمها كل شخص، في جميع الرسائل.',
-    voiceMessageCountInfo: 'كم رسالة صوتية أرسل كل شخص. مجرد عدّ فقط — تصدير واتساب لا يتضمن التسجيل الصوتي نفسه، لذا لا توجد طريقة لجمع مدة التسجيلات.',
   },
   premium: {
     entryLabel: '🔓 Wrapped+',

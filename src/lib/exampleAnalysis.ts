@@ -8,16 +8,15 @@ import type { ParsedMessage } from '../parser/types';
  * obvious winner instead of a flat, boring tie: Alex organizes everything
  * (Most Active), Sam's jokes land (Funniest), Jordan never sends a short
  * message (Biggest Yapper), Riley is awake at 2am more often than not
- * (Night Owl) and sends voice notes instead of typing while there (Voice
- * Message King), Casey says maybe three words a day but swears when they
- * do (Most Ignored *and* Potty Mouth). A group, not a 1-on-1, because the
+ * (Night Owl), Casey says maybe three words a day but swears when they do
+ * (Most Ignored *and* Potty Mouth). A group, not a 1-on-1, because the
  * "who really runs the group" framing this app leads with only pays off
  * with more than 2 people in the chat.
  *
- * A few scripts include an 'audio omitted'/curse-word line specifically so
- * the "Voice Message King" and "Potty Mouth" locked stats have real,
- * non-zero data to demo — those two categories don't naturally arise from
- * ordinary dialogue the way message counts or emoji use do.
+ * A few scripts include a curse-word line specifically so the "Potty
+ * Mouth" locked stat has real, non-zero data to demo — that category
+ * doesn't naturally arise from ordinary dialogue the way message counts or
+ * emoji use do.
  */
 const ALEX = 'Alex';
 const SAM = 'Sam';
@@ -93,7 +92,6 @@ const WEEKEND_PLANS: Line[] = [
   { sender: CASEY, hour: 18, minute: 31, text: '+1 beach' },
   { sender: ALEX, hour: 18, minute: 32, text: 'beach it is, Sam bring the speaker' },
   { sender: SAM, hour: 18, minute: 33, text: 'on it' },
-  { sender: SAM, hour: 18, minute: 34, text: 'audio omitted', isMedia: true },
   { sender: JORDAN, hour: 18, minute: 40, text: 'can Riley actually wake up before noon for this' },
   { sender: RILEY, hour: 18, minute: 41, text: 'excuse me I have arrived on time to things before' },
   { sender: SAM, hour: 18, minute: 42, text: 'name one time 💀' },
@@ -114,7 +112,6 @@ const WEEKEND_PLANS: Line[] = [
 const LATE_NIGHT_RILEY: Line[] = [
   { sender: RILEY, hour: 1, minute: 12, text: "does anyone else think about how weird it is that we're all just floating on a rock" },
   { sender: RILEY, hour: 1, minute: 14, text: 'no? just me? shit, ok' },
-  { sender: RILEY, hour: 1, minute: 20, text: 'audio omitted', isMedia: true },
   { sender: RILEY, hour: 1, minute: 40, text: 'also I reorganized my entire closet at 1am for no reason' },
   { sender: RILEY, hour: 2, minute: 10, text: 'anyway goodnight for real this time' },
   { sender: SAM, hour: 8, minute: 5, text: 'Riley what is happening to you' },
@@ -129,7 +126,6 @@ const JORDAN_RANT: Line[] = [
     minute: 15,
     text: "ok so I've been thinking about this a lot and I really think the reason group chats die is not because people get bored of each other but because someone stops responding fast enough and then everyone silently agrees to let the thread cool down and it's honestly kind of sad if you think about it, we should have a rule against that",
   },
-  { sender: JORDAN, hour: 20, minute: 16, text: 'audio omitted', isMedia: true },
   { sender: ALEX, hour: 20, minute: 20, text: "Jordan it's 8pm on a tuesday" },
   { sender: SAM, hour: 20, minute: 21, text: 'the group chat philosopher has entered the chat 😂' },
   { sender: CASEY, hour: 20, minute: 25, text: "he's not wrong though" },
@@ -146,7 +142,6 @@ const GYM_MONDAY: Line[] = [
   { sender: SAM, hour: 6, minute: 55, text: "absolutely not, mondays are a scam" },
   { sender: ALEX, hour: 6, minute: 56, text: '😂 fine more gains for us' },
   { sender: CASEY, hour: 6, minute: 57, text: '🏋️' },
-  { sender: CASEY, hour: 6, minute: 58, text: 'audio omitted', isMedia: true },
   { sender: JORDAN, hour: 8, minute: 0, text: 'did yall actually go' },
   { sender: ALEX, hour: 8, minute: 1, text: 'yes and Casey out-lifted me it was humbling' },
   { sender: CASEY, hour: 8, minute: 2, text: '😂 finally my time to shine, this is fucking incredible' },
@@ -205,7 +200,6 @@ const SUNDAY_RECAP: Line[] = [
   { sender: RILEY, hour: 21, minute: 5, text: 'shoutout me for surviving on 4 hours of sleep all week' },
   { sender: ALEX, hour: 21, minute: 6, text: "Riley that's not something to be proud of" },
   { sender: SAM, hour: 21, minute: 7, text: 'hahaha true' },
-  { sender: ALEX, hour: 21, minute: 8, text: 'audio omitted', isMedia: true },
   { sender: JORDAN, hour: 21, minute: 10, text: 'anyway love you weirdos, see everyone next week' },
   { sender: CASEY, hour: 21, minute: 11, text: '❤️' },
 ];

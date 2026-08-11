@@ -128,7 +128,6 @@ export const en: Dictionary = {
     conversationStarterCount: 'Conversations started',
     mentionedCount: 'Mentioned by name',
     curseWordCount: 'Potty Mouth',
-    voiceMessageCount: 'Voice Message King',
     wordsPerMessage: 'Avg. words per message',
     avgReplyMinutes: 'Avg. reply time',
     streakDays: 'Longest daily streak',
@@ -151,8 +150,6 @@ export const en: Dictionary = {
     wordsPerMessageInfo: 'Average number of words per text message (media messages aren’t counted).',
     mentionedCountInfo: 'How many times someone else typed your first or last name as a standalone word in a message.',
     curseWordCountInfo: 'Counts how many curse words each person used, across every message.',
-    voiceMessageCountInfo:
-      'How many voice messages each person sent. Just a count — WhatsApp exports don’t include the actual audio, so there’s no way to total up recording time.',
   },
   premium: {
     entryLabel: '🔓 Wrapped+',

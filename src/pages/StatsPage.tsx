@@ -247,13 +247,6 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
         locked: !userIsPremium,
         infoText: dictionary.stats.curseWordCountInfo,
       },
-      {
-        kind: 'pie',
-        title: `${STAT_ICONS.voiceMessageCount} ${dictionary.stats.voiceMessageCount}`,
-        entries: withColors(personaBreakdown.voiceMessageCount),
-        locked: !userIsPremium,
-        infoText: dictionary.stats.voiceMessageCountInfo,
-      },
     ],
     likedItHeading: dictionary.stats.likedItHeading,
     tryItYourselfLabel: dictionary.stats.tryItYourselfButton,

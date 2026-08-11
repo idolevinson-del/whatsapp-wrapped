@@ -14,5 +14,4 @@ export const STAT_ICONS = {
   wordsPerMessage: '📝',
   mentionedCount: '🌟',
   curseWordCount: '🤬',
-  voiceMessageCount: '🎤',
 } as const;

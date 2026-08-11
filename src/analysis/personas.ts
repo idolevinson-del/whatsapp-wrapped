@@ -1,7 +1,6 @@
 import type { ParsedMessage } from '../parser/types';
 import { EARLY_BIRD_HOURS, NIGHT_OWL_HOURS } from '../config/analysisConfig';
 import { containsLaugh, countCurseWords, extractEmojis, extractWords } from './textUtils';
-import { isVoiceMessagePlaceholder } from '../parser/mediaPlaceholders';
 import type { CoreStats, ConversationGapStats, PersonaBreakdown, PersonaResult } from './types';
 
 function inHourRange(hour: number, [start, end]: [number, number]): boolean {
@@ -240,13 +239,6 @@ export function computePersonas(
     return { sender, value: total };
   });
 
-  // Voice Message King: count only, never a duration — see
-  // isVoiceMessagePlaceholder's doc comment for why.
-  const voiceMessageCounts = senders.map((sender) => {
-    const total = messages.filter((m) => m.sender === sender && isVoiceMessagePlaceholder(m.text)).length;
-    return { sender, value: total };
-  });
-
   const breakdown: PersonaBreakdown = {
     messageCount: messageCounts,
     wordsPerMessage: avgLengths.map((s) => ({ sender: s.sender, value: Math.round(s.value * 10) / 10 })),
@@ -259,7 +251,6 @@ export function computePersonas(
     laughsTriggered: laughTriggers,
     mentionedCount: mentionCounts,
     curseWordCount: curseWordCounts,
-    voiceMessageCount: voiceMessageCounts,
   };
 
   return { personas, breakdown };

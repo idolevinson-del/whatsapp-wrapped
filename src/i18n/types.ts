@@ -178,10 +178,6 @@ export interface Dictionary {
     /** "Potty Mouth" — curse-word count per sender, see analysis/curseWords.ts. */
     curseWordCount: string;
     curseWordCountInfo: string;
-    /** "Voice Message King" — count only, no duration (see
-     * isVoiceMessagePlaceholder's doc comment for why). */
-    voiceMessageCount: string;
-    voiceMessageCountInfo: string;
   };
   /** The one-time-purchase "Wrapped+" unlock: license key entry and feature
    * pitch. No accounts — the license key itself is the credential. */

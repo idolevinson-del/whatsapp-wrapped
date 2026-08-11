@@ -130,7 +130,6 @@ export const pt: Dictionary = {
     conversationStarterCount: 'Conversas iniciadas',
     mentionedCount: 'Mencionado pelo nome',
     curseWordCount: 'Boca suja',
-    voiceMessageCount: 'Rei dos áudios',
     wordsPerMessage: 'Palavras por mensagem (média)',
     avgReplyMinutes: 'Tempo de resposta (média)',
     streakDays: 'Maior sequência diária',
@@ -153,8 +152,6 @@ export const pt: Dictionary = {
     wordsPerMessageInfo: 'Média de palavras por mensagem de texto (mensagens de mídia não contam).',
     mentionedCountInfo: 'Quantas vezes outra pessoa digitou seu primeiro ou último nome como palavra separada em uma mensagem.',
     curseWordCountInfo: 'Conta quantos palavrões cada pessoa usou, em todas as mensagens.',
-    voiceMessageCountInfo:
-      'Quantos áudios cada pessoa enviou. Só uma contagem — a exportação do WhatsApp não inclui o áudio em si, então não há como somar a duração.',
   },
   premium: {
     entryLabel: '🔓 Wrapped+',

@@ -124,7 +124,6 @@ export const he: Dictionary = {
     conversationStarterCount: 'פתחו שיחה חדשה',
     mentionedCount: 'הוזכרו בשם',
     curseWordCount: 'הפה הכי מלוכלך',
-    voiceMessageCount: 'מלך/ת ההודעות הקוליות',
     wordsPerMessage: 'ממוצע מילים בהודעה',
     avgReplyMinutes: 'זמן תגובה ממוצע',
     streakDays: 'הרצף היומי הכי ארוך',
@@ -143,7 +142,6 @@ export const he: Dictionary = {
     wordsPerMessageInfo: 'ממוצע מילים בהודעת טקסט (הודעות מדיה לא נספרות).',
     mentionedCountInfo: 'כמה פעמים מישהו אחר כתב את השם הפרטי או המשפחה שלך כמילה נפרדת בהודעה.',
     curseWordCountInfo: 'סופר כמה מילות קללה כל אחד השתמש בהן, בכל ההודעות.',
-    voiceMessageCountInfo: 'כמה הודעות קוליות כל אחד שלח. רק ספירה — יצוא הצ׳אט לא כולל את ההקלטות עצמן, אז אין דרך לסכם את משך הזמן.',
   },
   premium: {
     entryLabel: '🔓 Wrapped+',
