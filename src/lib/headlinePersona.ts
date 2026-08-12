@@ -33,19 +33,21 @@ export function orderPersonas(personas: PersonaResult[]): PersonaResult[] {
 
 /**
  * Personas whose insight sentence doesn't reveal anything a free user
- * couldn't already see on the free part of StatsPage. The rest map onto a
- * *locked* StatsPage block (streaker -> streak days, fastestReplier -> avg
- * reply time, philosopher -> words/message, conversationStarter ->
- * conversation starts, mostMentioned -> mention count) — showing that badge
- * in the free reveal would hand over the paywalled number for free, in
- * narrative form, defeating the paywall entirely. Used to filter the
- * swipeable persona reveal for non-premium viewers; premium viewers (who
- * already have every chart unlocked) see every persona regardless.
+ * couldn't already see on the free part of StatsPage. The rest still map
+ * onto a *locked* StatsPage block (fastestReplier -> avg reply time,
+ * philosopher -> words/message, conversationStarter -> conversation
+ * starts) — showing one of those in the free reveal would hand over the
+ * paywalled number for free, in narrative form, defeating the paywall
+ * entirely. Used to filter the swipeable persona reveal for non-premium
+ * viewers; premium viewers (who already have every chart unlocked) see
+ * every persona regardless.
  */
 export const FREE_PERSONA_IDS: ReadonlySet<string> = new Set([
   'chatterbox', // -> messageCount (free)
   'emojiEnthusiast', // -> emojiCount (free)
   'comedian', // -> laughsTriggered (free)
+  'streaker', // -> streakDays (free)
+  'mostMentioned', // -> mentionedCount (free)
   'ghost', // derived from messageCount (free), no locked equivalent
   'nightOwl', // no corresponding StatsPage block at all
   'earlyBird', // no corresponding StatsPage block at all

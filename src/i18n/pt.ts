@@ -157,7 +157,7 @@ export const pt: Dictionary = {
     modalTitle: 'Wrapped+',
     pitch: 'Um olhar mais profundo sobre suas conversas, pagamento único de $2.99 — sem assinatura.',
     historyLimitReason: 'Você já usou suas {count} análises gratuitas. Faça upgrade para ilimitado.',
-    featureDeeperStats: 'Desbloqueie todos os gráficos — sequências, tempo de resposta, quem inicia as conversas e mais',
+    featureDeeperStats: 'Desbloqueie todos os gráficos — tempo de resposta, quem inicia as conversas, palavras por mensagem e mais',
     featureHistory: 'Análises de conversas ilimitadas (a versão gratuita tem limite de 2, para sempre)',
     buyButton: 'Obter Wrapped+ — $2.99',
     licenseLabel: 'Já comprou? Digite sua chave de licença',

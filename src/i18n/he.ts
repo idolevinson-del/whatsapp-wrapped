@@ -147,7 +147,7 @@ export const he: Dictionary = {
     modalTitle: 'Wrapped+',
     pitch: 'הצצה מעמיקה יותר לצ׳אטים שלכם, תשלום חד-פעמי של ₪8.98 — בלי מנוי.',
     historyLimitReason: 'ניצלתם את {count} הבדיקות החינמיות. שדרגו לבלי הגבלה.',
-    featureDeeperStats: 'פתחו את כל הגרפים — רצפים, זמן תגובה, מי פותח שיחות ועוד',
+    featureDeeperStats: 'פתחו את כל הגרפים — זמן תגובה, מי פותח שיחות, מילים בהודעה ועוד',
     featureHistory: 'בדיקת צ׳אטים בלי הגבלה (בגרסה החינמית מוגבל ל-2, לתמיד)',
     buyButton: 'רכשו את Wrapped+ — ₪8.98',
     licenseLabel: 'כבר רכשתם? הזינו את קוד הרישוי',

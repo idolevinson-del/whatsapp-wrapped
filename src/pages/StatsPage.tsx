@@ -219,9 +219,26 @@ export function StatsPage({ analysis, onBack, fileName, isExample, autoExitMs }:
         title: `${STAT_ICONS.streakDays} ${dictionary.stats.streakDays}`,
         entries: withColors(personaBreakdown.streakDays),
         valueSuffix: ` ${dictionary.stats.daysSuffix}`,
-        locked: !userIsPremium,
         infoText: dictionary.stats.streakDaysInfo,
       },
+      ...(isGroup
+        ? [
+            {
+              kind: 'pie' as const,
+              title: `${STAT_ICONS.mentionedCount} ${dictionary.stats.mentionedCount}`,
+              entries: withColors(personaBreakdown.mentionedCount),
+              infoText: dictionary.stats.mentionedCountInfo,
+            },
+          ]
+        : []),
+      {
+        kind: 'pie',
+        title: `${STAT_ICONS.curseWordCount} ${dictionary.stats.curseWordCount}`,
+        entries: withColors(personaBreakdown.curseWordCount),
+        infoText: dictionary.stats.curseWordCountInfo,
+      },
+      // Locked, premium-only from here down — the deeper, more analytical
+      // stats (as opposed to the fun/social ones above, which are free).
       {
         kind: 'bar',
         title: `${STAT_ICONS.avgReplyMinutes} ${dictionary.stats.avgReplyMinutes}`,
@@ -243,24 +260,6 @@ export function StatsPage({ analysis, onBack, fileName, isExample, autoExitMs }:
         entries: withColors(personaBreakdown.wordsPerMessage),
         locked: !userIsPremium,
         infoText: dictionary.stats.wordsPerMessageInfo,
-      },
-      ...(isGroup
-        ? [
-            {
-              kind: 'pie' as const,
-              title: `${STAT_ICONS.mentionedCount} ${dictionary.stats.mentionedCount}`,
-              entries: withColors(personaBreakdown.mentionedCount),
-              locked: !userIsPremium,
-              infoText: dictionary.stats.mentionedCountInfo,
-            },
-          ]
-        : []),
-      {
-        kind: 'pie',
-        title: `${STAT_ICONS.curseWordCount} ${dictionary.stats.curseWordCount}`,
-        entries: withColors(personaBreakdown.curseWordCount),
-        locked: !userIsPremium,
-        infoText: dictionary.stats.curseWordCountInfo,
       },
     ],
     likedItHeading: dictionary.stats.likedItHeading,

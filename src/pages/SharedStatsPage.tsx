@@ -187,9 +187,22 @@ export function SharedStatsPage({ payload }: { payload: StatsSharePayload }) {
         title: `${STAT_ICONS.streakDays} ${dictionary.stats.streakDays}`,
         entries: withColors(payload.pb.sd),
         valueSuffix: ` ${dictionary.stats.daysSuffix}`,
-        locked: !userIsPremium,
         infoText: dictionary.stats.streakDaysInfo,
       },
+      ...(isGroup
+        ? [
+            {
+              kind: 'pie' as const,
+              title: `${STAT_ICONS.mentionedCount} ${dictionary.stats.mentionedCount}`,
+              entries: withColors(payload.pb.mnc),
+              infoText: dictionary.stats.mentionedCountInfo,
+            },
+          ]
+        : []),
+      // curseWordCount isn't in this compact payload at all (see
+      // statsShareLink.ts) — nothing to unlock here for it, it only ever
+      // shows on the live StatsPage.
+      // Locked, premium-only from here down — matches StatsPage.
       {
         kind: 'bar',
         title: `${STAT_ICONS.avgReplyMinutes} ${dictionary.stats.avgReplyMinutes}`,
@@ -212,17 +225,6 @@ export function SharedStatsPage({ payload }: { payload: StatsSharePayload }) {
         locked: !userIsPremium,
         infoText: dictionary.stats.wordsPerMessageInfo,
       },
-      ...(isGroup
-        ? [
-            {
-              kind: 'pie' as const,
-              title: `${STAT_ICONS.mentionedCount} ${dictionary.stats.mentionedCount}`,
-              entries: withColors(payload.pb.mnc),
-              locked: !userIsPremium,
-              infoText: dictionary.stats.mentionedCountInfo,
-            },
-          ]
-        : []),
     ],
     likedItHeading: dictionary.stats.likedItHeading,
     tryItYourselfLabel: dictionary.stats.tryItYourselfButton,

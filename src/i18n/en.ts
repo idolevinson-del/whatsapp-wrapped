@@ -155,7 +155,7 @@ export const en: Dictionary = {
     modalTitle: 'Wrapped+',
     pitch: 'A deeper look at your chats, one-time purchase of $2.99 — no subscription.',
     historyLimitReason: "You've used your {count} free chat checks. Upgrade for unlimited.",
-    featureDeeperStats: 'Unlock every chart — streaks, reply time, who starts conversations, and more',
+    featureDeeperStats: 'Unlock every chart — reply time, who starts conversations, words per message, and more',
     featureHistory: 'Unlimited chat checks (free is capped at 2, ever)',
     buyButton: 'Get Wrapped+ — $2.99',
     licenseLabel: 'Already purchased? Enter your license key',
