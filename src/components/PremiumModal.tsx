@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLanguage } from '../i18n';
 import { activateLicense, deactivatePremium, isPremium } from '../lib/premium';
 import { CHECKOUT_URL } from '../config/premiumConfig';
+import { loadGumroadOverlay } from '../lib/gumroadOverlay';
 import { trackEvent } from '../analytics';
 
 interface PremiumModalProps {
@@ -26,6 +27,17 @@ export function PremiumModal({ onClose, onPremiumChange, reason }: PremiumModalP
   const [premium, setPremiumFlag] = useState(isPremium());
   const [licenseInput, setLicenseInput] = useState('');
   const [status, setStatus] = useState<'idle' | 'checking' | 'error'>('idle');
+
+  useEffect(() => {
+    // Not premium yet at the moment this modal opened — get the overlay
+    // script in place before anyone can even click Buy. No-op (and safe to
+    // skip) if they're already premium, since the buy button never renders.
+    if (!premium) loadGumroadOverlay();
+    // Deliberately once per modal open, not every time `premium` flips —
+    // loadGumroadOverlay() is itself idempotent (checks for an existing
+    // script tag), so there's nothing to gain from re-running this.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   async function handleActivate() {
     if (!licenseInput.trim() || status === 'checking') return;
@@ -99,10 +111,20 @@ export function PremiumModal({ onClose, onPremiumChange, reason }: PremiumModalP
               </li>
             </ul>
 
+            {/* data-gumroad-overlay-checkout: once gumroad.js (loaded
+             * above) finishes loading, it intercepts clicks on this link
+             * and opens checkout as a modal over the page instead of
+             * navigating away — feels far less like "leaving the app to
+             * go pay someone" than a full-page redirect. href/target
+             * still point straight at the real checkout page as a
+             * fallback for the split second before the script loads (or
+             * the rare case it fails to) — clicking before that just
+             * behaves exactly like today. */}
             <a
               href={CHECKOUT_URL}
               target="_blank"
               rel="noopener noreferrer"
+              data-gumroad-overlay-checkout="true"
               onClick={() => trackEvent('checkout_started')}
               className="mt-5 block cursor-pointer rounded-full bg-gradient-to-r from-amber-400 via-rose-400 to-purple-400 px-4 py-2.5 text-center text-sm font-semibold text-neutral-950 hover:opacity-90"
             >
