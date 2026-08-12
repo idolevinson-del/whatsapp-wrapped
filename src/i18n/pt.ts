@@ -163,6 +163,7 @@ export const pt: Dictionary = {
     buyButton: 'Obter Wrapped+ — $2.99',
     buyButtonPreparing: 'Carregando o checkout…',
     licenseLabel: 'Já comprou? Digite sua chave de licença',
+    checkoutReturnHint: 'Confira seu e-mail para encontrar sua chave de licença e cole-a abaixo.',
     licensePlaceholder: 'Chave de licença',
     activateButton: 'Ativar',
     activating: 'Verificando…',

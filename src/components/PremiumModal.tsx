@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLanguage } from '../i18n';
 import { activateLicense, deactivatePremium, isPremium } from '../lib/premium';
 import { CHECKOUT_URL } from '../config/premiumConfig';
@@ -38,6 +38,34 @@ export function PremiumModal({ onClose, onPremiumChange, reason }: PremiumModalP
   // just falls back to the plain full-page checkout, same as before any
   // of this existed.
   const [overlayReady, setOverlayReady] = useState(false);
+  // Set the moment Buy is actually clicked (not just rendered) — covers
+  // both "the overlay never opened, so this fell through to a real
+  // navigation" and "someone force-opened the checkout link in a new tab
+  // themselves" identically, since either way our tab goes hidden and
+  // comes back. Left false whenever the overlay genuinely handles the
+  // whole purchase in-page — that path never backgrounds this tab at all,
+  // so the visibilitychange listener below simply never has anything to do.
+  const [checkoutStarted, setCheckoutStarted] = useState(false);
+  // True for the one visibilitychange right after a checkout-triggered
+  // background/foreground cycle — shows a "check your email" hint and
+  // focuses the license field, then clears itself so it doesn't keep
+  // re-triggering on every unrelated tab switch afterwards.
+  const [justReturnedFromCheckout, setJustReturnedFromCheckout] = useState(false);
+  const licenseInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (!checkoutStarted || premium) return;
+
+    function handleVisibilityChange() {
+      if (document.visibilityState !== 'visible') return;
+      setCheckoutStarted(false);
+      setJustReturnedFromCheckout(true);
+      licenseInputRef.current?.focus();
+    }
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, [checkoutStarted, premium]);
 
   useEffect(() => {
     // Not premium yet at the moment this modal opened — get the overlay
@@ -159,6 +187,7 @@ export function PremiumModal({ onClose, onPremiumChange, reason }: PremiumModalP
                   return;
                 }
                 trackEvent('checkout_started');
+                setCheckoutStarted(true);
               }}
               className={`mt-5 block rounded-full bg-gradient-to-r from-amber-400 via-rose-400 to-purple-400 px-4 py-2.5 text-center text-sm font-semibold text-neutral-950 transition-opacity ${
                 overlayReady ? 'cursor-pointer hover:opacity-90' : 'cursor-wait opacity-60'
@@ -171,8 +200,17 @@ export function PremiumModal({ onClose, onPremiumChange, reason }: PremiumModalP
               <label htmlFor="license-key" className="text-xs font-medium text-neutral-400">
                 {dictionary.premium.licenseLabel}
               </label>
+              {/* Shown for the one return-to-tab right after a checkout
+               * attempt (see the visibilitychange effect above) — the
+               * license field is focused at the same moment, so this
+               * explains *why* the app just grabbed focus instead of it
+               * feeling like a random jump. */}
+              {justReturnedFromCheckout && (
+                <p className="mt-1 text-xs text-amber-300">{dictionary.premium.checkoutReturnHint}</p>
+              )}
               <div className="mt-2 flex gap-2">
                 <input
+                  ref={licenseInputRef}
                   id="license-key"
                   type="text"
                   value={licenseInput}

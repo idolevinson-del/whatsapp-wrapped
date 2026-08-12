@@ -161,6 +161,7 @@ export const en: Dictionary = {
     buyButton: 'Get Wrapped+ — $2.99',
     buyButtonPreparing: 'Loading checkout…',
     licenseLabel: 'Already purchased? Enter your license key',
+    checkoutReturnHint: 'Check your email for your license key, then paste it below.',
     licensePlaceholder: 'License key',
     activateButton: 'Activate',
     activating: 'Checking…',

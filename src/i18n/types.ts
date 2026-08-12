@@ -201,6 +201,8 @@ export interface Dictionary {
     /** Buy button label while the overlay-checkout script is still loading — see PremiumModal's overlayReady. */
     buyButtonPreparing: string;
     licenseLabel: string;
+    /** Shown once, right when focus jumps to the license field after returning from checkout — see PremiumModal's justReturnedFromCheckout. */
+    checkoutReturnHint: string;
     licensePlaceholder: string;
     activateButton: string;
     activating: string;

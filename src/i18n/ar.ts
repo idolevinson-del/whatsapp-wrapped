@@ -157,6 +157,7 @@ export const ar: Dictionary = {
     buyButton: 'احصلوا على Wrapped+ — $2.99',
     buyButtonPreparing: 'جارٍ تحميل الدفع…',
     licenseLabel: 'اشتريتم بالفعل؟ أدخلوا مفتاح الترخيص',
+    checkoutReturnHint: 'تحققوا من بريدكم الإلكتروني للحصول على مفتاح الترخيص، ثم الصقوه أدناه.',
     licensePlaceholder: 'مفتاح الترخيص',
     activateButton: 'تفعيل',
     activating: 'جارٍ التحقق…',

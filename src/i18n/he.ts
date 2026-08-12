@@ -153,6 +153,7 @@ export const he: Dictionary = {
     buyButton: 'רכשו את Wrapped+ — ₪8.98',
     buyButtonPreparing: 'טוען את הקופה…',
     licenseLabel: 'כבר רכשתם? הזינו את קוד הרישוי',
+    checkoutReturnHint: 'בדקו את המייל שלכם למפתח הרישיון, ואז הדביקו אותו כאן.',
     licensePlaceholder: 'קוד רישוי',
     activateButton: 'הפעלה',
     activating: 'בודקים…',
