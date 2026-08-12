@@ -29,6 +29,15 @@ export default defineConfig({
       workbox: {
         skipWaiting: true,
         clientsClaim: true,
+        // generateSW's default navigateFallback ('index.html') catches every
+        // navigation request that isn't in the precache manifest — including
+        // /api/s/<code> short links and /api/shorten. A shared link (or
+        // even just pasting one into the address bar) is a navigation, so
+        // the service worker was serving the cached app shell straight from
+        // cache and the real Edge Function never ran at all: instant, no
+        // network round trip, landing on the homepage — exactly the bug
+        // this excludes /api/* from.
+        navigateFallbackDenylist: [/^\/api\//],
       },
       includeAssets: ['favicon.svg'],
       manifest: {
