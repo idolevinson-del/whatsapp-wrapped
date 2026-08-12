@@ -31,10 +31,17 @@ export async function kvCommand(command: (string | number)[]): Promise<unknown> 
     body: JSON.stringify(command),
   });
 
-  if (!response.ok) {
-    throw new Error(`KV request failed: ${response.status}`);
+  const data = (await response.json().catch(() => null)) as { result?: unknown; error?: string } | null;
+
+  // Upstash returns HTTP 200 even for a rejected/invalid command — the
+  // failure only shows up as an `error` field in the body, not the status
+  // code, so !response.ok alone would miss it. Logged (not just thrown) so
+  // it's visible in Vercel's Function Logs without needing to reproduce
+  // the failure with extra instrumentation.
+  if (!response.ok || !data || data.error) {
+    console.error('kvCommand failed', { command: command[0], status: response.status, body: data });
+    throw new Error(data?.error ?? `KV request failed: ${response.status}`);
   }
 
-  const data = (await response.json()) as { result: unknown };
   return data.result;
 }

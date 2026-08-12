@@ -63,19 +63,23 @@ export default async function handler(request: Request): Promise<Response> {
   try {
     // SET ... NX only writes if the code doesn't already exist — at 62^7
     // possible codes a collision is astronomically unlikely, but retrying
-    // a few times instead of assuming it never happens costs nothing.
+    // a few times instead of assuming it never happens costs nothing. All
+    // arguments passed as strings (not raw numbers) — deliberately, so
+    // there's no ambiguity in how Upstash parses the command.
     for (let attempt = 0; attempt < MAX_COLLISION_RETRIES; attempt++) {
       const code = randomCode();
-      const result = await kvCommand(['SET', `short:${code}`, longUrl!, 'EX', TTL_SECONDS, 'NX']);
+      const result = await kvCommand(['SET', `short:${code}`, longUrl!, 'EX', String(TTL_SECONDS), 'NX']);
+      console.log('shorten: SET result', { code, result });
       if (result === 'OK') {
         return jsonResponse({ shortUrl: `${selfOrigin}/api/s/${code}` }, 200);
       }
     }
     return jsonResponse({ error: 'shortener_failed' }, 502);
-  } catch {
+  } catch (err) {
     // Most commonly: KV isn't connected to this project yet. The client
     // treats this exactly like any other shortening failure and silently
     // shares the original long URL instead — see shortenUrl.ts.
+    console.error('shorten: kvCommand threw', err);
     return jsonResponse({ error: 'shortener_unreachable' }, 502);
   }
 }
