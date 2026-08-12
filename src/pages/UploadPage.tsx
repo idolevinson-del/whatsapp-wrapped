@@ -7,6 +7,7 @@ import { PremiumModal } from '../components/PremiumModal';
 import { FREE_MAX_ENTRIES, getFreeLimit, getLifetimeAnalysisCount } from '../lib/chatHistory';
 import type { ChatHistoryEntry } from '../lib/chatHistory';
 import { isPremium } from '../lib/premium';
+import { PREMIUM_ENABLED } from '../config/premiumConfig';
 import { TRADEMARK_DISCLAIMER } from '../lib/legal';
 import type { AppError, ProgressStage } from '../worker';
 
@@ -132,17 +133,24 @@ export function UploadPage({
             >
               {dictionary.onboarding.viewExampleLink}
             </button>
-            <button
-              type="button"
-              onClick={() => {
-                setPremiumReason(null);
-                setShowPremium(true);
-              }}
-              className="cursor-pointer text-sm font-medium text-amber-400 underline-offset-2 hover:underline"
-            >
-              {dictionary.premium.entryLabel}
-              {userIsPremium ? ' ✓' : ''}
-            </button>
+            {/* Nothing to unlock while PREMIUM_ENABLED is off (see
+             * premiumConfig.ts) — isPremium() already reports everyone as
+             * premium, so this link would just open a modal saying "you're
+             * premium" with no way to actually be anything else. Hidden
+             * rather than left showing a pointless already-unlocked state. */}
+            {PREMIUM_ENABLED && (
+              <button
+                type="button"
+                onClick={() => {
+                  setPremiumReason(null);
+                  setShowPremium(true);
+                }}
+                className="cursor-pointer text-sm font-medium text-amber-400 underline-offset-2 hover:underline"
+              >
+                {dictionary.premium.entryLabel}
+                {userIsPremium ? ' ✓' : ''}
+              </button>
+            )}
           </div>
 
           <div

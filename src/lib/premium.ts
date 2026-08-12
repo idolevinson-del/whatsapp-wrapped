@@ -1,4 +1,4 @@
-import { GUMROAD_PRODUCT_ID } from '../config/premiumConfig';
+import { GUMROAD_PRODUCT_ID, PREMIUM_ENABLED } from '../config/premiumConfig';
 
 /**
  * Premium unlock: a one-time-purchase license key, validated against
@@ -52,6 +52,14 @@ function isFreePreview(): boolean {
 }
 
 export function isPremium(): boolean {
+  // The whole paywall is switched off (see PREMIUM_ENABLED's doc comment) —
+  // everyone gets the premium experience for free, unconditionally. Checked
+  // before isFreePreview() on purpose: there's no "free tier" to preview
+  // right now, so ?free=1 has nothing to do during this period. Nothing
+  // about the real stored license state changes here — flipping
+  // PREMIUM_ENABLED back to true makes this function (and ?free=1) behave
+  // exactly as it always did, license included.
+  if (!PREMIUM_ENABLED) return true;
   if (isFreePreview()) return false;
   return readState() !== null;
 }
