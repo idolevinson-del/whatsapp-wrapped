@@ -3,8 +3,8 @@ const TIMEOUT_MS = 2500;
 
 /**
  * Best-effort URL shortening via our own /api/shorten (a thin server-side
- * proxy to a public shortener — see api/shorten.ts for why this can't be
- * called directly from the browser).
+ * proxy to a public shortener — currently is.gd, see api/shorten.ts for why
+ * that's the pick, and why this can't be called directly from the browser).
  *
  * Always resolves — falls back to the original long URL on any failure
  * (network error, timeout, non-2xx, unexpected response shape), so a

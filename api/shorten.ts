@@ -1,4 +1,4 @@
-// A thin server-side proxy to a public URL shortener (TinyURL) — the app's
+// A thin server-side proxy to a public URL shortener (is.gd) — the app's
 // first and only backend endpoint. Exists purely because a client-side
 // fetch() straight to a shortener's API almost always fails: most of these
 // "create a short link" endpoints don't send CORS headers (they're built
@@ -6,14 +6,21 @@
 // another origin), so the browser blocks the response before our code ever
 // sees it. Running the same request from here (server-to-server) sidesteps
 // that entirely, and needs no API key, database, or state of our own — the
-// mapping lives on TinyURL's infrastructure, not ours.
+// mapping lives on is.gd's infrastructure, not ours.
+//
+// Was TinyURL originally — switched after real shared links turned out to
+// land visitors on a TinyURL interstitial ("Redirecting in 10 seconds…")
+// before bouncing them here, which defeated the whole point of shortening
+// (TinyURL shows that warning page for links created anonymously through
+// its free API, as an anti-abuse measure). is.gd redirects straight to the
+// destination with no such page, which is the entire reason it was picked.
 //
 // Only ever shortens links that point back at this same deployment's own
 // origin, so this can't be reused as an open URL-shortening proxy for
 // anything else.
 export const config = { runtime: 'edge' };
 
-const TINYURL_API = 'https://tinyurl.com/api-create.php';
+const ISGD_API = 'https://is.gd/create.php';
 
 function jsonResponse(body: unknown, status: number): Response {
   return new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });
@@ -47,8 +54,11 @@ export default async function handler(request: Request): Promise<Response> {
   }
 
   try {
-    const tinyUrlResponse = await fetch(`${TINYURL_API}?url=${encodeURIComponent(longUrl!)}`);
-    const text = (await tinyUrlResponse.text()).trim();
+    // format=simple: the whole response body is just the short URL (or an
+    // "Error: ..." message) — same shape TinyURL returned, so the check
+    // below (and everything downstream in shortenUrl.ts) needed no changes.
+    const isgdResponse = await fetch(`${ISGD_API}?format=simple&url=${encodeURIComponent(longUrl!)}`);
+    const text = (await isgdResponse.text()).trim();
     if (!text.startsWith('http')) {
       return jsonResponse({ error: 'shortener_failed' }, 502);
     }
