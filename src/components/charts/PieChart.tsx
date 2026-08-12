@@ -8,6 +8,11 @@ interface PieSlice {
 interface PieChartProps {
   data: PieSlice[];
   size?: number;
+  /** False holds the reveal at its clipped/scaled-down start state instead
+   * of animating in on mount — StatSection uses this to gate the reveal
+   * until the chart has actually scrolled into view. Defaults to true so
+   * every other caller keeps today's mount-triggered behavior unchanged. */
+  active?: boolean;
 }
 
 // Outer drop shadow + an inset highlight/shadow ring, so the disc reads as
@@ -26,16 +31,17 @@ const DEPTH_SHADOW =
  * popping in fully drawn — the "numbers/graphs climbing in" reveal beat
  * this app leans on elsewhere (see useCountUp).
  */
-export function PieChart({ data, size = 112 }: PieChartProps) {
+export function PieChart({ data, size = 112, active = true }: PieChartProps) {
   const [animateIn, setAnimateIn] = useState(false);
 
   useEffect(() => {
-    // Starts clipped/scaled down; flipping this one frame after mount lets
-    // the CSS transition actually run instead of jumping straight to its
-    // end state.
+    if (!active) return;
+    // Starts clipped/scaled down; flipping this one frame after becoming
+    // active lets the CSS transition actually run instead of jumping
+    // straight to its end state.
     const raf = requestAnimationFrame(() => setAnimateIn(true));
     return () => cancelAnimationFrame(raf);
-  }, []);
+  }, [active]);
 
   const total = data.reduce((sum, d) => sum + d.value, 0);
 

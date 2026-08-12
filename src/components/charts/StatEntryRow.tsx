@@ -18,7 +18,11 @@ interface StatEntryRowProps {
 /** One sender's row within a StatSection — its own component (rather than
  * inline in a .map()) purely so useCountUp can be called once per row. */
 export function StatEntryRow({ sender, value, color, valueSuffix, kind, widthPercent, animateIn, delayMs }: StatEntryRowProps) {
-  const animatedValue = useCountUp(value);
+  // Gated on animateIn (not just `value`) so the count-up itself only
+  // starts once the row has actually scrolled into view — otherwise it'd
+  // finish climbing to its target long before anyone sees it, the same
+  // problem the bar-fill below already avoids.
+  const animatedValue = useCountUp(animateIn ? value : 0);
 
   return (
     <li className="text-start">

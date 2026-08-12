@@ -3,6 +3,7 @@ import { PieChart } from './PieChart';
 import { StatEntryRow } from './StatEntryRow';
 import { LockedOverlay } from '../LockedOverlay';
 import { InfoTooltip } from '../InfoTooltip';
+import { useInView } from '../../lib/useInView';
 
 interface StatEntry {
   sender: string;
@@ -39,12 +40,20 @@ export function StatSection({
   lockLabel,
   infoText,
 }: StatSectionProps) {
+  // The whole card fades/rises in the moment it scrolls into view, and the
+  // chart inside it (pie reveal, bar fill, count-up) only starts animating
+  // at that same moment — previously everything animated on page mount, so
+  // anything below the fold had already finished animating long before
+  // anyone scrolled down to see it. Cards already on screen at mount still
+  // animate immediately, same as before (see useInView's doc comment).
+  const [cardRef, inView] = useInView<HTMLDivElement>();
   const [animateIn, setAnimateIn] = useState(false);
 
   useEffect(() => {
+    if (!inView) return;
     const raf = requestAnimationFrame(() => setAnimateIn(true));
     return () => cancelAnimationFrame(raf);
-  }, []);
+  }, [inView]);
 
   if (entries.length === 0) return null;
 
@@ -52,7 +61,11 @@ export function StatSection({
   const maxValue = Math.max(1, ...sorted.map((e) => e.value));
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+    <div
+      ref={cardRef}
+      className="rounded-2xl border border-white/10 bg-white/5 p-4 transition-all duration-700 ease-out motion-reduce:transition-none motion-reduce:transform-none motion-reduce:opacity-100"
+      style={{ opacity: inView ? 1 : 0, transform: inView ? 'translateY(0)' : 'translateY(28px)' }}
+    >
       <h3 className="text-sm font-semibold uppercase tracking-widest text-white/70">
         {title}
         {infoText && <InfoTooltip text={infoText} />}
@@ -64,7 +77,7 @@ export function StatSection({
           aria-hidden={locked || undefined}
         >
           {kind === 'pie' && (
-            <PieChart data={sorted.map((e) => ({ value: e.value, color: e.color }))} />
+            <PieChart data={sorted.map((e) => ({ value: e.value, color: e.color }))} active={animateIn} />
           )}
 
           <ul className="flex-1 space-y-2.5">
