@@ -1,29 +1,36 @@
-// A thin server-side proxy to a public URL shortener (is.gd) — the app's
-// first and only backend endpoint. Exists purely because a client-side
-// fetch() straight to a shortener's API almost always fails: most of these
-// "create a short link" endpoints don't send CORS headers (they're built
-// for server-to-server or plain browser-navigation use, not XHR/fetch from
-// another origin), so the browser blocks the response before our code ever
-// sees it. Running the same request from here (server-to-server) sidesteps
-// that entirely, and needs no API key, database, or state of our own — the
-// mapping lives on is.gd's infrastructure, not ours.
+// The app's URL shortener — self-hosted on our own domain instead of
+// proxying to a public third-party shortener (TinyURL, then is.gd, both
+// tried and dropped). Both of those showed an interstitial "redirecting…"
+// page before finally forwarding to us — a well-known anti-abuse measure
+// public shorteners apply to anonymously-created links, and it made shared
+// results feel slower and less trustworthy, the exact opposite of the
+// point. Redirecting from our own domain (api/s/[code].ts) means there is
+// no other site in the middle at all: the short link IS us.
 //
-// Was TinyURL originally — switched after real shared links turned out to
-// land visitors on a TinyURL interstitial ("Redirecting in 10 seconds…")
-// before bouncing them here, which defeated the whole point of shortening
-// (TinyURL shows that warning page for links created anonymously through
-// its free API, as an anti-abuse measure). is.gd redirects straight to the
-// destination with no such page, which is the entire reason it was picked.
-//
-// Only ever shortens links that point back at this same deployment's own
-// origin, so this can't be reused as an open URL-shortening proxy for
-// anything else.
+// Storage is a tiny Vercel KV (Upstash Redis) key/value pair, code -> long
+// URL — see _kv.ts. Still needs no account/database of our own beyond
+// clicking "connect" on a KV storage integration in the Vercel dashboard.
 export const config = { runtime: 'edge' };
 
-const ISGD_API = 'https://is.gd/create.php';
+import { kvCommand } from './_kv';
+
+const CODE_LENGTH = 7;
+const CODE_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+// A year is generous for a "share your results" link while still bounding
+// how long an abandoned/never-clicked code sits in storage.
+const TTL_SECONDS = 60 * 60 * 24 * 365;
+const MAX_COLLISION_RETRIES = 5;
 
 function jsonResponse(body: unknown, status: number): Response {
   return new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });
+}
+
+function randomCode(length = CODE_LENGTH): string {
+  const bytes = new Uint8Array(length);
+  crypto.getRandomValues(bytes);
+  // Slight modulo bias (256 isn't a multiple of 62) — irrelevant here, this
+  // is a short-link code, not a security token.
+  return Array.from(bytes, (b) => CODE_ALPHABET[b % CODE_ALPHABET.length]).join('');
 }
 
 export default async function handler(request: Request): Promise<Response> {
@@ -54,16 +61,21 @@ export default async function handler(request: Request): Promise<Response> {
   }
 
   try {
-    // format=simple: the whole response body is just the short URL (or an
-    // "Error: ..." message) — same shape TinyURL returned, so the check
-    // below (and everything downstream in shortenUrl.ts) needed no changes.
-    const isgdResponse = await fetch(`${ISGD_API}?format=simple&url=${encodeURIComponent(longUrl!)}`);
-    const text = (await isgdResponse.text()).trim();
-    if (!text.startsWith('http')) {
-      return jsonResponse({ error: 'shortener_failed' }, 502);
+    // SET ... NX only writes if the code doesn't already exist — at 62^7
+    // possible codes a collision is astronomically unlikely, but retrying
+    // a few times instead of assuming it never happens costs nothing.
+    for (let attempt = 0; attempt < MAX_COLLISION_RETRIES; attempt++) {
+      const code = randomCode();
+      const result = await kvCommand(['SET', `short:${code}`, longUrl!, 'EX', TTL_SECONDS, 'NX']);
+      if (result === 'OK') {
+        return jsonResponse({ shortUrl: `${selfOrigin}/api/s/${code}` }, 200);
+      }
     }
-    return jsonResponse({ shortUrl: text }, 200);
+    return jsonResponse({ error: 'shortener_failed' }, 502);
   } catch {
+    // Most commonly: KV isn't connected to this project yet. The client
+    // treats this exactly like any other shortening failure and silently
+    // shares the original long URL instead — see shortenUrl.ts.
     return jsonResponse({ error: 'shortener_unreachable' }, 502);
   }
 }
