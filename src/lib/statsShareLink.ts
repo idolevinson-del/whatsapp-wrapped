@@ -305,6 +305,18 @@ export function buildStatsSharePayload(
   };
 }
 
+// UTM tags so shares via this app's own "Share to WhatsApp" flow show up as
+// their own acquisition source in analytics (e.g. Plausible's Campaigns
+// report), distinct from someone pasting the plain homepage link on
+// Facebook or elsewhere. Referrer headers alone aren't reliable for this —
+// WhatsApp's (and Facebook's) in-app browsers commonly strip or replace
+// them, which is exactly the "how many came from WhatsApp vs Facebook"
+// question referrer-only tracking can't answer. "whatsapp" as the source is
+// the button's stated destination even though the actual OS share sheet
+// this hands off to can technically go anywhere (see shareImage.ts) — good
+// enough as a source label for what's overwhelmingly the common case.
+const SHARE_UTM_PARAMS = 'utm_source=whatsapp&utm_medium=share&utm_campaign=results_share';
+
 export function buildStatsShareUrl(payload: StatsSharePayload): string {
-  return `${window.location.origin}/?stats=${encodeStatsSharePayload(payload)}`;
+  return `${window.location.origin}/?stats=${encodeStatsSharePayload(payload)}&${SHARE_UTM_PARAMS}`;
 }

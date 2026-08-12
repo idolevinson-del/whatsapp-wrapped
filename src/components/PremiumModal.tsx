@@ -103,6 +103,7 @@ export function PremiumModal({ onClose, onPremiumChange, reason }: PremiumModalP
               href={CHECKOUT_URL}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackEvent('checkout_started')}
               className="mt-5 block cursor-pointer rounded-full bg-gradient-to-r from-amber-400 via-rose-400 to-purple-400 px-4 py-2.5 text-center text-sm font-semibold text-neutral-950 hover:opacity-90"
             >
               {dictionary.premium.buyButton}
