@@ -64,6 +64,7 @@ export const ar: Dictionary = {
     introTitle: 'هذا مجرد مثال',
     introSubtitle: 'أولاً، نظرة على محادثة نموذجية — ثم ارفعوا محادثتكم الخاصة لتحصلوا على نتائجكم الحقيقية.',
     introContinue: 'متابعة',
+    tourCaption: 'هكذا يبدو تحليل المحادثة — استرخوا، سنقوم بالتمرير نيابةً عنكم.',
     viewExampleLink: 'مشاهدة مثال',
     exampleBadge: 'مثال',
     exampleCta: 'ارفعوا محادثتكم الخاصة',

@@ -15,6 +15,7 @@ import { useToast } from '../lib/useToast';
 import { DEFAULT_THEME } from '../lib/themes';
 import { formatShareBadges } from '../lib/headlinePersona';
 import { STAT_ICONS } from '../lib/statIcons';
+import { useAutoScrollTour } from '../lib/useAutoScrollTour';
 import { trackEvent } from '../analytics';
 import { CONVERSATION_GAP_HOURS } from '../config/analysisConfig';
 import type { AnalysisResult } from '../analysis';
@@ -45,6 +46,8 @@ export function StatsPage({ analysis, onBack, fileName, isExample, autoExitMs }:
     // every render would keep pushing the auto-exit out.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [autoExitMs]);
+
+  useAutoScrollTour(autoExitMs);
 
   const { personas, personaBreakdown, coreStats, conversationGapStats, busiestDay } = analysis;
   const senders = coreStats.perSender.map((s) => s.sender);
@@ -136,6 +139,7 @@ export function StatsPage({ analysis, onBack, fileName, isExample, autoExitMs }:
     isExample,
     exampleBadgeLabel: dictionary.onboarding.exampleBadge,
     autoExitMs,
+    tourCaption: autoExitMs ? dictionary.onboarding.tourCaption : undefined,
     backLabel,
     onBack,
     shareLabel: dictionary.stats.shareButton,

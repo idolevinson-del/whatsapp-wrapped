@@ -76,6 +76,10 @@ export interface Dictionary {
     introTitle: string;
     introSubtitle: string;
     introContinue: string;
+    /** Shown on the example page itself, only during the auto-scrolling
+     * first-visit tour (see useAutoScrollTour) — explains why the page is
+     * about to scroll on its own. */
+    tourCaption: string;
     /** Persistent "see an example" link on the upload page, for revisiting the example on demand. */
     viewExampleLink: string;
     /** Badge shown on the Wrapped view when browsing the example. */

@@ -49,6 +49,10 @@ export interface StatsViewModel {
    * example badge so the auto-advance isn't a surprise. Never set for a
    * deliberately-opened example ("See an example") or for real results. */
   autoExitMs?: number;
+  /** "This is what a chat analysis looks like, sit back..." — shown only
+   * alongside autoExitMs, explaining the auto-scrolling tour that's about
+   * to happen (see useAutoScrollTour). */
+  tourCaption?: string;
   backLabel: string;
   onBack: () => void;
   /** The one and only share action — generates the "Wrapped" badge image and

@@ -43,6 +43,10 @@ export function StatsView({ model }: { model: StatsViewModel }) {
           </div>
         )}
 
+        {model.autoExitMs && model.tourCaption && (
+          <p className="mt-2 text-sm text-neutral-400">{model.tourCaption}</p>
+        )}
+
         <h1 className={`mt-4 bg-gradient-to-r ${model.titleGradientClasses} bg-clip-text text-3xl font-extrabold text-transparent sm:text-4xl`}>
           {model.title}
         </h1>

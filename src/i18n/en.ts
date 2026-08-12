@@ -68,6 +68,7 @@ export const en: Dictionary = {
     introTitle: 'This is just an example',
     introSubtitle: 'First, a look at a sample chat — then upload your own to get your real results.',
     introContinue: 'Continue',
+    tourCaption: "This is what a chat analysis looks like — sit back, we'll scroll for you.",
     viewExampleLink: 'See an example',
     exampleBadge: 'Example',
     exampleCta: 'Upload your own chat',

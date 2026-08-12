@@ -64,6 +64,7 @@ export const he: Dictionary = {
     introTitle: 'זו רק דוגמה',
     introSubtitle: 'קודם הצצה לצ׳אט לדוגמה — ואז תעלו את הצ׳אט שלכם ותקבלו את התוצאות האמיתיות שלכם.',
     introContinue: 'המשך',
+    tourCaption: 'ככה נראה ניתוח של צ׳אט — שבו בנוחות, אנחנו נגלול בשבילכם.',
     viewExampleLink: 'צפייה בדוגמה',
     exampleBadge: 'דוגמה',
     exampleCta: 'העלו את הצ׳אט שלכם',

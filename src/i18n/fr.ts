@@ -67,6 +67,7 @@ export const fr: Dictionary = {
     introTitle: 'Ceci est juste un exemple',
     introSubtitle: 'D\'abord, un aperçu d\'une discussion type — envoie ensuite ta propre discussion pour obtenir tes vrais résultats.',
     introContinue: 'Continuer',
+    tourCaption: 'Voici à quoi ressemble une analyse de chat — installe-toi, on fait défiler pour toi.',
     viewExampleLink: 'Voir un exemple',
     exampleBadge: 'Exemple',
     exampleCta: 'Envoie ta propre discussion',

@@ -25,8 +25,10 @@ import type { StoryCardData } from './pages/buildStoryCards';
 import type { StatsSharePayload } from './lib/statsShareLink';
 
 // How long the first-visit example stays up before it advances itself back
-// to the real upload screen — see showExample/exampleAutoExitMs below.
-const EXAMPLE_AUTO_EXIT_MS = 7000;
+// to the real upload screen — see showExample/exampleAutoExitMs below. Long
+// enough for the auto-scroll tour (see useAutoScrollTour) to actually make
+// it through the whole page, not just the first couple of blocks.
+const EXAMPLE_AUTO_EXIT_MS = 18000;
 
 function App() {
   // Someone's actual results, received via the "Share to WhatsApp" link.
