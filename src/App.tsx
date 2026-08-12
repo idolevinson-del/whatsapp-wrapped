@@ -24,6 +24,10 @@ import type { ChatHistoryEntry } from './lib/chatHistory';
 import type { StoryCardData } from './pages/buildStoryCards';
 import type { StatsSharePayload } from './lib/statsShareLink';
 
+// How long the first-visit example stays up before it advances itself back
+// to the real upload screen — see showExample/exampleAutoExitMs below.
+const EXAMPLE_AUTO_EXIT_MS = 7000;
+
 function App() {
   // Someone's actual results, received via the "Share to WhatsApp" link.
   const [sharedStats] = useState<StatsSharePayload | null>(() => {
@@ -61,6 +65,11 @@ function App() {
   // Set by the intro card once it's done, or manually via the "See an
   // example" link on the upload page.
   const [showExample, setShowExample] = useState(false);
+  // Only set when the example was reached via the intro card (first visit)
+  // — it then advances itself back to the real upload screen on its own,
+  // see StatsPage's autoExitMs. A deliberately-opened example ("See an
+  // example") stays open until the visitor leaves it themselves.
+  const [exampleAutoExitMs, setExampleAutoExitMs] = useState<number | undefined>(undefined);
   const [historyEntry, setHistoryEntry] = useState<ChatHistoryEntry | null>(null);
   const exampleAnalysis = useMemo(() => buildExampleAnalysis(), []);
 
@@ -91,6 +100,7 @@ function App() {
         onDone={() => {
           markOnboardingSeen();
           setShowIntroCard(false);
+          setExampleAutoExitMs(EXAMPLE_AUTO_EXIT_MS);
           setShowExample(true);
         }}
       />
@@ -102,8 +112,12 @@ function App() {
       <StatsPage
         analysis={exampleAnalysis}
         fileName="WhatsApp Chat - Beach Trip Squad.txt"
-        onBack={() => setShowExample(false)}
+        onBack={() => {
+          setShowExample(false);
+          setExampleAutoExitMs(undefined);
+        }}
         isExample
+        autoExitMs={exampleAutoExitMs}
       />
     );
   }

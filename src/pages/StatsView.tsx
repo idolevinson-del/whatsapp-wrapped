@@ -25,8 +25,21 @@ export function StatsView({ model }: { model: StatsViewModel }) {
         </div>
 
         {model.isExample && model.exampleBadgeLabel && (
-          <div className="mt-4 inline-block rounded-full bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-white/80">
-            {model.exampleBadgeLabel}
+          <div className="mt-4 flex items-center gap-2">
+            <span className="inline-block shrink-0 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-white/80">
+              {model.exampleBadgeLabel}
+            </span>
+            {/* First-visit auto-shown example only — a fill bar so the
+             * auto-advance to the real upload screen (see StatsPage's
+             * autoExitMs timer) doesn't feel like a random glitch. */}
+            {model.autoExitMs && (
+              <i className="block h-1 flex-1 overflow-hidden rounded-full bg-white/10">
+                <b
+                  className="block h-full rounded-full bg-white/40"
+                  style={{ animation: `fillbar ${model.autoExitMs}ms linear forwards` }}
+                />
+              </i>
+            )}
           </div>
         )}
 

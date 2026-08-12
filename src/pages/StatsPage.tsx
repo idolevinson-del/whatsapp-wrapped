@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { formatTemplate, useLanguage } from '../i18n';
 import { StatsView } from './StatsView';
 import { HEADLINE_GRADIENT, OUTRO_GRADIENT, BUSIEST_DAY_GRADIENT, PERSONA_GRADIENTS } from '../components/cards/cardStyles';
@@ -28,10 +28,24 @@ interface StatsPageProps {
   fileName?: string;
   /** True when showing the built-in sample data instead of an uploaded chat. */
   isExample?: boolean;
+  /** Set only for the first-visit auto-shown example: calls onBack on its
+   * own after this many ms, instead of waiting for a manual tap. Leave
+   * unset for a deliberately-opened example or real results. */
+  autoExitMs?: number;
 }
 
-export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPageProps) {
+export function StatsPage({ analysis, onBack, fileName, isExample, autoExitMs }: StatsPageProps) {
   const { dictionary, language, direction } = useLanguage();
+
+  useEffect(() => {
+    if (!autoExitMs) return;
+    const timer = setTimeout(onBack, autoExitMs);
+    return () => clearTimeout(timer);
+    // onBack is stable enough for this one-shot timer — re-arming it on
+    // every render would keep pushing the auto-exit out.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoExitMs]);
+
   const { personas, personaBreakdown, coreStats, conversationGapStats, busiestDay } = analysis;
   const senders = coreStats.perSender.map((s) => s.sender);
   const colors = buildSenderColorMap(senders);
@@ -121,6 +135,7 @@ export function StatsPage({ analysis, onBack, fileName, isExample }: StatsPagePr
     headline,
     isExample,
     exampleBadgeLabel: dictionary.onboarding.exampleBadge,
+    autoExitMs,
     backLabel,
     onBack,
     shareLabel: dictionary.stats.shareButton,

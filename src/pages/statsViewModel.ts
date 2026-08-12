@@ -43,6 +43,12 @@ export interface StatsViewModel {
   headline: string | null;
   isExample?: boolean;
   exampleBadgeLabel?: string;
+  /** When set, this is the first-visit auto-shown example — it advances
+   * itself to the real upload screen (calls onBack) after this many ms,
+   * instead of requiring a manual tap. Shown as a fill bar next to the
+   * example badge so the auto-advance isn't a surprise. Never set for a
+   * deliberately-opened example ("See an example") or for real results. */
+  autoExitMs?: number;
   backLabel: string;
   onBack: () => void;
   /** The one and only share action — generates the "Wrapped" badge image and
