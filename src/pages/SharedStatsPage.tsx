@@ -6,6 +6,7 @@ import { PremiumModal } from '../components/PremiumModal';
 import { buildSenderColorMap } from '../lib/senderColors';
 import { formatDate } from '../lib/formatDate';
 import { buildStatsShareUrl } from '../lib/statsShareLink';
+import { shortenUrl } from '../lib/shortenUrl';
 import { buildStatsShareText } from '../lib/shareText';
 import { generateShareImageBlob, shareOrDownloadImage } from '../lib/shareImage';
 import { isPremium } from '../lib/premium';
@@ -74,29 +75,34 @@ export function SharedStatsPage({ payload }: { payload: StatsSharePayload }) {
   async function handleShareToWhatsApp() {
     trackEvent('results_shared');
     // Re-share the same link — we only ever have the payload we received.
-    const shareUrl = buildStatsShareUrl(payload);
+    const longShareUrl = buildStatsShareUrl(payload);
     // Best-effort — only what the compact link payload carries, see
     // pickShareBadgesFromBreakdown's doc comment for what's derivable.
     const badges = pickShareBadgesFromBreakdown({ senders: payload.s, pb: payload.pb }, dictionary, isGroup);
-    const blob = await generateShareImageBlob({
-      appTitle: dictionary.app.title,
-      totalMessages: payload.total,
-      totalMessagesLabel: dictionary.stats.totalMessages,
-      spanDays,
-      spanLabel: formatTemplate(dictionary.stats.dateRangeValue, {
-        start: formatDate(payload.spanStart, language),
-        end: formatDate(payload.spanEnd, language),
+    // See StatsPage's identical handler for why shortenUrl and image
+    // generation run in parallel instead of sequentially.
+    const [shareUrl, blob] = await Promise.all([
+      shortenUrl(longShareUrl),
+      generateShareImageBlob({
+        appTitle: dictionary.app.title,
+        totalMessages: payload.total,
+        totalMessagesLabel: dictionary.stats.totalMessages,
+        spanDays,
+        spanLabel: formatTemplate(dictionary.stats.dateRangeValue, {
+          start: formatDate(payload.spanStart, language),
+          end: formatDate(payload.spanEnd, language),
+        }),
+        busiestDayDate,
+        busiestDayCount: payload.busiestCount,
+        busiestDayLabel: dictionary.stats.busiestDayTitle,
+        busiestDayCountLabel: formatTemplate(dictionary.stats.messagesCountCaption, { count: payload.busiestCount }),
+        ctaText: dictionary.stats.shareImageCta,
+        urlText: window.location.host,
+        dir: direction,
+        gradient: DEFAULT_THEME.hexStops,
+        badges,
       }),
-      busiestDayDate,
-      busiestDayCount: payload.busiestCount,
-      busiestDayLabel: dictionary.stats.busiestDayTitle,
-      busiestDayCountLabel: formatTemplate(dictionary.stats.messagesCountCaption, { count: payload.busiestCount }),
-      ctaText: dictionary.stats.shareImageCta,
-      urlText: window.location.host,
-      dir: direction,
-      gradient: DEFAULT_THEME.hexStops,
-      badges,
-    });
+    ]);
     await shareOrDownloadImage(blob, 'whatsapp-wrapped.png', dictionary.app.title, buildStatsShareText(dictionary, shareUrl));
     maybeShowShareBonusToast();
   }

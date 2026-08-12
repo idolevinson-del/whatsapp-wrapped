@@ -8,6 +8,7 @@ import { formatDate } from '../lib/formatDate';
 import { parseChatName } from '../lib/parseChatName';
 import { buildStatsShareText } from '../lib/shareText';
 import { buildStatsSharePayload, buildStatsShareUrl } from '../lib/statsShareLink';
+import { shortenUrl } from '../lib/shortenUrl';
 import { generateShareImageBlob, shareOrDownloadImage } from '../lib/shareImage';
 import { isPremium } from '../lib/premium';
 import { MAX_BONUS_SLOTS, getBonusSlots, redeemShareBonus } from '../lib/shareBonus';
@@ -93,30 +94,39 @@ export function StatsPage({ analysis, onBack, fileName, isExample, autoExitMs }:
   // straight into WhatsApp *with the image* the way the old text-only
   // button jumped straight into a chat). The link is still real and
   // clickable — it travels in the share sheet's caption text, not baked
-  // into the image's pixels.
+  // into the image's pixels. shortenUrl best-effort shortens it (falls
+  // back to the long form on any failure) — the long ?stats=... link reads
+  // as spammy/suspicious to a lot of people, which was actively costing
+  // clicks.
   async function handleShareToWhatsApp() {
     trackEvent('results_shared');
-    const shareUrl = buildStatsShareUrl(buildStatsSharePayload(analysis, fileName, language));
+    const longShareUrl = buildStatsShareUrl(buildStatsSharePayload(analysis, fileName, language));
     const badges = formatShareBadges(personas, dictionary, isGroup);
-    const blob = await generateShareImageBlob({
-      appTitle: dictionary.app.title,
-      totalMessages,
-      totalMessagesLabel: dictionary.stats.totalMessages,
-      spanDays,
-      spanLabel: formatTemplate(dictionary.stats.dateRangeValue, {
-        start: formatDate(coreStats.firstMessage.timestamp.getTime(), language),
-        end: formatDate(coreStats.lastMessage.timestamp.getTime(), language),
+    // Shortening (a network round trip) runs alongside image generation
+    // (local canvas work) rather than before it, so a slow/unreachable
+    // shortener doesn't add its own latency on top of the image render.
+    const [shareUrl, blob] = await Promise.all([
+      shortenUrl(longShareUrl),
+      generateShareImageBlob({
+        appTitle: dictionary.app.title,
+        totalMessages,
+        totalMessagesLabel: dictionary.stats.totalMessages,
+        spanDays,
+        spanLabel: formatTemplate(dictionary.stats.dateRangeValue, {
+          start: formatDate(coreStats.firstMessage.timestamp.getTime(), language),
+          end: formatDate(coreStats.lastMessage.timestamp.getTime(), language),
+        }),
+        busiestDayDate,
+        busiestDayCount: busiestDay.count,
+        busiestDayLabel: dictionary.stats.busiestDayTitle,
+        busiestDayCountLabel: formatTemplate(dictionary.stats.messagesCountCaption, { count: busiestDay.count }),
+        ctaText: dictionary.stats.shareImageCta,
+        urlText: window.location.host,
+        dir: direction,
+        gradient: DEFAULT_THEME.hexStops,
+        badges,
       }),
-      busiestDayDate,
-      busiestDayCount: busiestDay.count,
-      busiestDayLabel: dictionary.stats.busiestDayTitle,
-      busiestDayCountLabel: formatTemplate(dictionary.stats.messagesCountCaption, { count: busiestDay.count }),
-      ctaText: dictionary.stats.shareImageCta,
-      urlText: window.location.host,
-      dir: direction,
-      gradient: DEFAULT_THEME.hexStops,
-      badges,
-    });
+    ]);
     await shareOrDownloadImage(blob, 'whatsapp-wrapped.png', dictionary.app.title, buildStatsShareText(dictionary, shareUrl));
     maybeShowShareBonusToast();
   }
