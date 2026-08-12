@@ -159,6 +159,7 @@ export const en: Dictionary = {
     featureDeeperStats: 'Unlock every chart — reply time, who starts conversations, words per message, and more',
     featureHistory: 'Unlimited chat checks (free is capped at 2, ever)',
     buyButton: 'Get Wrapped+ — $2.99',
+    buyButtonPreparing: 'Loading checkout…',
     licenseLabel: 'Already purchased? Enter your license key',
     licensePlaceholder: 'License key',
     activateButton: 'Activate',

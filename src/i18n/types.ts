@@ -198,6 +198,8 @@ export interface Dictionary {
     featureDeeperStats: string;
     featureHistory: string;
     buyButton: string;
+    /** Buy button label while the overlay-checkout script is still loading — see PremiumModal's overlayReady. */
+    buyButtonPreparing: string;
     licenseLabel: string;
     licensePlaceholder: string;
     activateButton: string;

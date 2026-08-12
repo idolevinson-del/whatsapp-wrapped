@@ -167,6 +167,7 @@ export const fr: Dictionary = {
     featureDeeperStats: 'Débloque tous les graphiques — temps de réponse, qui lance les conversations, mots par message, et plus',
     featureHistory: 'Analyses de discussions illimitées (la version gratuite est limitée à 2, pour toujours)',
     buyButton: 'Obtenir Wrapped+ — 2,99 $',
+    buyButtonPreparing: 'Chargement du paiement…',
     licenseLabel: 'Déjà acheté ? Entre ta clé de licence',
     licensePlaceholder: 'Clé de licence',
     activateButton: 'Activer',

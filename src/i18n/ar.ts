@@ -155,6 +155,7 @@ export const ar: Dictionary = {
     featureDeeperStats: 'افتحوا جميع الرسوم البيانية — زمن الرد، من يبدأ المحادثات، متوسط الكلمات في الرسالة، والمزيد',
     featureHistory: 'فحص محادثات غير محدود (النسخة المجانية محدودة بـ2، للأبد)',
     buyButton: 'احصلوا على Wrapped+ — $2.99',
+    buyButtonPreparing: 'جارٍ تحميل الدفع…',
     licenseLabel: 'اشتريتم بالفعل؟ أدخلوا مفتاح الترخيص',
     licensePlaceholder: 'مفتاح الترخيص',
     activateButton: 'تفعيل',

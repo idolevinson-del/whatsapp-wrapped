@@ -27,12 +27,35 @@ export function PremiumModal({ onClose, onPremiumChange, reason }: PremiumModalP
   const [premium, setPremiumFlag] = useState(isPremium());
   const [licenseInput, setLicenseInput] = useState('');
   const [status, setStatus] = useState<'idle' | 'checking' | 'error'>('idle');
+  // Buy stays disabled (with a "loading" label) until this flips true, so
+  // there's no window where someone can tap Buy before gumroad.js has
+  // actually bound its overlay-checkout click handler — clicking during
+  // that gap was falling straight through to the ordinary href navigation,
+  // which is exactly the "opens a new tab instead of an overlay" bug this
+  // was meant to fix. A GIVE_UP_MS timeout still flips it true on its own
+  // if the script never loads at all (blocked by a content blocker, etc.)
+  // — Buy must never end up permanently stuck disabled; worst case it
+  // just falls back to the plain full-page checkout, same as before any
+  // of this existed.
+  const [overlayReady, setOverlayReady] = useState(false);
 
   useEffect(() => {
     // Not premium yet at the moment this modal opened — get the overlay
     // script in place before anyone can even click Buy. No-op (and safe to
     // skip) if they're already premium, since the buy button never renders.
-    if (!premium) loadGumroadOverlay();
+    if (premium) return;
+
+    const GIVE_UP_MS = 3000;
+    let settled = false;
+    function ready() {
+      if (settled) return;
+      settled = true;
+      setOverlayReady(true);
+    }
+
+    loadGumroadOverlay(ready);
+    const giveUpTimer = setTimeout(ready, GIVE_UP_MS);
+    return () => clearTimeout(giveUpTimer);
     // Deliberately once per modal open, not every time `premium` flips —
     // loadGumroadOverlay() is itself idempotent (checks for an existing
     // script tag), so there's nothing to gain from re-running this.
@@ -115,20 +138,33 @@ export function PremiumModal({ onClose, onPremiumChange, reason }: PremiumModalP
              * above) finishes loading, it intercepts clicks on this link
              * and opens checkout as a modal over the page instead of
              * navigating away — feels far less like "leaving the app to
-             * go pay someone" than a full-page redirect. href/target
-             * still point straight at the real checkout page as a
-             * fallback for the split second before the script loads (or
-             * the rare case it fails to) — clicking before that just
-             * behaves exactly like today. */}
+             * go pay someone" than a full-page redirect. Disabled (with a
+             * "loading" label) until overlayReady, specifically so a click
+             * can never land in the gap before the script has bound —
+             * that gap was exactly what fell through to a plain full-page
+             * navigation instead of the overlay. href/target are still the
+             * real checkout page, so if the script never loads at all
+             * (overlayReady's own timeout gives up after a few seconds),
+             * this just becomes a normal working link again — never
+             * permanently stuck. */}
             <a
               href={CHECKOUT_URL}
               target="_blank"
               rel="noopener noreferrer"
               data-gumroad-overlay-checkout="true"
-              onClick={() => trackEvent('checkout_started')}
-              className="mt-5 block cursor-pointer rounded-full bg-gradient-to-r from-amber-400 via-rose-400 to-purple-400 px-4 py-2.5 text-center text-sm font-semibold text-neutral-950 hover:opacity-90"
+              aria-disabled={!overlayReady}
+              onClick={(event) => {
+                if (!overlayReady) {
+                  event.preventDefault();
+                  return;
+                }
+                trackEvent('checkout_started');
+              }}
+              className={`mt-5 block rounded-full bg-gradient-to-r from-amber-400 via-rose-400 to-purple-400 px-4 py-2.5 text-center text-sm font-semibold text-neutral-950 transition-opacity ${
+                overlayReady ? 'cursor-pointer hover:opacity-90' : 'cursor-wait opacity-60'
+              }`}
             >
-              {dictionary.premium.buyButton}
+              {overlayReady ? dictionary.premium.buyButton : dictionary.premium.buyButtonPreparing}
             </a>
 
             <div className="mt-5 border-t border-white/10 pt-4">

@@ -151,6 +151,7 @@ export const he: Dictionary = {
     featureDeeperStats: 'פתחו את כל הגרפים — זמן תגובה, מי פותח שיחות, מילים בהודעה ועוד',
     featureHistory: 'בדיקת צ׳אטים בלי הגבלה (בגרסה החינמית מוגבל ל-2, לתמיד)',
     buyButton: 'רכשו את Wrapped+ — ₪8.98',
+    buyButtonPreparing: 'טוען את הקופה…',
     licenseLabel: 'כבר רכשתם? הזינו את קוד הרישוי',
     licensePlaceholder: 'קוד רישוי',
     activateButton: 'הפעלה',

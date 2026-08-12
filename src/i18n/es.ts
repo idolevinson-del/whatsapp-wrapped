@@ -164,6 +164,7 @@ export const es: Dictionary = {
     featureDeeperStats: 'Desbloquea todos los gráficos — tiempo de respuesta, quién inicia las conversaciones, palabras por mensaje y más',
     featureHistory: 'Análisis de chats ilimitados (la versión gratuita tiene un límite de 2, para siempre)',
     buyButton: 'Obtener Wrapped+ — $2.99',
+    buyButtonPreparing: 'Cargando el pago…',
     licenseLabel: '¿Ya lo compraste? Ingresa tu clave de licencia',
     licensePlaceholder: 'Clave de licencia',
     activateButton: 'Activar',
