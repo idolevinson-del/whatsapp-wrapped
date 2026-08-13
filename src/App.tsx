@@ -72,6 +72,13 @@ function App() {
   // see StatsPage's autoExitMs. A deliberately-opened example ("See an
   // example") stays open until the visitor leaves it themselves.
   const [exampleAutoExitMs, setExampleAutoExitMs] = useState<number | undefined>(undefined);
+  // First-visit onboarding only: shown right after the example Wrapped
+  // (whether its auto-tour finishes or the visitor leaves it early) — so by
+  // the time someone reaches the real upload screen, they've already seen
+  // both "here's what you get" *and* exactly how to export their own chat,
+  // instead of only discovering the export guide if they happen to notice
+  // its link. Never shown after a manually-opened "See an example".
+  const [showExportGuideOnboarding, setShowExportGuideOnboarding] = useState(false);
   const [historyEntry, setHistoryEntry] = useState<ChatHistoryEntry | null>(null);
   const exampleAnalysis = useMemo(() => buildExampleAnalysis(), []);
 
@@ -110,6 +117,9 @@ function App() {
   }
 
   if (showExample) {
+    // Whether this was the onboarding flow decides what comes next, so it
+    // has to be captured before the timer-vs-manual-exit is cleared below.
+    const wasOnboardingExample = exampleAutoExitMs !== undefined;
     return (
       <StatsPage
         analysis={exampleAnalysis}
@@ -117,11 +127,16 @@ function App() {
         onBack={() => {
           setShowExample(false);
           setExampleAutoExitMs(undefined);
+          if (wasOnboardingExample) setShowExportGuideOnboarding(true);
         }}
         isExample
         autoExitMs={exampleAutoExitMs}
       />
     );
+  }
+
+  if (showExportGuideOnboarding) {
+    return <ExportGuidePage onBack={() => setShowExportGuideOnboarding(false)} />;
   }
 
   if (historyEntry) {
