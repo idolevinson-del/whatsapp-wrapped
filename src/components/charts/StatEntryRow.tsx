@@ -47,7 +47,7 @@ export function StatEntryRow({ sender, value, color, valueSuffix, kind, widthPer
               width: animateIn ? `${widthPercent}%` : '0%',
               transitionDelay: `${delayMs}ms`,
               backgroundColor: color,
-              boxShadow: 'inset 0 1px 1px rgba(255,255,255,0.35), inset 0 -1px 2px rgba(0,0,0,0.3)',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.4), inset 0 -1.5px 2px rgba(0,0,0,0.35)',
             }}
           />
         </div>

@@ -15,11 +15,21 @@ interface PieChartProps {
   active?: boolean;
 }
 
-// Outer drop shadow + an inset highlight/shadow ring, so the disc reads as
-// a lit sphere instead of a flat conic-gradient tile. Shared by both the
-// real chart and its zero-data placeholder so the two match.
+// A bigger, softer drop shadow (two layers: a tight contact shadow plus a
+// wider ambient one) so the disc reads as floating above the card, plus a
+// stronger inset highlight/shadow ring for a beveled edge. Shared by both
+// the real chart and its zero-data placeholder so the two match.
 const DEPTH_SHADOW =
-  '0 6px 14px -4px rgba(0,0,0,0.55), inset 0 2px 3px rgba(255,255,255,0.25), inset 0 -3px 6px rgba(0,0,0,0.35)';
+  '0 16px 32px -12px rgba(0,0,0,0.65), 0 6px 14px -6px rgba(0,0,0,0.5), inset 0 3px 5px rgba(255,255,255,0.32), inset 0 -5px 10px rgba(0,0,0,0.45)';
+
+// A soft highlight near the upper-left plus a darker shade near the
+// lower-right, layered on top of the flat conic-gradient slices — turns
+// what would otherwise read as a flat colored disc into something closer
+// to a lit glass marble, without touching the slice colors' own legibility
+// (both fade to fully transparent well before the disc's edge).
+const GLOSS =
+  'radial-gradient(circle at 32% 26%, rgba(255,255,255,0.45), rgba(255,255,255,0) 45%), ' +
+  'radial-gradient(circle at 70% 76%, rgba(0,0,0,0.3), rgba(0,0,0,0) 55%)';
 
 /**
  * Dependency-free pie chart built from a single CSS conic-gradient — no SVG
@@ -31,7 +41,7 @@ const DEPTH_SHADOW =
  * popping in fully drawn — the "numbers/graphs climbing in" reveal beat
  * this app leans on elsewhere (see useCountUp).
  */
-export function PieChart({ data, size = 112, active = true }: PieChartProps) {
+export function PieChart({ data, size = 132, active = true }: PieChartProps) {
   const [animateIn, setAnimateIn] = useState(false);
 
   useEffect(() => {
@@ -51,12 +61,17 @@ export function PieChart({ data, size = 112, active = true }: PieChartProps) {
         style={{
           width: size,
           height: size,
+          // Same gloss treatment as the real chart, over a flat near-
+          // transparent fill (the shorthand's trailing color) instead of
+          // Tailwind's bg-white/5 — kept inline so the two share one
+          // background declaration rather than fighting each other.
+          background: `${GLOSS}, rgba(255,255,255,0.05)`,
           boxShadow: DEPTH_SHADOW,
           transform: animateIn ? 'scale(1)' : 'scale(0.6)',
           opacity: animateIn ? 1 : 0,
           transition: 'transform 500ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity 400ms ease-out',
         }}
-        className="flex shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/5 text-xs text-white/40"
+        className="flex shrink-0 items-center justify-center rounded-full border border-white/10 text-xs text-white/40"
       >
         —
       </div>
@@ -79,7 +94,7 @@ export function PieChart({ data, size = 112, active = true }: PieChartProps) {
       style={{
         width: size,
         height: size,
-        background: `conic-gradient(${stops})`,
+        background: `${GLOSS}, conic-gradient(${stops})`,
         boxShadow: DEPTH_SHADOW,
         // Pixel-based (not %) so the reveal always lands exactly on the
         // chart's own edge regardless of clip-path's percentage reference.
